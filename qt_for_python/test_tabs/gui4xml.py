@@ -14,6 +14,7 @@ class QHLine(QFrame):
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        # global self.params_cell_def
 
         self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
 
@@ -30,105 +31,188 @@ class MyWidget(QtWidgets.QWidget):
         self.tabs.addTab(self.tab3,"Cell Types")
         self.tabs.addTab(self.tab4,"User Params")
         # self.tabs.addTab("tab1")
+        self.tabs.currentChanged.connect(self.tab_changed_cb)
 
+        #-------------------------------------------
+        self.vbox_config = QtWidgets.QVBoxLayout()
+        self.vbox_microenv = QtWidgets.QVBoxLayout()
+        self.vbox_user_params = QtWidgets.QVBoxLayout()
+
+        #-------------------------------------------
         self.scroll = QtWidgets.QScrollArea()  # might contain centralWidget
-        self.params = QtWidgets.QWidget()       # contains collection of Vertical Box
-        self.vbox = QtWidgets.QVBoxLayout()
+
+        self.params_cell_def = QtWidgets.QWidget()
+        self.vbox_cell_def = QtWidgets.QVBoxLayout()
+
+        self.params_config = QtWidgets.QWidget()
+        self.vbox_config = QtWidgets.QVBoxLayout()
 
         self.cycle_dropdown = QtWidgets.QComboBox()
-        self.cycle_dropdown.addItem("cycle 1")
-        self.cycle_dropdown.addItem("cycle 2")
-        self.cycle_dropdown.addItem("cycle 3")
 
-        self.vbox.addWidget(self.cycle_dropdown)
+        self.cycle_dropdown.addItem("advanced Ki67")
+        self.cycle_dropdown.addItem("basic Ki67")
+        self.cycle_dropdown.addItem("flow cytometry")
+        self.cycle_dropdown.addItem("live apoptotic")
+        self.cycle_dropdown.addItem("total cells")
+        self.cycle_dropdown.addItem("live cells")
+        self.cycle_dropdown.addItem("flow cytometry separated")
+        self.cycle_dropdown.addItem("cycling quiescent")
+
+        self.vbox_cell_def.addWidget(self.cycle_dropdown)
 
         #=====  Phenotype 
         #============  Cycle ================================
         label = QtWidgets.QLabel("Phenotype: cycle")
-        self.vbox.addWidget(label)
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
 
         hbox = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Phase0->Phase1 transition rate")
         hbox.addWidget(label)
+
+        self.cycle1_trate0_1 = QtWidgets.QLineEdit()
+        # self.cycle1_trate0_1.setValidator(QtGui.QIntValidator())
+        self.cycle1_trate0_1.setValidator(QtGui.QDoubleValidator())
+        # self.cycle1_trate0_1.enter.connect(self.save_xml)
+        hbox.addWidget(self.cycle1_trate0_1)
+
         units = QtWidgets.QLabel("1/min")
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.vbox_cell_def.addLayout(hbox)
         #----------
         hbox = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Phase1->Phase2 transition rate")
         hbox.addWidget(label)
+
+        self.cycle1_trate1_2 = QtWidgets.QLineEdit()
+        self.cycle1_trate1_2.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.cycle1_trate1_2)
+
         units = QtWidgets.QLabel("1/min")
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.vbox_cell_def.addLayout(hbox)
         #----------
         hbox = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Phase2->Phase3 transition rate")
         hbox.addWidget(label)
+
+        self.cycle1_trate2_3 = QtWidgets.QLineEdit()
+        self.cycle1_trate2_3.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.cycle1_trate2_3)
+
         units = QtWidgets.QLabel("1/min")
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.vbox_cell_def.addLayout(hbox)
         #----------
         hbox = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Phase3->Phase4 transition rate")
         hbox.addWidget(label)
+
+        self.cycle1_trate3_4 = QtWidgets.QLineEdit()
+        self.cycle1_trate3_4.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.cycle1_trate3_4)
+
         units = QtWidgets.QLabel("1/min")
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.vbox_cell_def.addLayout(hbox)
 
-        self.vbox.addWidget(QHLine())
+        self.vbox_cell_def.addWidget(QHLine())
         #--------------------------
         hbox = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Phase0->Phase0 transition rate")
         hbox.addWidget(label)
+
+        self.cycle1_trate0_0 = QtWidgets.QLineEdit()
+        self.cycle1_trate0_0.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.cycle1_trate0_0)
+
         units = QtWidgets.QLabel("1/min")
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.vbox_cell_def.addLayout(hbox)
 
-        self.vbox.addWidget(QHLine())
+        #--------------------------
+        self.vbox_cell_def.addWidget(QHLine())
 
 
-        # self.vbox.addLayout(hbox)
+        # self.vbox_cell_def.addLayout(hbox)
         #----------
         #============  Death ================================
         label = QtWidgets.QLabel("Phenotype: death")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        # self.vbox_cell_def.addWidget(QHLine())
+
+        #-----
+        label = QtWidgets.QLabel("Apoptosis")
+        self.vbox_cell_def.addWidget(label)
+
+        hbox = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("death rate")
+        hbox.addWidget(label)
+        self.death_apop_rate = QtWidgets.QLineEdit()
+        self.death_apop_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.death_apop_rate)
+        units = QtWidgets.QLabel("1/min")
+        hbox.addWidget(units)
+        self.vbox_cell_def.addLayout(hbox)
+
+        hbox = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("unlysed fluid change rate")
+        hbox.addWidget(label)
+        self.death_apop_unlysed_rate = QtWidgets.QLineEdit()
+        self.death_apop_unlysed_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.death_apop_unlysed_rate)
+        units = QtWidgets.QLabel("1/min")
+        hbox.addWidget(units)
+        self.vbox_cell_def.addLayout(hbox)
+
+        #-----
+        self.vbox_cell_def.addWidget(QHLine())
+        label = QtWidgets.QLabel("Necrosis")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
         #============  Volume ================================
         label = QtWidgets.QLabel("Phenotype: volume")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
         #============  Mechanics ================================
         label = QtWidgets.QLabel("Phenotype: mechanics")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
         #============  Motility ================================
         label = QtWidgets.QLabel("Phenotype: motility")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
         #============  Secretion ================================
         label = QtWidgets.QLabel("Phenotype: secretion")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
         #============  Molecular ================================
         label = QtWidgets.QLabel("Phenotype: molecular")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: orange")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
 
         #=====  Custom data 
         label = QtWidgets.QLabel("Custom data")
-        self.vbox.addWidget(label)
-        self.vbox.addWidget(QHLine())
+        label.setStyleSheet("background-color: cyan")
+        self.vbox_cell_def.addWidget(label)
+        self.vbox_cell_def.addWidget(QHLine())
 
         #==================================================================
-        self.params.setLayout(self.vbox)
+        self.params_cell_def.setLayout(self.vbox_cell_def)
 
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.params)
+        self.scroll.setWidget(self.params_cell_def)
 
 
-        # self.button = QtWidgets.QPushButton("Click me!")
+        self.save_button = QtWidgets.QPushButton("Save")
         # self.text = QtWidgets.QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
 
         self.layout = QtWidgets.QVBoxLayout(self)
@@ -136,15 +220,28 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(QHLine())
         # self.layout.addWidget(self.params)
         self.layout.addWidget(self.scroll)
-        # self.layout.addWidget(self.vbox)
+        # self.layout.addWidget(self.vbox_cell_def)
         # self.layout.addWidget(self.text)
-        # self.layout.addWidget(self.button)
+        self.layout.addWidget(self.save_button)
 
-        # self.button.clicked.connect(self.magic)
+        self.save_button.clicked.connect(self.save_xml)
+
 
     @QtCore.Slot()
-    def magic(self):
-        self.text.setText(random.choice(self.hello))
+    def save_xml(self):
+        # self.text.setText(random.choice(self.hello))
+        pass
+
+    @QtCore.Slot()
+    def tab_changed_cb(self, idx):
+        # self.text.setText(random.choice(self.hello))
+        # pass
+        QtWidgets.QMessageBox.information(self, "Tab Index Changed!",
+                  "Current Tab Index: %d" % idx )
+        # if idx == 2:
+        #     self.scroll.setWidget(self.params_cell_def)
+        # else:
+        #     self.scroll.setWidget(self.params_config)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
