@@ -10,6 +10,8 @@ title: PhysiCell User Guide (Version 1.7.1)
 ::: {#TOC}
 :::
 
+- [Standard Models](#standard-models)
+
 Introduction and citing PhysiCell 
 =================================
 
@@ -5794,7 +5796,7 @@ reference="sec:XML_user_parameters"}, PhysiCell has a global
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
-
+[Standard Models](#standard-models)
 Standard models  {#sec:Standard_Models}
 ===============
 
