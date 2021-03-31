@@ -1,3 +1,12 @@
+"""
+Authors:
+Randy Heiland (heiland@iu.edu)
+Adam Morrow, Grant Waldrow, Drew Willis, Kim Crevecoeur
+Dr. Paul Macklin (macklinp@iu.edu)
+
+--- Versions ---
+0.1 - initial version
+"""
 # https://doc.qt.io/qtforpython/gettingstarted.html
 
 import sys
@@ -5,7 +14,8 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox
 
 from config_tab import Config
-from cell_def_tab import CellDef
+from cell_def_tab import CellDef 
+from microenv_tab import SubstrateDef 
 
   
 class PhysiCellXMLCreator(QTabWidget):
@@ -15,13 +25,16 @@ class PhysiCellXMLCreator(QTabWidget):
         self.tab2 = QWidget()
         # self.tab3 = QWidget()
         self.tab1 = Config()
+        self.tab2 = SubstrateDef()
         self.tab3 = CellDef()
+        # self.cell_defs = CellDefInstances()
 
         self.addTab(self.tab1,"Config Basics")
         self.addTab(self.tab2,"Microenvironment")
-        self.addTab(self.tab3,"Cell Defs")
+        self.addTab(self.tab3,"Cell Types")
+        # self.addTab(self.cell_defs,"Cell Defs")
         # self.tab_config()
-        self.tab_microenv()
+        # self.tab_microenv()
         # self.tab_cell_defs()
         self.setWindowTitle("PhysiCell configuration")
 		
@@ -60,7 +73,7 @@ class PhysiCellXMLCreator(QTabWidget):
 def main():
     app = QApplication(sys.argv)
     ex = PhysiCellXMLCreator()
-    ex.setGeometry(100,100, 700,600)
+    ex.setGeometry(100,100, 800,600)
     ex.show()
     sys.exit(app.exec_())
 	
