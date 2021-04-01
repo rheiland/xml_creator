@@ -1,5 +1,16 @@
-# xml_creator
-Experimenting with a GUI to create/edit a PhysiCell configuration (XML) file.
+# xml_creator - create/edit a PhysiCell configuration (XML) file
+
+## Qt for Python approach
+
+- instructions for installing an appropriate distribution of Python for your operating system and the `pyside` module
+
+```
+$ cd qt_for_python/gui4xml
+$ python gui4xml.py
+```
+
+---
+## C++ Qt approach
 
 ```
 -- Installed Anaconda Python 3.x distro which includes some Qt stuff
