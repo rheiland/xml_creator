@@ -2,7 +2,7 @@
 
 ## Qt for Python approach
 
-- instructions for installing an appropriate distribution of Python for your operating system and the `pyside` module
+- instructions forthcoming for installing an appropriate distribution of Python for your operating system and the `pyside` module
 
 ```
 $ cd qt_for_python/gui4xml
