@@ -10,6 +10,8 @@ Dr. Paul Macklin (macklinp@iu.edu)
 # https://doc.qt.io/qtforpython/gettingstarted.html
 
 import sys
+import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
+
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox, QMenuBar,QStyle,QGridLayout 
 
@@ -40,8 +42,16 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.menubar.addMenu(self.file_menu)
 
         # GUI tabs
+        config_file = "virus_macrophage.xml"
+        tree = ET.parse(config_file)
+        xml_root = tree.getroot()
+
         self.tab1 = Config()
+        self.tab1.fill_gui(xml_root)
+
         self.tab2 = SubstrateDef()
+        # self.tab2.fill_gui(xml_root)
+
         self.tab3 = CellDef()
 
         self.addTab(self.tab1,"Config Basics")
