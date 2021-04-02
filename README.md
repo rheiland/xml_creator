@@ -2,12 +2,17 @@
 
 ## Qt for Python approach
 
-- instructions forthcoming for installing an appropriate distribution of Python for your operating system and the `pyside` module
+During the development stage of creating the Qt application, the path of least resistance on Windows 10 seems to be:
+* install Python (currently 3.9) from the Windows Store
+* from a Command Prompt which uses the Windows Store Python, do `pip install pyside6`
+* if you have another Python installation, e.g., Anaconda, you'll need to temporarily rename your system PATH environment variable to avoid using the Anaconda Python by default (e.g., append a 'z' to each path using Anaconda).
 
 ```
 $ cd qt_for_python/gui4xml
 $ python gui4xml.py
 ```
+
+See the `qt_for_python/gui4xml/images` folder of this repo for screenshots of the GUI running on different OSes. Note there's some work to do to make them have a similar look.
 
 ---
 ## C++ Qt approach
