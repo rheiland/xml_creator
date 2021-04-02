@@ -24,7 +24,7 @@ class PhysiCellXMLCreator(QTabWidget):
     def __init__(self, parent = None):
         super(PhysiCellXMLCreator, self).__init__(parent)
 
-        self.setWindowTitle("PhysiCell configuration")
+        self.setWindowTitle("PhysiCell model configuration")
 
         # Menus
         lay = QVBoxLayout(self)
@@ -43,44 +43,71 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.menubar.addMenu(self.file_menu)
 
         # GUI tabs
-        config_file = "virus_macrophage.xml"
-        config_file = "biorobots.xml"
+        # config_file = "virus_macrophage.xml"
+        config_file = "config_samples/template2D.xml"
         tree = ET.parse(config_file)
-        xml_root = tree.getroot()
+        self.xml_root = tree.getroot()
 
         self.tab1 = Config()
-        self.tab1.fill_gui(xml_root)
+        self.tab1.fill_gui(self.xml_root)
 
         self.tab2 = SubstrateDef()
-        self.tab2.fill_gui(xml_root)
+        self.tab2.fill_gui(self.xml_root)
 
         self.tab3 = CellDef()
+        self.tab3.fill_gui(self.xml_root)
+        self.tab3.fill_motility_substrates(self.xml_root)
+        
 
         self.addTab(self.tab1,"Config Basics")
         self.addTab(self.tab2,"Microenvironment")
         self.addTab(self.tab3,"Cell Types")
 
 
-    def biorobots(self):
-        self.config_file = "biorobots.xml"
+    def show_sample_model(self):
+        # self.config_file = "config_samples/biorobots.xml"
         self.tree = ET.parse(self.config_file)
         self.xml_root = self.tree.getroot()
         self.tab1.fill_gui(self.xml_root)
         self.tab2.fill_gui(self.xml_root)
+        self.tab3.fill_gui(self.xml_root)
+        self.tab3.fill_motility_substrates(self.xml_root)
+
+    def biorobots(self):
+        self.config_file = "config_samples/biorobots.xml"
+        self.show_sample_model()
+        # self.tree = ET.parse(self.config_file)
+        # self.xml_root = self.tree.getroot()
+        # self.tab1.fill_gui(self.xml_root)
+        # self.tab2.fill_gui(self.xml_root)
+
+    def cancer_biorobots(self):
+        self.config_file = "config_samples/cancer_biorobots.xml"
+        self.show_sample_model()
+
+    def hetero(self):
+        self.config_file = "config_samples/heterogeneity.xml"
+        self.show_sample_model()
+
+    def pred_prey(self):
+        self.config_file = "config_samples/pred_prey.xml"
+        self.show_sample_model()
 
     def virus_mac(self):
-        self.config_file = "virus_macrophage.xml"
-        self.tree = ET.parse(self.config_file)
-        self.xml_root = self.tree.getroot()
-        self.tab1.fill_gui(self.xml_root)
-        self.tab2.fill_gui(self.xml_root)
+        self.config_file = "config_samples/virus_macrophage.xml"
+        self.show_sample_model()
+        # self.tree = ET.parse(self.config_file)
+        # self.xml_root = self.tree.getroot()
+        # self.tab1.fill_gui(self.xml_root)
+        # self.tab2.fill_gui(self.xml_root)
 
     def menu(self):
         menubar = QMenuBar(self)
 
         file_menu = menubar.addMenu('File')
-        # samples = QtGui.QAction('Load sample', self)
 
+        open_act = QtGui.QAction('Open', self)
+        # recent_act = QtGui.QAction('Recent', self)
         save_act = QtGui.QAction('Save', self)
         saveas_act = QtGui.QAction('Save As', self)
         # open_act = QtGui.QAction('Open', self, checkable=True)
@@ -96,12 +123,15 @@ class PhysiCellXMLCreator(QTabWidget):
 
         cancer_biorobots_act = QtGui.QAction('cancer biorobots', self)
         samples_menu.addAction(cancer_biorobots_act)
+        cancer_biorobots_act.triggered.connect(self.cancer_biorobots)
 
         hetero_act = QtGui.QAction('heterogeneity', self)
         samples_menu.addAction(hetero_act)
+        hetero_act.triggered.connect(self.hetero)
 
         pred_prey_act = QtGui.QAction('predator-prey-farmer', self)
         samples_menu.addAction(pred_prey_act)
+        pred_prey_act.triggered.connect(self.pred_prey)
 
         virus_mac_act = QtGui.QAction('virus-macrophage', self)
         samples_menu.addAction(virus_mac_act)
@@ -109,23 +139,28 @@ class PhysiCellXMLCreator(QTabWidget):
 
         worm_act = QtGui.QAction('worm', self)
         samples_menu.addAction(worm_act)
+
         cancer_immune_act = QtGui.QAction('cancer immune (3D)', self)
         samples_menu.addAction(cancer_immune_act)
+
         template3D_act = QtGui.QAction('template (3D)', self)
         samples_menu.addAction(template3D_act)
 
+        file_menu.addAction(open_act)
+        # file_menu.addAction(recent_act)
         file_menu.addAction(save_act)
         file_menu.addAction(saveas_act)
 
 
-        # samples_menu = menubar.addMenu('Samples')
-        # samples.addAction('Load sample', self)
+        models_menu = menubar.addMenu('Models')
+        models_menu_act = QtGui.QAction('', self)
+        models_menu.addAction(models_menu_act)
+        # models_menu.addAction('Load sample', self)
 
         tools_menu = menubar.addMenu('Tools')
-        email = QtGui.QAction('Validate', self)
-        tools_menu.addAction(email)
+        tools_menu_act = QtGui.QAction('Validate', self)
+        tools_menu.addAction(tools_menu_act)
 		
-
 def main():
     app = QApplication(sys.argv)
     ex = PhysiCellXMLCreator()

@@ -37,14 +37,14 @@ class SubstrateDef(QtWidgets.QWidget):
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.setColumnCount(1)
 
-        header = QTreeWidgetItem(["---  Microenvironment ---"])
+        header = QTreeWidgetItem(["---  Substrate ---"])
         self.tree.setHeaderItem(header)
 
-        cellname = QTreeWidgetItem(["virus"])
-        self.tree.insertTopLevelItem(0,cellname)
+        # cellname = QTreeWidgetItem(["virus"])
+        # self.tree.insertTopLevelItem(0,cellname)
 
-        cellname = QTreeWidgetItem(["interferon"])
-        self.tree.insertTopLevelItem(1,cellname)
+        # cellname = QTreeWidgetItem(["interferon"])
+        # self.tree.insertTopLevelItem(1,cellname)
 
 
         self.cell_def_horiz_layout.addWidget(self.tree)
@@ -89,7 +89,7 @@ class SubstrateDef(QtWidgets.QWidget):
 
         #------------------
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Name of substrate or signal:")
+        label = QtWidgets.QLabel("Name of substrate:")
         label.setFixedWidth(180)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -231,9 +231,16 @@ class SubstrateDef(QtWidgets.QWidget):
         uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
         vp = []   # pointers to <variable> nodes
         if uep:
+            self.tree.clear()
+            idx = 0
             for var in uep.findall('variable'):
                 vp.append(var)
-                print(var.attrib['name'])
+                # print(var.attrib['name'])
+                name = var.attrib['name']
+                substrate_name = QTreeWidgetItem([name])
+                self.tree.insertTopLevelItem(idx,substrate_name)
+                idx += 1
+
 
         uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
 

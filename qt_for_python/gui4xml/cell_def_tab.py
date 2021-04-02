@@ -37,14 +37,14 @@ class CellDef(QtWidgets.QWidget):
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.setColumnCount(1)
 
-        header = QTreeWidgetItem(["---  Cell Types  ---"])
+        header = QTreeWidgetItem(["---  Cell Type  ---"])
         self.tree.setHeaderItem(header)
 
-        cellname = QTreeWidgetItem(["epi cell"])
-        self.tree.insertTopLevelItem(0,cellname)
+        # cellname = QTreeWidgetItem(["epi cell"])
+        # self.tree.insertTopLevelItem(0,cellname)
 
-        cellname = QTreeWidgetItem(["macrophage"])
-        self.tree.insertTopLevelItem(1,cellname)
+        # cellname = QTreeWidgetItem(["macrophage"])
+        # self.tree.insertTopLevelItem(1,cellname)
 
         # cities =  QTreeWidgetItem(treeWidget)
 
@@ -289,7 +289,7 @@ class CellDef(QtWidgets.QWidget):
         # <calcification_rate units="1/min">0</calcification_rate>
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("unlysed_fluid_change_rate")
+        label = QtWidgets.QLabel("unlysed fluid change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -303,7 +303,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("lysed_fluid_change_rate")
+        label = QtWidgets.QLabel("lysed fluid change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -317,7 +317,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("cytoplasmic_biomass_change_rate")
+        label = QtWidgets.QLabel("cytoplasmic biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -334,7 +334,7 @@ class CellDef(QtWidgets.QWidget):
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("nuclear_biomass_change_rate")
+        label = QtWidgets.QLabel("nuclear biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -348,7 +348,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("calcification_rate")
+        label = QtWidgets.QLabel("calcification rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -362,7 +362,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("relative_rupture_volume")
+        label = QtWidgets.QLabel("relative rupture volume")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -437,7 +437,7 @@ class CellDef(QtWidgets.QWidget):
         # <calcification_rate units="1/min">0</calcification_rate>
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("unlysed_fluid_change_rate")
+        label = QtWidgets.QLabel("unlysed fluid change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -451,7 +451,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("lysed_fluid_change_rate")
+        label = QtWidgets.QLabel("lysed fluid change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -465,7 +465,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("cytoplasmic_biomass_change_rate")
+        label = QtWidgets.QLabel("cytoplasmic biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -482,7 +482,7 @@ class CellDef(QtWidgets.QWidget):
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("nuclear_biomass_change_rate")
+        label = QtWidgets.QLabel("nuclear biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -496,7 +496,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("calcification_rate")
+        label = QtWidgets.QLabel("calcification rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -510,7 +510,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("relative_rupture_volume")
+        label = QtWidgets.QLabel("relative rupture volume")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -546,7 +546,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("fluid_fraction")
+        label = QtWidgets.QLabel("fluid fraction")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -578,7 +578,7 @@ class CellDef(QtWidgets.QWidget):
         # <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("fluid_change_rate")
+        label = QtWidgets.QLabel("fluid change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -592,7 +592,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("cytoplasmic_biomass_change_rate")
+        label = QtWidgets.QLabel("cytoplasmic biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -606,7 +606,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("nuclear_biomass_change_rate")
+        label = QtWidgets.QLabel("nuclear biomass change rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -622,7 +622,7 @@ class CellDef(QtWidgets.QWidget):
         # <calcified_fraction units="dimensionless">0</calcified_fraction>
         # <calcification_rate units="1/min">0</calcification_rate>
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("calcified_fraction")
+        label = QtWidgets.QLabel("calcified fraction")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -636,7 +636,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("calcified_rate")
+        label = QtWidgets.QLabel("calcified rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -664,7 +664,7 @@ class CellDef(QtWidgets.QWidget):
     # <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
     # <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("cell_cell_adhesion_strength")
+        label = QtWidgets.QLabel("cell-cell adhesion strength")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -678,7 +678,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("cell_cell_repulsion_strength")
+        label = QtWidgets.QLabel("cell-cell repulsion strength")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -692,7 +692,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("relative_maximum_adhesion_distance")
+        label = QtWidgets.QLabel("relative max adhesion distance")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -709,8 +709,13 @@ class CellDef(QtWidgets.QWidget):
     #     <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
     #     <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
     # </options>
+        label = QtWidgets.QLabel("Options:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignLeft)
+        self.vbox.addWidget(label)
+
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("set_relative_equilibrium_distance")
+        label = QtWidgets.QLabel("relative equilibrium distance")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -724,7 +729,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("set_absolute_equilibrium_distance")
+        label = QtWidgets.QLabel("absolute equilibrium distance")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -763,7 +768,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("persistence_time")
+        label = QtWidgets.QLabel("persistence time")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -777,7 +782,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("migration_bias")
+        label = QtWidgets.QLabel("migration bias")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -826,7 +831,7 @@ class CellDef(QtWidgets.QWidget):
         self.motility_substrate_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
         # self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)
-        self.motility_substrate_dropdown.addItem("oxygen")
+        # self.motility_substrate_dropdown.addItem("oxygen")
         self.vbox.addWidget(self.motility_substrate_dropdown)
 
         #============  Secretion ================================
@@ -855,7 +860,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addWidget(label)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("secretion_rate")
+        label = QtWidgets.QLabel("secretion rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -883,7 +888,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("uptake_rate")
+        label = QtWidgets.QLabel("uptake rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -897,7 +902,7 @@ class CellDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("net_export_rate")
+        label = QtWidgets.QLabel("net export rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -962,3 +967,41 @@ class CellDef(QtWidgets.QWidget):
         pass
         # QtWidgets.QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
+
+
+
+    def fill_motility_substrates(self, xml_root):
+        uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
+        # vp = []   # pointers to <variable> nodes
+        if uep:
+            idx = 0
+            for var in uep.findall('variable'):
+                # vp.append(var)
+                # print(var.attrib['name'])
+                name = var.attrib['name']
+                self.motility_substrate_dropdown.addItem(name)
+
+    def fill_gui(self, xml_root):
+	# <cell_definitions>
+	# 	<cell_definition name="default" ID="0">
+
+        uep = xml_root.find(".//cell_definitions")
+        if uep:
+            self.tree.clear()
+            idx = 0
+            for cell_def in uep:
+                # print(cell_def.attrib['name'])
+                cd_name = cell_def.attrib['name']
+                cellname = QTreeWidgetItem([cd_name])
+                self.tree.insertTopLevelItem(idx,cellname)
+                idx += 1
+
+        # self.xmin.setText(xml_root.find(".//x_min").text)
+        # self.xmax.setText(xml_root.find(".//x_max").text)
+
+    # Read values from the GUI widgets and generate/write a new XML
+    def fill_xml(self, xml_root):
+        pass
+        # TODO: verify valid type (numeric) and range?
+        # xml_root.find(".//x_min").text = str(self.xmin.value)
+        # xml_root.find(".//x_max").text = str(self.xmax.value)
