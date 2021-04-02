@@ -242,9 +242,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.death_apop_rate = QtWidgets.QLineEdit()
-        self.death_apop_rate.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.death_apop_rate)
+        self.apoptosis_death_rate = QtWidgets.QLineEdit()
+        self.apoptosis_death_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_death_rate)
         units = QtWidgets.QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -390,9 +390,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.death_necrosis_rate = QtWidgets.QLineEdit()
-        self.death_necrosis_rate.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.death_necrosis_rate)
+        self.necrosis_death_rate = QtWidgets.QLineEdit()
+        self.necrosis_death_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_death_rate)
         units = QtWidgets.QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -996,8 +996,68 @@ class CellDef(QtWidgets.QWidget):
                 self.tree.insertTopLevelItem(idx,cellname)
                 idx += 1
 
-        # self.xmin.setText(xml_root.find(".//x_min").text)
-        # self.xmax.setText(xml_root.find(".//x_max").text)
+        # rf. microenv:
+        # self.cell_type_name.setText(var.attrib['name'])
+        # self.diffusion_coef.setText(vp[0].find('.//diffusion_coefficient').text)
+
+        # ------------------ cell_definition: default
+        # ---------  cycle (live)
+        # self.float0.value = float(uep.find('.//cell_definition[1]//phenotype//cycle//phase_transition_rates//rate[1]').text)
+
+        # ---------  death 
+        self.apoptosis_death_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//death_rate').text)
+
+        self.apoptosis_unlysed_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//unlysed_fluid_change_rate').text)
+
+        # self.float3.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//lysed_fluid_change_rate').text)
+        # self.float4.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//cytoplasmic_biomass_change_rate').text)
+        # self.float5.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//nuclear_biomass_change_rate').text)
+        # self.float6.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//calcification_rate').text)
+        # self.float7.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//relative_rupture_volume').text)
+        # self.float8.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//death_rate').text)
+        # self.float9.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//unlysed_fluid_change_rate').text)
+        # self.float10.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//lysed_fluid_change_rate').text)
+        # self.float11.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//cytoplasmic_biomass_change_rate').text)
+        # self.float12.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//nuclear_biomass_change_rate').text)
+        # self.float13.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//calcification_rate').text)
+        # self.float14.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//relative_rupture_volume').text)
+        # # ---------  volume 
+        # self.float15.value = float(uep.find('.//cell_definition[1]//phenotype//volume//total').text)
+        # self.float16.value = float(uep.find('.//cell_definition[1]//phenotype//volume//fluid_fraction').text)
+        # self.float17.value = float(uep.find('.//cell_definition[1]//phenotype//volume//nuclear').text)
+        # self.float18.value = float(uep.find('.//cell_definition[1]//phenotype//volume//fluid_change_rate').text)
+        # self.float19.value = float(uep.find('.//cell_definition[1]//phenotype//volume//cytoplasmic_biomass_change_rate').text)
+        # self.float20.value = float(uep.find('.//cell_definition[1]//phenotype//volume//nuclear_biomass_change_rate').text)
+        # self.float21.value = float(uep.find('.//cell_definition[1]//phenotype//volume//calcified_fraction').text)
+        # self.float22.value = float(uep.find('.//cell_definition[1]//phenotype//volume//calcification_rate').text)
+        # self.float23.value = float(uep.find('.//cell_definition[1]//phenotype//volume//relative_rupture_volume').text)
+        # # ---------  mechanics 
+        # self.float24.value = float(uep.find('.//cell_definition[1]//phenotype//mechanics//cell_cell_adhesion_strength').text)
+        # self.float25.value = float(uep.find('.//cell_definition[1]//phenotype//mechanics//cell_cell_repulsion_strength').text)
+        # self.float26.value = float(uep.find('.//cell_definition[1]//phenotype//mechanics//relative_maximum_adhesion_distance').text)
+        # self.bool0.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//mechanics//options//set_relative_equilibrium_distance').attrib['enabled'].lower()))
+        # self.bool1.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//mechanics//options//set_absolute_equilibrium_distance').attrib['enabled'].lower()))
+        # # ---------  motility 
+        # self.float29.value = float(uep.find('.//cell_definition[1]//phenotype//motility//speed').text)
+        # self.float30.value = float(uep.find('.//cell_definition[1]//phenotype//motility//persistence_time').text)
+        # self.float31.value = float(uep.find('.//cell_definition[1]//phenotype//motility//migration_bias').text)
+        # self.bool2.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//enabled').text.lower()))
+        # self.bool3.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//use_2D').text.lower()))
+        # self.bool4.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//enabled').text.lower()))
+        # self.chemotaxis_substrate1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//substrate').text
+        # self.chemotaxis_direction1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//direction').text
+        # # ---------  secretion 
+        # self.text0.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]').attrib['name']
+        # self.float32.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_rate').text)
+        # self.float33.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_target').text)
+        # self.float34.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//uptake_rate').text)
+        # self.float35.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//net_export_rate').text)
+        # self.text1.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]').attrib['name']
+        # self.float36.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//secretion_rate').text)
+        # self.float37.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//secretion_target').text)
+        # self.float38.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//uptake_rate').text)
+        # self.float39.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//net_export_rate').text)
+
 
     # Read values from the GUI widgets and generate/write a new XML
     def fill_xml(self, xml_root):
