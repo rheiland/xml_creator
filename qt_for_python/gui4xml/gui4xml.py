@@ -48,6 +48,9 @@ class PhysiCellXMLCreator(QTabWidget):
         tree = ET.parse(config_file)
         self.xml_root = tree.getroot()
 
+        self.num_models = 0
+        self.model = {}  # key: name, value:[read-only, tree]
+
         self.tab1 = Config()
         self.tab1.fill_gui(self.xml_root)
 
@@ -64,6 +67,17 @@ class PhysiCellXMLCreator(QTabWidget):
         self.addTab(self.tab3,"Cell Types")
 
 
+    def add_new_model(self, name, read_only):
+        # does it already exist? If so, return
+        if name in self.model.keys():
+            return
+        self.model[name] = read_only
+        self.num_models += 1
+        print(" model= ",self.model)
+
+        models_menu_act = QtGui.QAction(name, self)
+        self.models_menu.addAction(models_menu_act)
+
     def show_sample_model(self):
         # self.config_file = "config_samples/biorobots.xml"
         self.tree = ET.parse(self.config_file)
@@ -73,37 +87,67 @@ class PhysiCellXMLCreator(QTabWidget):
         self.tab3.fill_gui(self.xml_root)
         self.tab3.fill_motility_substrates(self.xml_root)
 
-    def biorobots(self):
-        self.config_file = "config_samples/biorobots.xml"
+    def biorobots_cb(self):
+        name = "biorobots"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
         # self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
         # self.tab1.fill_gui(self.xml_root)
         # self.tab2.fill_gui(self.xml_root)
 
-    def cancer_biorobots(self):
-        self.config_file = "config_samples/cancer_biorobots.xml"
+    def cancer_biorobots_cb(self):
+        name = "cancer_biorobots"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
-    def hetero(self):
-        self.config_file = "config_samples/heterogeneity.xml"
+    def hetero_cb(self):
+        name = "heterogeneity"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
-    def pred_prey(self):
-        self.config_file = "config_samples/pred_prey.xml"
+    def pred_prey_cb(self):
+        name = "pred_prey"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
-    def virus_mac(self):
-        self.config_file = "config_samples/virus_macrophage.xml"
+    def virus_mac_cb(self):
+        name = "virus_macrophage"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
         # self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
         # self.tab1.fill_gui(self.xml_root)
         # self.tab2.fill_gui(self.xml_root)
+
+    def worm_cb(self):
+        name = "worm"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
+        self.show_sample_model()
+
+    def cancer_immune_cb(self):
+        name = "cancer_immune3D"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
+        self.show_sample_model()
+
+    def template3D_cb(self):
+        name = "template3D"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
+        self.show_sample_model()
+
 
     def menu(self):
         menubar = QMenuBar(self)
 
+        #--------------
         file_menu = menubar.addMenu('File')
 
         open_act = QtGui.QAction('Open', self)
@@ -116,47 +160,54 @@ class PhysiCellXMLCreator(QTabWidget):
         new_act = QtGui.QAction('New (template 2D)', self)
         file_menu.addAction(new_act)
 
-        samples_menu = file_menu.addMenu("Load sample")
+        #--------------
+        samples_menu = file_menu.addMenu("Samples (read-only)")
         biorobots_act = QtGui.QAction('biorobots', self)
         samples_menu.addAction(biorobots_act)
-        biorobots_act.triggered.connect(self.biorobots)
+        biorobots_act.triggered.connect(self.biorobots_cb)
 
         cancer_biorobots_act = QtGui.QAction('cancer biorobots', self)
         samples_menu.addAction(cancer_biorobots_act)
-        cancer_biorobots_act.triggered.connect(self.cancer_biorobots)
+        cancer_biorobots_act.triggered.connect(self.cancer_biorobots_cb)
 
         hetero_act = QtGui.QAction('heterogeneity', self)
         samples_menu.addAction(hetero_act)
-        hetero_act.triggered.connect(self.hetero)
+        hetero_act.triggered.connect(self.hetero_cb)
 
         pred_prey_act = QtGui.QAction('predator-prey-farmer', self)
         samples_menu.addAction(pred_prey_act)
-        pred_prey_act.triggered.connect(self.pred_prey)
+        pred_prey_act.triggered.connect(self.pred_prey_cb)
 
         virus_mac_act = QtGui.QAction('virus-macrophage', self)
         samples_menu.addAction(virus_mac_act)
-        virus_mac_act.triggered.connect(self.virus_mac)
+        virus_mac_act.triggered.connect(self.virus_mac_cb)
 
         worm_act = QtGui.QAction('worm', self)
         samples_menu.addAction(worm_act)
+        worm_act.triggered.connect(self.worm_cb)
 
         cancer_immune_act = QtGui.QAction('cancer immune (3D)', self)
         samples_menu.addAction(cancer_immune_act)
+        cancer_immune_act.triggered.connect(self.cancer_immune_cb)
 
         template3D_act = QtGui.QAction('template (3D)', self)
         samples_menu.addAction(template3D_act)
+        template3D_act.triggered.connect(self.template3D_cb)
 
+        #--------------
         file_menu.addAction(open_act)
         # file_menu.addAction(recent_act)
         file_menu.addAction(save_act)
         file_menu.addAction(saveas_act)
 
 
-        models_menu = menubar.addMenu('Models')
-        models_menu_act = QtGui.QAction('', self)
-        models_menu.addAction(models_menu_act)
+        #--------------
+        self.models_menu = menubar.addMenu('Models')
+        models_menu_act = QtGui.QAction('-----', self)
+        self.models_menu.addAction(models_menu_act)
         # models_menu.addAction('Load sample', self)
 
+        #--------------
         tools_menu = menubar.addMenu('Tools')
         tools_menu_act = QtGui.QAction('Validate', self)
         tools_menu.addAction(tools_menu_act)
