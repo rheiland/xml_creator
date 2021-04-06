@@ -13,7 +13,7 @@ import sys
 import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
 
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox, QMenuBar,QStyle,QGridLayout 
+from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox, QMenuBar,QStyle,QGridLayout, QTreeWidgetItem
 
 from config_tab import Config
 from cell_def_tab import CellDef 
@@ -43,28 +43,36 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.menubar.addMenu(self.file_menu)
 
         # GUI tabs
-        # config_file = "virus_macrophage.xml"
-        config_file = "config_samples/template2D.xml"
+
+        # By default, let's startup the app with a default of template2D (a copy)
+        # self.new_model_cb()  # default on startup
+        config_file = "config_samples/template2D_flat.xml"
         tree = ET.parse(config_file)
         self.xml_root = tree.getroot()
 
         self.num_models = 0
         self.model = {}  # key: name, value:[read-only, tree]
 
-        self.tab1 = Config()
-        self.tab1.fill_gui(self.xml_root)
+        self.config_tab = Config()
+        self.config_tab.fill_gui(self.xml_root)
 
-        self.tab2 = SubstrateDef()
-        self.tab2.fill_gui(self.xml_root)
+        self.microenv_tab = SubstrateDef()
+        self.microenv_tab.fill_gui(self.xml_root)
 
-        self.tab3 = CellDef()
-        self.tab3.fill_gui(self.xml_root)
-        self.tab3.fill_motility_substrates(self.xml_root)
+        # self.tab2.tree.setCurrentItem(QTreeWidgetItem,0)  # item
+
+        self.celldef_tab = CellDef()
+        self.celldef_tab.xml_root = self.xml_root
+        cd_name = self.celldef_tab.first_cell_def_name()
+        print("gui4xml: cd_name=",cd_name)
+        self.celldef_tab.fill_gui(cd_name)
+        self.celldef_tab.populate_tree()
+        self.celldef_tab.fill_motility_substrates()
         
 
-        self.addTab(self.tab1,"Config Basics")
-        self.addTab(self.tab2,"Microenvironment")
-        self.addTab(self.tab3,"Cell Types")
+        self.addTab(self.config_tab,"Config Basics")
+        self.addTab(self.microenv_tab,"Microenvironment")
+        self.addTab(self.celldef_tab,"Cell Types")
 
 
 
@@ -167,15 +175,15 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.config_file = "config_samples/biorobots.xml"
         self.tree = ET.parse(self.config_file)
         self.xml_root = self.tree.getroot()
-        self.tab1.fill_gui(self.xml_root)
-        self.tab2.fill_gui(self.xml_root)
-        self.tab3.fill_gui(self.xml_root)
+        self.tab1.fill_gui(self.xml_root)  # 
+        self.tab2.fill_gui(self.xml_root)  # microenv
+        self.tab3.fill_gui(self.xml_root, "foobar")  # cell defs
         self.tab3.fill_motility_substrates(self.xml_root)
 
     def new_model_cb(self):
         name = "copy_template2D"
         self.add_new_model(name, False)
-        self.config_file = "config_samples/template2D.xml"
+        self.config_file = "config_samples/template2D_flat.xml"
         self.show_sample_model()
 
     def biorobots_cb(self):

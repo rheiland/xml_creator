@@ -25,6 +25,9 @@ class SubstrateDef(QtWidgets.QWidget):
         super().__init__()
         # global self.params_cell_def
 
+        self.current_substrate = None
+
+        #---------------
         # self.cell_defs = CellDefInstances()
         self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
 
@@ -35,7 +38,12 @@ class SubstrateDef(QtWidgets.QWidget):
         self.tree = QtWidgets.QTreeWidget()
         self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
+        # self.tree.currentChanged(self.tree_item_changed_cb)
+        self.tree.itemClicked.connect(self.tree_item_changed_cb)
+        # self.tree.itemSelectionChanged()
         # self.tree.setColumnCount(1)
+
+        # self.tree.setCurrentItem(0)  # item
 
         header = QTreeWidgetItem(["---  Substrate ---"])
         self.tree.setHeaderItem(header)
@@ -227,6 +235,12 @@ class SubstrateDef(QtWidgets.QWidget):
     #     # self.text.setText(random.choice(self.hello))
     #     pass
 
+    # def tree_item_changed(self,idx1,idx2):
+    def tree_item_changed_cb(self, it,col):
+        # print('tree_item_changed:', it, col, it.text(col) )
+        self.current_substrate = it.text(col)
+        print('self.current_substrate= ',self.current_substrate )
+
     def fill_gui(self, xml_root):
         uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
         vp = []   # pointers to <variable> nodes
@@ -241,6 +255,7 @@ class SubstrateDef(QtWidgets.QWidget):
                 self.tree.insertTopLevelItem(idx,substrate_name)
                 idx += 1
 
+        self.tree.setCurrentItem(substrate_name,0)  # RWH/TODO: select 1st (0th?) item upon startup or loading new model
 
         uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
 

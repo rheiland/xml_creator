@@ -25,6 +25,9 @@ class CellDef(QtWidgets.QWidget):
         super().__init__()
         # global self.params_cell_def
 
+        self.current_cell_def = None
+        self.xml_root = None
+
         # self.cell_defs = CellDefInstances()
         self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
 
@@ -36,6 +39,7 @@ class CellDef(QtWidgets.QWidget):
         self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.setColumnCount(1)
+        self.tree.itemClicked.connect(self.tree_item_changed_cb)
 
         header = QTreeWidgetItem(["---  Cell Type  ---"])
         self.tree.setHeaderItem(header)
@@ -352,9 +356,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.calcification_rate = QtWidgets.QLineEdit()
-        self.calcification_rate.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.calcification_rate)
+        self.apoptosis_calcification_rate = QtWidgets.QLineEdit()
+        self.apoptosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_calcification_rate)
         units = QtWidgets.QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -366,9 +370,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.relative_rupture_volume = QtWidgets.QLineEdit()
-        self.relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.relative_rupture_volume)
+        self.apoptosis_relative_rupture_volume = QtWidgets.QLineEdit()
+        self.apoptosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_relative_rupture_volume)
         units = QtWidgets.QLabel("")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -404,9 +408,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.phase0_duration = QtWidgets.QLineEdit()
-        self.phase0_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase0_duration)
+        self.necrosis_phase0_duration = QtWidgets.QLineEdit()
+        self.necrosis_phase0_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_phase0_duration)
         units = QtWidgets.QLabel("min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -418,9 +422,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.phase1_duration = QtWidgets.QLineEdit()
-        self.phase1_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase1_duration)
+        self.necrosis_phase1_duration = QtWidgets.QLineEdit()
+        self.necrosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_phase1_duration)
         units = QtWidgets.QLabel("min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -500,9 +504,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.calcification_rate = QtWidgets.QLineEdit()
-        self.calcification_rate.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.calcification_rate)
+        self.necrosis_calcification_rate = QtWidgets.QLineEdit()
+        self.necrosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_calcification_rate)
         units = QtWidgets.QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -514,9 +518,9 @@ class CellDef(QtWidgets.QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.relative_rupture_volume = QtWidgets.QLineEdit()
-        self.relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.relative_rupture_volume)
+        self.necrosis_relative_rupture_volume = QtWidgets.QLineEdit()
+        self.necrosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_relative_rupture_volume)
         units = QtWidgets.QLabel("")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -970,8 +974,8 @@ class CellDef(QtWidgets.QWidget):
 
 
 
-    def fill_motility_substrates(self, xml_root):
-        uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
+    def fill_motility_substrates(self):
+        uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
         # vp = []   # pointers to <variable> nodes
         if uep:
             idx = 0
@@ -981,11 +985,15 @@ class CellDef(QtWidgets.QWidget):
                 name = var.attrib['name']
                 self.motility_substrate_dropdown.addItem(name)
 
-    def fill_gui(self, xml_root):
-	# <cell_definitions>
-	# 	<cell_definition name="default" ID="0">
+    def tree_item_changed_cb(self, it,col):
+        print('--- tree_item_changed:', it, col, it.text(col) )
+        self.current_cell_def = it.text(col)
+        print('--- self.current_cell_def= ',self.current_cell_def )
+        # fill in the GUI with this one's params
+        self.fill_gui(self.current_cell_def)
 
-        uep = xml_root.find(".//cell_definitions")
+    def populate_tree(self):
+        uep = self.xml_root.find(".//cell_definitions")
         if uep:
             self.tree.clear()
             idx = 0
@@ -996,6 +1004,38 @@ class CellDef(QtWidgets.QWidget):
                 self.tree.insertTopLevelItem(idx,cellname)
                 idx += 1
 
+    def first_cell_def_name(self):
+        uep = self.xml_root.find(".//cell_definitions//cell_definition")
+        if uep:
+                return(uep.attrib['name'])
+
+    # def fill_gui(self, xml_root, cell_def_name):
+    def fill_gui(self, cell_def_name):
+	# <cell_definitions>
+	# 	<cell_definition name="default" ID="0">
+        print('fill_gui: cell_def_name=',cell_def_name)
+        self.cell_type_name.setText(cell_def_name)
+
+        uep = self.xml_root.find(".//cell_definitions")
+        if uep:
+            # self.tree.clear()
+            idx = 0
+            for cell_def in uep:
+                # print(cell_def.attrib['name'])
+                cd_name = cell_def.attrib['name']
+                cellname = QTreeWidgetItem([cd_name])
+                print('cellname.text(0)=',cellname.text(0))
+                cellidx = QTreeWidgetItem([cd_name]).indexOfChild
+                print('cellidx=',cellidx)
+                print('cell_def_name=',cell_def_name)
+                if cellname.text(0) == cell_def_name:
+                    print("break out of cell_def loop with idx=",idx)
+                    break
+                # self.tree.insertTopLevelItem(idx,cellname)
+                idx += 1
+
+        idx += 1  # we use 1-offset indices below 
+
         # rf. microenv:
         # self.cell_type_name.setText(var.attrib['name'])
         # self.diffusion_coef.setText(vp[0].find('.//diffusion_coefficient').text)
@@ -1004,10 +1044,59 @@ class CellDef(QtWidgets.QWidget):
         # ---------  cycle (live)
         # self.float0.value = float(uep.find('.//cell_definition[1]//phenotype//cycle//phase_transition_rates//rate[1]').text)
 
-        # ---------  death 
-        self.apoptosis_death_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//death_rate').text)
+                # <death> 
+                #   <model code="100" name="apoptosis"> 
+                #    ...
+                #   <model code="101" name="necrosis">
 
-        self.apoptosis_unlysed_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//unlysed_fluid_change_rate').text)
+        # ---------  death 
+
+        death_path = ".//cell_definition[" + str(idx) + "]//phenotype//death//"
+        print('death_path=',death_path)
+
+        # rwh/TODO: validate we've got apoptosis or necrosis since order is not required in XML.
+        apoptosis_path = death_path + "model[1]//"
+        # self.apoptosis_death_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//death_rate').text)
+        self.apoptosis_death_rate.setText(uep.find(apoptosis_path + 'death_rate').text)
+
+        necrosis_path = death_path + "model[2]//"
+        self.necrosis_death_rate.setText(uep.find(necrosis_path + 'death_rate').text)
+
+        apoptosis_params_path = apoptosis_path + "parameters//"
+        necrosis_params_path = necrosis_path + "parameters//"
+
+        # necrosis_path = ".//cell_definition[" + str(idx) + "]//phenotype//death//"
+        # self.apoptosis_unlysed_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//unlysed_fluid_change_rate').text)
+
+        # full_str = death_path + "model[1]//unlysed_fluid_change_rate"
+        # print('full_str=',full_str)
+        # self.apoptosis_unlysed_rate.setText(uep.find(full_str).text)
+
+        # <parameters>
+        #     <unlysed_fluid_change_rate units="1/min">0.07</unlysed_fluid_change_rate>
+        #     <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+        #     <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+        #     <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+        #     <calcification_rate units="1/min">0</calcification_rate>
+        #     <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+
+        #---- apoptosis
+        self.apoptosis_unlysed_rate.setText(uep.find(apoptosis_params_path+"unlysed_fluid_change_rate").text)
+        self.apoptosis_lysed_rate.setText(uep.find(apoptosis_params_path+"lysed_fluid_change_rate").text)
+        self.apoptosis_cytoplasmic_biomass_change_rate.setText(uep.find(apoptosis_params_path+"cytoplasmic_biomass_change_rate").text)
+        self.apoptosis_nuclear_biomass_change_rate.setText(uep.find(apoptosis_params_path+"nuclear_biomass_change_rate").text)
+        self.apoptosis_calcification_rate.setText(uep.find(apoptosis_params_path+"nuclear_biomass_change_rate").text)
+        self.apoptosis_relative_rupture_volume.setText(uep.find(apoptosis_params_path+"relative_rupture_volume").text)
+
+        #---- necrosis
+        self.necrosis_unlysed_rate.setText(uep.find(necrosis_params_path+"unlysed_fluid_change_rate").text)
+        self.necrosis_lysed_rate.setText(uep.find(necrosis_params_path+"lysed_fluid_change_rate").text)
+        self.necrosis_cytoplasmic_biomass_change_rate.setText(uep.find(necrosis_params_path+"cytoplasmic_biomass_change_rate").text)
+        self.necrosis_nuclear_biomass_change_rate.setText(uep.find(necrosis_params_path+"nuclear_biomass_change_rate").text)
+        self.necrosis_calcification_rate.setText(uep.find(necrosis_params_path+"nuclear_biomass_change_rate").text)
+        self.necrosis_relative_rupture_volume.setText(uep.find(necrosis_params_path+"relative_rupture_volume").text)
+
+        # self.apoptosis_unlysed_rate.setText(uep.find("'" + death_path + "model[1]//unlysed_fluid_change_rate'" + ").text)"
 
         # self.float3.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//lysed_fluid_change_rate').text)
         # self.float4.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[1]//parameters//cytoplasmic_biomass_change_rate').text)
@@ -1021,6 +1110,7 @@ class CellDef(QtWidgets.QWidget):
         # self.float12.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//nuclear_biomass_change_rate').text)
         # self.float13.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//calcification_rate').text)
         # self.float14.value = float(uep.find('.//cell_definition[1]//phenotype//death//model[2]//parameters//relative_rupture_volume').text)
+
         # # ---------  volume 
         # self.float15.value = float(uep.find('.//cell_definition[1]//phenotype//volume//total').text)
         # self.float16.value = float(uep.find('.//cell_definition[1]//phenotype//volume//fluid_fraction').text)
@@ -1060,7 +1150,7 @@ class CellDef(QtWidgets.QWidget):
 
 
     # Read values from the GUI widgets and generate/write a new XML
-    def fill_xml(self, xml_root):
+    def fill_xml(self):
         pass
         # TODO: verify valid type (numeric) and range?
         # xml_root.find(".//x_min").text = str(self.xmin.value)
