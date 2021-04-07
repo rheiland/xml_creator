@@ -222,7 +222,7 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="cargo cell" ID="1">
+		<cell_definition name="cargo cell" ID="1" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
 					 
@@ -230,7 +230,7 @@
 					
 					
 					<phase_transition_rates units="1/min"> 
-						<rate start_index="0" end_index="0" fixed_duration="false">0.000072</rate>
+						<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
 					</phase_transition_rates>
 					
 					
@@ -239,7 +239,7 @@
 				
 				<death>  
 					<model code="100" name="apoptosis"> 
-						<death_rate units="1/min">5.31667e-05</death_rate>
+						<death_rate units="1/min">4.065e-5</death_rate>
 						
 						
 						<phase_durations units="min">
@@ -322,12 +322,12 @@
 					<substrate name="oxygen">
 						<secretion_rate units="1/min">0</secretion_rate>
 						<secretion_target units="substrate density">38</secretion_target>
-						<uptake_rate units="1/min">10</uptake_rate>
+						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
 					</substrate> 
 					
 					<substrate name="chemoattractant">
-						<secretion_rate units="1/min">0</secretion_rate>
+						<secretion_rate units="1/min">10</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
@@ -344,7 +344,7 @@
 				<molecular />
 			</phenotype>
 			<custom_data>  
-				<receptor units="dimensionless">0.0</receptor>
+				<receptor units="dimensionless">1.0</receptor>
 				<cargo_release_o2_threshold units="mmHg">10</cargo_release_o2_threshold>
 				<damage_rate units="1/min">0.03333</damage_rate>
 				<repair_rate units="1/min">0.004167</repair_rate>
@@ -353,7 +353,7 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="worker cell" ID="2">
+		<cell_definition name="worker cell" ID="2" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
 					 
@@ -361,7 +361,7 @@
 					
 					
 					<phase_transition_rates units="1/min"> 
-						<rate start_index="0" end_index="0" fixed_duration="false">0.000072</rate>
+						<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
 					</phase_transition_rates>
 					
 					
@@ -370,7 +370,7 @@
 				
 				<death>  
 					<model code="100" name="apoptosis"> 
-						<death_rate units="1/min">5.31667e-05</death_rate>
+						<death_rate units="1/min">0</death_rate>
 						
 						
 						<phase_durations units="min">
@@ -434,12 +434,12 @@
 				</mechanics>
 				
 				<motility>  
-					<speed units="micron/min">1</speed>
-					<persistence_time units="min">1</persistence_time>
-					<migration_bias units="dimensionless">.5</migration_bias>
+					<speed units="micron/min">2</speed>
+					<persistence_time units="min">5</persistence_time>
+					<migration_bias units="dimensionless">0.5</migration_bias>
 					
 					<options>
-						<enabled>false</enabled>
+						<enabled>true</enabled>
 						<use_2D>true</use_2D>
 						<chemotaxis>
 							<enabled>false</enabled>
@@ -453,7 +453,7 @@
 					<substrate name="oxygen">
 						<secretion_rate units="1/min">0</secretion_rate>
 						<secretion_target units="substrate density">38</secretion_target>
-						<uptake_rate units="1/min">10</uptake_rate>
+						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
 					</substrate> 
 					

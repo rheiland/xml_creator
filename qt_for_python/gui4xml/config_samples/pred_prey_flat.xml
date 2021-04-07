@@ -56,6 +56,8 @@
 			</physical_parameter_set>
 			<initial_condition units="dimensionless">1</initial_condition>
 			<Dirichlet_boundary_condition units="dimensionless" enabled="false">0</Dirichlet_boundary_condition>
+ 
+			
  		</variable>
 		
 		<variable name="prey signal" units="dimensionless" ID="1">
@@ -65,6 +67,8 @@
 			</physical_parameter_set>
 			<initial_condition units="dimensionless">0</initial_condition>
 			<Dirichlet_boundary_condition units="dimensionless" enabled="true">0</Dirichlet_boundary_condition>
+ 
+
  		</variable>		
 
 		<variable name="predator signal" units="dimensionless" ID="2">
@@ -74,7 +78,10 @@
 			</physical_parameter_set>
 			<initial_condition units="dimensionless">0</initial_condition>
 			<Dirichlet_boundary_condition units="dimensionless" enabled="true">0</Dirichlet_boundary_condition>
+ 
+
  		</variable>		
+
 		
 		<options>
 			<calculate_gradients>true</calculate_gradients>
@@ -94,13 +101,23 @@
 		<cell_definition name="farmer" ID="0">
 			<phenotype>
 				<cycle code="5" name="live">  
+					 
+
+					
+					
 					<phase_transition_rates units="1/min"> 
 						<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
 					</phase_transition_rates>
+					
+					
+					
 				</cycle>
+				
 				<death>  
 					<model code="100" name="apoptosis"> 
 						<death_rate units="1/min">0</death_rate>
+						
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">516</duration>
 						</phase_durations>
@@ -116,6 +133,9 @@
 
 					<model code="101" name="necrosis">
 						<death_rate units="1/min">0.0</death_rate>
+						
+						 
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">0</duration>
 							<duration index="1" fixed_duration="true">86400</duration>
@@ -210,16 +230,26 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="prey" ID="1">
+		<cell_definition name="prey" ID="1" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
+					 
+
+					
+					
 					<phase_transition_rates units="1/min"> 
-						<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
+						<rate start_index="0" end_index="0" fixed_duration="false">0.003</rate>
 					</phase_transition_rates>
+					
+					
+					
 				</cycle>
+				
 				<death>  
 					<model code="100" name="apoptosis"> 
 						<death_rate units="1/min">0</death_rate>
+						
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">516</duration>
 						</phase_durations>
@@ -235,10 +265,14 @@
 
 					<model code="101" name="necrosis">
 						<death_rate units="1/min">0.0</death_rate>
+						
+						 
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">0</duration>
 							<duration index="1" fixed_duration="true">86400</duration>
 						</phase_durations>
+						
 						<parameters>
 							<unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
 							<lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
@@ -277,7 +311,7 @@
 				</mechanics>
 				
 				<motility>  
-					<speed units="micron/min">0.25</speed>
+					<speed units="micron/min">0.5</speed>
 					<persistence_time units="min">5</persistence_time>
 					<migration_bias units="dimensionless">0.5</migration_bias>
 					
@@ -287,16 +321,16 @@
 						<chemotaxis>
 							<enabled>false</enabled>
 							<substrate>food</substrate>
-							<direction>-1</direction>
+							<direction>1</direction>
 						</chemotaxis>
 					</options>
 				</motility>
 				
 				<secretion>
 					<substrate name="food">
-						<secretion_rate units="1/min">100</secretion_rate>
+						<secretion_rate units="1/min">0</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
-						<uptake_rate units="1/min">0</uptake_rate>
+						<uptake_rate units="1/min">1</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
 					</substrate> 
 
@@ -308,7 +342,7 @@
 					</substrate> 
 
 					<substrate name="prey signal">
-						<secretion_rate units="1/min">0</secretion_rate>
+						<secretion_rate units="1/min">10</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
@@ -322,22 +356,32 @@
 				<energy_use_rate units="1/min">1.0</energy_use_rate>
 				<energy_creation_rate units="1/min">1.0</energy_creation_rate>
 				
-				<predator_weight units="dimensionless">-1</predator_weight>
-				<prey_weight units="dimensionless">-1</prey_weight>
-				<food_weight units="dimensionless">-10</food_weight>
+				<predator_weight units="dimensionless">-100</predator_weight>
+				<prey_weight units="dimensionless">10</prey_weight>
+				<food_weight units="dimensionless">1</food_weight>
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="predator" ID="2">
+		<cell_definition name="predator" ID="2" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
+					 
+
+					
+					
 					<phase_transition_rates units="1/min"> 
 						<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
 					</phase_transition_rates>
+					
+					
+					
 				</cycle>
+				
 				<death>  
 					<model code="100" name="apoptosis"> 
 						<death_rate units="1/min">0</death_rate>
+						
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">516</duration>
 						</phase_durations>
@@ -353,10 +397,14 @@
 
 					<model code="101" name="necrosis">
 						<death_rate units="1/min">0.0</death_rate>
+						
+						 
+						
 						<phase_durations units="min">
 							<duration index="0" fixed_duration="true">0</duration>
 							<duration index="1" fixed_duration="true">86400</duration>
 						</phase_durations>
+						
 						<parameters>
 							<unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
 							<lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
@@ -395,8 +443,8 @@
 				</mechanics>
 				
 				<motility>  
-					<speed units="micron/min">0.25</speed>
-					<persistence_time units="min">5</persistence_time>
+					<speed units="micron/min">0.5</speed>
+					<persistence_time units="min">2.5</persistence_time>
 					<migration_bias units="dimensionless">0.5</migration_bias>
 					
 					<options>
@@ -412,14 +460,14 @@
 				
 				<secretion>
 					<substrate name="food">
-						<secretion_rate units="1/min">100</secretion_rate>
+						<secretion_rate units="1/min">0</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
 					</substrate> 
 
 					<substrate name="predator signal">
-						<secretion_rate units="1/min">0</secretion_rate>
+						<secretion_rate units="1/min">10</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
@@ -437,12 +485,12 @@
 			</phenotype>
 			<custom_data>  
 				<energy units="dimensionless">1.0</energy>
-				<energy_use_rate units="1/min">1.0</energy_use_rate>
+				<energy_use_rate units="1/min">0.1</energy_use_rate>
 				<energy_creation_rate units="1/min">1.0</energy_creation_rate>
 				
-				<predator_weight units="dimensionless">-1</predator_weight>
-				<prey_weight units="dimensionless">-1</prey_weight>
-				<food_weight units="dimensionless">-10</food_weight>
+				<predator_weight units="dimensionless">-2</predator_weight>
+				<prey_weight units="dimensionless">100</prey_weight>
+				<food_weight units="dimensionless">1</food_weight>
 			</custom_data>
 		</cell_definition>
 		
@@ -458,6 +506,7 @@
 	
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
+		 
 		
 		<div_initialization type="divider" description="---Initialization settings---" />
 

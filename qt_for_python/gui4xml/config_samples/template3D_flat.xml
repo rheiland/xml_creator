@@ -188,7 +188,7 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="motile tumor cell" ID="1">
+		<cell_definition name="motile tumor cell" ID="1" visible="true">
 			<phenotype>
 				<cycle code="6" name="Flow cytometry model (separated)">  
 					 
@@ -208,7 +208,7 @@
 				
 				<death>  
 					<model code="100" name="apoptosis"> 
-						<death_rate units="1/min">5.31667e-05</death_rate>
+						<death_rate units="1/min">0</death_rate>
 						
 						
 						<phase_durations units="min">
@@ -272,12 +272,12 @@
 				</mechanics>
 				
 				<motility>  
-					<speed units="micron/min">1</speed>
-					<persistence_time units="min">1</persistence_time>
-					<migration_bias units="dimensionless">.5</migration_bias>
+					<speed units="micron/min">0.5</speed>
+					<persistence_time units="min">15</persistence_time>
+					<migration_bias units="dimensionless">0</migration_bias>
 					
 					<options>
-						<enabled>false</enabled>
+						<enabled>true</enabled>
 						<use_2D>false</use_2D>
 						<chemotaxis>
 							<enabled>false</enabled>
