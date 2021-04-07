@@ -202,7 +202,7 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="director cell" ID="1">
+		<cell_definition name="director cell" ID="1" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
 					 
@@ -300,7 +300,7 @@
 				
 				<secretion>
 					<substrate name="director signal">
-						<secretion_rate units="1/min">0</secretion_rate>
+						<secretion_rate units="1/min">9.9</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
@@ -321,7 +321,7 @@
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="cargo cell" ID="2">
+		<cell_definition name="cargo cell" ID="2" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
 					 
@@ -426,7 +426,7 @@
 					</substrate> 
 					
 					<substrate name="cargo signal">
-						<secretion_rate units="1/min">0</secretion_rate>
+						<secretion_rate units="1/min">9.9</secretion_rate>
 						<secretion_target units="substrate density">1</secretion_target>
 						<uptake_rate units="1/min">0</uptake_rate>
 						<net_export_rate units="total substrate/min">0</net_export_rate> 
@@ -436,11 +436,11 @@
 				<molecular />
 			</phenotype>
 			<custom_data>  
-				<receptor units="dimensionless">0.0</receptor> 
+				<receptor units="dimensionless">1.0</receptor> 
 			</custom_data>
 		</cell_definition>
 		
-		<cell_definition name="worker cell" ID="3">
+		<cell_definition name="worker cell" ID="3" visible="true">
 			<phenotype>
 				<cycle code="5" name="live">  
 					 
@@ -521,12 +521,12 @@
 				</mechanics>
 				
 				<motility>  
-					<speed units="micron/min">1</speed>
-					<persistence_time units="min">1</persistence_time>
-					<migration_bias units="dimensionless">.5</migration_bias>
+					<speed units="micron/min">5.0</speed>
+					<persistence_time units="min">5.0</persistence_time>
+					<migration_bias units="dimensionless">0.5</migration_bias>
 					
 					<options>
-						<enabled>false</enabled>
+						<enabled>true</enabled>
 						<use_2D>true</use_2D>
 						<chemotaxis>
 							<enabled>false</enabled>
@@ -555,7 +555,7 @@
 				<molecular />
 			</phenotype>
 			<custom_data>  
-				<receptor units="dimensionless">0.0</receptor> 
+				<receptor units="dimensionless">1.0</receptor> 
 			</custom_data>
 		</cell_definition>
 		
