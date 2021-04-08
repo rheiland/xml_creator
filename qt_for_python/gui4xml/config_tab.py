@@ -25,6 +25,8 @@ class Config(QWidget):
         super().__init__()
         # global self.params_cell_def
 
+        self.xml_root = None
+
         self.tab = QWidget()
         # self.tabs.resize(200,5)
         
@@ -69,10 +71,18 @@ class Config(QWidget):
         self.xmax.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.xmax)
 
+        label = QLabel("dx")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.xdel = QLineEdit()
+        self.xdel.setFixedWidth(value_width)
+        self.xdel.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.xdel)
+
         self.vbox.addLayout(hbox)
         #----------
         hbox = QHBoxLayout()
-
         label = QLabel("Ymin")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
@@ -90,6 +100,45 @@ class Config(QWidget):
         self.ymax.setFixedWidth(domain_value_width)
         self.ymax.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.ymax)
+
+        label = QLabel("dy")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.ydel = QLineEdit()
+        self.ydel.setFixedWidth(value_width)
+        self.ydel.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.ydel)
+
+        self.vbox.addLayout(hbox)
+        #----------
+        hbox = QHBoxLayout()
+        label = QLabel("Zmin")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.zmin = QLineEdit()
+        self.zmin.setFixedWidth(domain_value_width)
+        self.zmin.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.zmin)
+
+        label = QLabel("Zmax")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.zmax = QLineEdit()
+        self.zmax.setFixedWidth(domain_value_width)
+        self.zmax.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.zmax)
+
+        label = QLabel("dz")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.zdel = QLineEdit()
+        self.zdel.setFixedWidth(value_width)
+        self.zdel.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.zdel)
 
         self.vbox.addLayout(hbox)
         #----------
@@ -113,7 +162,8 @@ class Config(QWidget):
         hbox.addWidget(label)
 
         self.max_time = QLineEdit()
-        self.max_time.setFixedWidth(200)
+        # self.max_time.setFixedWidth(200)
+        self.max_time.setFixedWidth(domain_value_width)
         self.max_time.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.max_time)
 
@@ -132,9 +182,15 @@ class Config(QWidget):
         hbox.addWidget(label)
 
         self.num_threads = QLineEdit()
-        self.num_threads.setFixedWidth(value_width)
+        # self.num_threads.setFixedWidth(value_width)
+        self.num_threads.setFixedWidth(domain_value_width)
         self.num_threads.setValidator(QtGui.QIntValidator())
         hbox.addWidget(self.num_threads)
+
+        label = QLabel("   ")
+        label.setFixedWidth(units_width)
+        label.setAlignment(QtCore.Qt.AlignLeft)
+        hbox.addWidget(label)
 
         self.vbox.addLayout(hbox)
 
@@ -222,40 +278,40 @@ class Config(QWidget):
     #     pass
 
 
-    def fill_gui(self, xml_root):
+    def fill_gui(self):
 
-        self.xmin.setText(xml_root.find(".//x_min").text)
-        self.xmax.setText(xml_root.find(".//x_max").text)
-        # self.xdelta.setText(xml_root.find(".//dx").text)
+        self.xmin.setText(self.xml_root.find(".//x_min").text)
+        self.xmax.setText(self.xml_root.find(".//x_max").text)
+        self.xdel.setText(self.xml_root.find(".//dx").text)
 
-        self.ymin.setText(xml_root.find(".//y_min").text)
-        self.ymax.setText(xml_root.find(".//y_max").text)
-        # self.xdelta.setText(xml_root.find(".//dx").text)
+        self.ymin.setText(self.xml_root.find(".//y_min").text)
+        self.ymax.setText(self.xml_root.find(".//y_max").text)
+        self.ydel.setText(self.xml_root.find(".//dy").text)
     
-        # self.zmin.value = float(xml_root.find(".//z_min").text)
-        # self.zmax.value = float(xml_root.find(".//z_max").text)
-        # self.zdelta.value = float(xml_root.find(".//dz").text)
+        self.zmin.setText(self.xml_root.find(".//z_min").text)
+        self.zmax.setText(self.xml_root.find(".//z_max").text)
+        self.zdel.setText(self.xml_root.find(".//dz").text)
         
-        self.max_time.setText(xml_root.find(".//max_time").text)
+        self.max_time.setText(self.xml_root.find(".//max_time").text)
         
-        self.num_threads.setText(xml_root.find(".//omp_num_threads").text)
+        self.num_threads.setText(self.xml_root.find(".//omp_num_threads").text)
         
         # if xml_root.find(".//full_data//enable").text.lower() == 'true':
         #     self.toggle_mcds.value = True
         # else:
         #     self.toggle_mcds.value = False
-        self.full_interval.setText(xml_root.find(".//full_data//interval").text)
+        self.full_interval.setText(self.xml_root.find(".//full_data//interval").text)
 
         # # NOTE: do this *after* filling the mcds_interval, directly above, due to the callback/constraints on them
         # if xml_root.find(".//SVG//enable").text.lower() == 'true':
         #     self.toggle_svg.value = True
         # else:
         #     self.toggle_svg.value = False
-        self.svg_interval.setText(xml_root.find(".//SVG//interval").text)
+        self.svg_interval.setText(self.xml_root.find(".//SVG//interval").text)
 
 
     # Read values from the GUI widgets and generate/write a new XML
-    def fill_xml(self, xml_root):
+    def fill_xml(self):
         pass
         # TODO: verify valid type (numeric) and range?
         # xml_root.find(".//x_min").text = str(self.xmin.value)

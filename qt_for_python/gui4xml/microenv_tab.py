@@ -26,6 +26,7 @@ class SubstrateDef(QtWidgets.QWidget):
         # global self.params_cell_def
 
         self.current_substrate = None
+        self.xml_root = None
 
         #---------------
         # self.cell_defs = CellDefInstances()
@@ -43,7 +44,7 @@ class SubstrateDef(QtWidgets.QWidget):
         # self.tree.itemSelectionChanged()
         # self.tree.setColumnCount(1)
 
-        # self.tree.setCurrentItem(0)  # item
+        # self.tree.setCurrentItem(0)  # rwh/TODO
 
         header = QTreeWidgetItem(["---  Substrate ---"])
         self.tree.setHeaderItem(header)
@@ -102,11 +103,11 @@ class SubstrateDef(QtWidgets.QWidget):
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.cell_type_name = QLineEdit()
+        self.substrate_name = QLineEdit()
         # Want to validate name, e.g., starts with alpha, no special chars, etc.
         # self.cycle_trate0_0.setValidator(QtGui.QDoubleValidator())
         # self.cycle_trate0_1.enter.connect(self.save_xml)
-        hbox.addWidget(self.cell_type_name)
+        hbox.addWidget(self.substrate_name)
         self.vbox.addLayout(hbox)
 
         #------------------
@@ -237,33 +238,79 @@ class SubstrateDef(QtWidgets.QWidget):
 
     # def tree_item_changed(self,idx1,idx2):
     def tree_item_changed_cb(self, it,col):
-        # print('tree_item_changed:', it, col, it.text(col) )
+        print('tree_item_changed:', it, col, it.text(col) )
         self.current_substrate = it.text(col)
         print('self.current_substrate= ',self.current_substrate )
+        # fill in the GUI with this one's params
+        self.fill_gui(self.current_substrate)
 
-    def fill_gui(self, xml_root):
-        uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
-        vp = []   # pointers to <variable> nodes
+    def populate_tree(self):
+        uep = self.xml_root.find(".//microenvironment_setup")
         if uep:
             self.tree.clear()
+            idx = 0
+            # <microenvironment_setup>
+		    #   <variable name="food" units="dimensionless" ID="0">
+            for var in uep:
+                # print(cell_def.attrib['name'])
+                if var.tag == 'variable':
+                    var_name = var.attrib['name']
+                    subname = QTreeWidgetItem([var_name])
+                    self.tree.insertTopLevelItem(idx,subname)
+                    idx += 1
+
+    def first_substrate_name(self):
+        uep = self.xml_root.find(".//microenvironment_setup//variable")
+        if uep:
+                return(uep.attrib['name'])
+
+    def fill_gui(self, substrate_name):
+        # <microenvironment_setup>
+		#   <variable name="food" units="dimensionless" ID="0">
+        uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
+
+        if substrate_name == None:
+            substrate_name = self.xml_root.find(".//microenvironment_setup//variable").attrib['name']
+
+        self.substrate_name.setText(substrate_name)
+
+        vp = []   # pointers to <variable> nodes
+        if uep:
+            # self.tree.clear()
             idx = 0
             for var in uep.findall('variable'):
                 vp.append(var)
                 # print(var.attrib['name'])
                 name = var.attrib['name']
-                substrate_name = QTreeWidgetItem([name])
-                self.tree.insertTopLevelItem(idx,substrate_name)
+                subname = QTreeWidgetItem([name])
+                # self.tree.insertTopLevelItem(idx,substrate_name)
+                if subname.text(0) == substrate_name:
+                    print("break out of substrate (variable) name loop with idx=",idx)
+                    break
                 idx += 1
 
-        self.tree.setCurrentItem(substrate_name,0)  # RWH/TODO: select 1st (0th?) item upon startup or loading new model
+        # self.tree.setCurrentItem(substrate_name,0)  # RWH/TODO: select 1st (0th?) item upon startup or loading new model
 
-        uep = xml_root.find('.//microenvironment_setup')  # find unique entry point
+        idx += 1  # we use 1-offset indices below 
 
-        self.cell_type_name.setText(var.attrib['name'])
-        self.diffusion_coef.setText(vp[0].find('.//diffusion_coefficient').text)
-        self.decay_rate.setText(vp[0].find('.//decay_rate').text)
-        self.init_cond.setText(vp[0].find('.//initial_condition').text)
-        self.dirichlet_bc.setText(vp[0].find('.//Dirichlet_boundary_condition').text)
+        var_param_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]//physical_parameter_set")
+        var_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]")
+        # uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
+
+		# <variable name="oxygen" units="mmHg" ID="0">
+		# 	<physical_parameter_set>
+		# 		<diffusion_coefficient units="micron^2/min">100000.0</diffusion_coefficient>
+		# 		<decay_rate units="1/min">0.1</decay_rate>  
+		# 	</physical_parameter_set>
+		# 	<initial_condition units="mmHg">38.0</initial_condition>
+		# 	<Dirichlet_boundary_condition units="mmHg" enabled="true">38.0</
+
+        # self.substrate_name.setText(var.attrib['name'])
+        self.diffusion_coef.setText(var_param_path.find('.//diffusion_coefficient').text)
+        self.decay_rate.setText(var_param_path.find('.//decay_rate').text)
+
+        self.init_cond.setText(var_path.find('.initial_condition').text)
+        self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
 
         # self.chemical_A_decay_rate.value = float(vp[0].find('.//decay_rate').text)
         # self.chemical_A_initial_condition.value = float(vp[0].find('.//initial_condition').text)
@@ -301,5 +348,8 @@ class SubstrateDef(QtWidgets.QWidget):
         #   self.track_internal.value = False
 
     # Read values from the GUI widgets and generate/write a new XML
-    def fill_xml(self, xml_root):
+    def fill_xml(self):
+        pass
+    
+    def clear_gui(self):
         pass

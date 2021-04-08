@@ -1187,9 +1187,31 @@ class CellDef(QWidget):
     def cycle_changed_cb(self, idx):
         # pass
         print('------ cycle_changed_cb(): idx = ',idx)
+        self.customize_cycle_choices(idx)
         # QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
 
+    def customize_cycle_choices(self, idx_choice):
+        self.cycle_trate0_0.setEnabled(True)
+        self.cycle_trate0_1.setEnabled(True)
+        self.cycle_trate1_2.setEnabled(True)
+        self.cycle_trate2_3.setEnabled(True)
+        self.cycle_trate3_0.setEnabled(True)
+
+        self.cycle_duration0.setEnabled(True)
+        self.cycle_duration1.setEnabled(True)
+        self.cycle_duration2.setEnabled(True)
+        self.cycle_duration3.setEnabled(True)
+        if idx_choice == 0:
+            self.cycle_trate0_1.setEnabled(False)
+            self.cycle_trate1_2.setEnabled(False)
+            self.cycle_trate2_3.setEnabled(False)
+            self.cycle_trate3_0.setEnabled(False)
+            self.cycle_duration1.setEnabled(False)
+            self.cycle_duration2.setEnabled(False)
+            self.cycle_duration3.setEnabled(False)
+        else:
+            self.cycle_trate0_0.setEnabled(False)
 
 
     def fill_motility_substrates(self):
@@ -1235,7 +1257,7 @@ class CellDef(QWidget):
         if cell_def_name == None:
             cell_def_name = self.xml_root.find(".//cell_definitions//cell_definition").attrib['name']
 
-        print('fill_gui: cell_def_name=',cell_def_name)
+        print('--------- fill_gui: cell_def_name=',cell_def_name)
         self.cell_type_name.setText(cell_def_name)
 
 
@@ -1258,10 +1280,10 @@ class CellDef(QWidget):
                 # self.tree.insertTopLevelItem(idx,cellname)
                 idx += 1
 
-        idx += 1  # we use 1-offset indices below 
+        idx_current_cell_def = idx + 1  # we use 1-offset indices below 
 
-        cycle_path = ".//cell_definition[" + str(idx) + "]//phenotype//cycle"
-        cycle_code = uep.find(cycle_path).attrib['code']
+        cycle_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//cycle"
+        cycle_code = int(uep.find(cycle_path).attrib['code'])
         print(' >> cycle_path=',cycle_path, ", code=",cycle_code)
         # static const int advanced_Ki67_cycle_model= 0;
         # static const int basic_Ki67_cycle_model=1;
@@ -1279,10 +1301,34 @@ class CellDef(QWidget):
         # self.cycle_dropdown.addItem("flow cytometry separated")
         # self.cycle_dropdown.addItem("cycling quiescent")
 
-        if cycle_code == 6:
-            self.cycle_dropdown.setCurrentIndex(4)
-        else:
+        if cycle_code == 0:
+            self.cycle_dropdown.setCurrentIndex(2)
+        elif cycle_code == 1:
             self.cycle_dropdown.setCurrentIndex(1)
+        elif cycle_code == 2:
+            self.cycle_dropdown.setCurrentIndex(3)
+        elif cycle_code == 5:
+            self.cycle_dropdown.setCurrentIndex(0)
+        elif cycle_code == 6:
+            self.cycle_dropdown.setCurrentIndex(4)
+        elif cycle_code == 7:
+            self.cycle_dropdown.setCurrentIndex(5)
+
+		# <cell_definition name="cargo cell" ID="2" visible="true">
+		# 	<phenotype>
+		# 		<cycle code="5" name="live">  
+		# 			<phase_transition_rates units="1/min"> 
+		# 				<rate start_index="0" end_index="0" fixed_duration="false">0.0</rate>
+		# 			</phase_transition_rates>
+        phase_transition_path = cycle_path + "//phase_transition_rates"
+        print(' >> phase_transition_path ')
+        pt_uep = uep.find(phase_transition_path)
+        if pt_uep:
+            for rate in pt_uep: 
+                print(rate)
+                print("start_index=",rate.attrib["start_index"])
+                if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
+                    self.cycle_trate0_0.setText(rate.text)
 
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
@@ -1326,7 +1372,7 @@ class CellDef(QWidget):
 
         # ---------  death 
 
-        death_path = ".//cell_definition[" + str(idx) + "]//phenotype//death//"
+        death_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//death//"
         print('death_path=',death_path)
 
         # rwh/TODO: validate we've got apoptosis or necrosis since order is not required in XML.
@@ -1437,7 +1483,7 @@ class CellDef(QWidget):
 					
 				# 	<relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
 
-        volume_path = ".//cell_definition[" + str(idx) + "]//phenotype//volume//"
+        volume_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//volume//"
         print('volume_path=',volume_path)
 
         self.volume_total.setText(uep.find(volume_path+"total").text)
@@ -1462,18 +1508,37 @@ class CellDef(QWidget):
         # self.float22.value = float(uep.find('.//cell_definition[1]//phenotype//volume//calcification_rate').text)
         # self.float23.value = float(uep.find('.//cell_definition[1]//phenotype//volume//relative_rupture_volume').text)
 
+				# <mechanics> 
+				# 	<cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+				# 	<cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+				# 	<relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+					
+				# 	<options>
+				# 		<set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+				# 		<set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+				# 	</options>
+
         # # ---------  mechanics 
-        mechanics_path = ".//cell_definition[" + str(idx) + "]//phenotype//mechanics//"
+        mechanics_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//mechanics//"
         print('mechanics_path=',mechanics_path)
 
         self.cell_cell_adhesion_strength.setText(uep.find(mechanics_path+"cell_cell_adhesion_strength").text)
         self.cell_cell_repulsion_strength.setText(uep.find(mechanics_path+"cell_cell_repulsion_strength").text)
         self.relative_maximum_adhesion_distance.setText(uep.find(mechanics_path+"relative_maximum_adhesion_distance").text)
 
-        mechanics_options_path = ".//cell_definition[" + str(idx) + "]//phenotype//mechanics//options//"
+        mechanics_options_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//mechanics//options//"
         self.set_relative_equilibrium_distance.setText(uep.find(mechanics_options_path+"set_relative_equilibrium_distance").text)
         self.set_absolute_equilibrium_distance.setText(uep.find(mechanics_options_path+"set_absolute_equilibrium_distance").text)
 
+        if uep.find(mechanics_options_path+"set_relative_equilibrium_distance").attrib['enabled'].lower() == 'true':
+            self.set_relative_equilibrium_distance_enabled.setChecked(True)
+        else:
+            self.set_relative_equilibrium_distance_enabled.setChecked(False)
+
+        if uep.find(mechanics_options_path+"set_absolute_equilibrium_distance").attrib['enabled'].lower() == 'true':
+            self.set_absolute_equilibrium_distance_enabled.setChecked(True)
+        else:
+            self.set_absolute_equilibrium_distance_enabled.setChecked(False)
 
         # self.float24.value = float(uep.find('.//cell_definition[1]//phenotype//mechanics//cell_cell_adhesion_strength').text)
         # self.float25.value = float(uep.find('.//cell_definition[1]//phenotype//mechanics//cell_cell_repulsion_strength').text)
@@ -1481,15 +1546,42 @@ class CellDef(QWidget):
         # self.bool0.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//mechanics//options//set_relative_equilibrium_distance').attrib['enabled'].lower()))
         # self.bool1.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//mechanics//options//set_absolute_equilibrium_distance').attrib['enabled'].lower()))
 
+
+				# <motility>  
+				# 	<speed units="micron/min">5.0</speed>
+				# 	<persistence_time units="min">5.0</persistence_time>
+				# 	<migration_bias units="dimensionless">0.5</migration_bias>
+					
+				# 	<options>
+				# 		<enabled>true</enabled>
+				# 		<use_2D>true</use_2D>
+				# 		<chemotaxis>
+				# 			<enabled>false</enabled>
+				# 			<substrate>director signal</substrate>
+				# 			<direction>1</direction>
+				# 		</chemotaxis>
+				# 	</options>
+
         # # ---------  motility 
-        motility_path = ".//cell_definition[" + str(idx) + "]//phenotype//motility//"
+        motility_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//motility//"
         print('motility_path=',motility_path)
 
         self.speed.setText(uep.find(motility_path+"speed").text)
         self.persistence_time.setText(uep.find(motility_path+"persistence_time").text)
         self.migration_bias.setText(uep.find(motility_path+"migration_bias").text)
 
-        motility_options_path = ".//cell_definition[" + str(idx) + "]//phenotype//motility//options//"
+        motility_options_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//motility//options//"
+
+        # print(' motility options enabled', uep.find(motility_options_path +'enabled').text)
+        if uep.find(motility_options_path +'enabled').text.lower() == 'true':
+            self.motility_enabled.setChecked(True)
+        else:
+            self.motility_enabled.setChecked(False)
+
+        if uep.find(motility_options_path +'use_2D').text.lower() == 'true':
+            self.motility_2D.setChecked(True)
+        else:
+            self.motility_2D.setChecked(False)
 
 
         # self.float29.value = float(uep.find('.//cell_definition[1]//phenotype//motility//speed').text)
@@ -1502,7 +1594,7 @@ class CellDef(QWidget):
         # self.chemotaxis_direction1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//direction').text
 
         # # ---------  secretion 
-        secretion_path = ".//cell_definition[" + str(idx) + "]//phenotype//secretion//"
+        secretion_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//"
         print('secretion_path =',secretion_path)
 
         # self.speed.setText(uep.find(secretion_path+"speed").text)

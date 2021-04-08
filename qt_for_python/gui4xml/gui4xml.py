@@ -60,7 +60,10 @@ class PhysiCellXMLCreator(QTabWidget):
 
         self.microenv_tab = SubstrateDef()
         self.microenv_tab.xml_root = self.xml_root
-        self.microenv_tab.fill_gui()
+        substrate_name = self.microenv_tab.first_substrate_name()
+        print("gui4xml: substrate_name=",substrate_name)
+        self.microenv_tab.fill_gui(substrate_name)
+        self.microenv_tab.populate_tree()
 
         # self.tab2.tree.setCurrentItem(QTreeWidgetItem,0)  # item
 
@@ -182,7 +185,11 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.xml_root = self.xml_root
 
         self.config_tab.fill_gui()
-        self.microenv_tab.fill_gui()
+
+        self.microenv_tab.clear_gui()
+        self.microenv_tab.populate_tree()
+        self.microenv_tab.fill_gui(None)
+
         self.celldef_tab.clear_gui()
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_gui(None)
