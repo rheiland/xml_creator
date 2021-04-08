@@ -24,7 +24,8 @@ class PhysiCellXMLCreator(QTabWidget):
     def __init__(self, parent = None):
         super(PhysiCellXMLCreator, self).__init__(parent)
 
-        self.setWindowTitle("PhysiCell model configuration")
+        self.title_prefix = "PhysiCell model configuration: "
+        self.setWindowTitle(self.title_prefix)
 
         # Menus
         lay = QVBoxLayout(self)
@@ -54,10 +55,12 @@ class PhysiCellXMLCreator(QTabWidget):
         self.model = {}  # key: name, value:[read-only, tree]
 
         self.config_tab = Config()
-        self.config_tab.fill_gui(self.xml_root)
+        self.config_tab.xml_root = self.xml_root
+        self.config_tab.fill_gui()
 
         self.microenv_tab = SubstrateDef()
-        self.microenv_tab.fill_gui(self.xml_root)
+        self.microenv_tab.xml_root = self.xml_root
+        self.microenv_tab.fill_gui()
 
         # self.tab2.tree.setCurrentItem(QTreeWidgetItem,0)  # item
 
@@ -138,6 +141,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.models_menu = menubar.addMenu('Models')
         models_menu_act = QtGui.QAction('-----', self)
         self.models_menu.addAction(models_menu_act)
+        models_menu_act.triggered.connect(self.select_current_model_cb)
         # self.models_menu.addAction('Load sample', self.select_current_model_cb)
 
         #--------------
@@ -152,13 +156,13 @@ class PhysiCellXMLCreator(QTabWidget):
             return
         self.model[name] = read_only
         self.num_models += 1
-        print(" model= ",self.model)
+        print(" self.model (dict)= ",self.model)
 
         models_menu_act = QtGui.QAction(name, self)
         self.models_menu.addAction(models_menu_act)
         models_menu_act.triggered.connect(self.select_current_model_cb)
 
-        self.setWindowTitle(name)
+        self.setWindowTitle(self.title_prefix + name)
 
     def select_current_model_cb(self):
         # models_menu_act = QtGui.QAction(name, self)
@@ -169,16 +173,30 @@ class PhysiCellXMLCreator(QTabWidget):
         model_name = action.text()
         print('select_current_model_cb: name= ',model_name)
 
-        self.setWindowTitle(model_name)
+        self.setWindowTitle(self.title_prefix + model_name)
+
+    def reset_xml_root(self):
+        self.xml_root = self.tree.getroot()
+        self.config_tab.xml_root = self.xml_root
+        self.microenv_tab.xml_root = self.xml_root
+        self.celldef_tab.xml_root = self.xml_root
+
+        self.config_tab.fill_gui()
+        self.microenv_tab.fill_gui()
+        self.celldef_tab.clear_gui()
+        self.celldef_tab.populate_tree()
+        self.celldef_tab.fill_gui(None)
+        self.celldef_tab.fill_motility_substrates()
 
     def show_sample_model(self):
         # self.config_file = "config_samples/biorobots.xml"
         self.tree = ET.parse(self.config_file)
-        self.xml_root = self.tree.getroot()
-        self.tab1.fill_gui(self.xml_root)  # 
-        self.tab2.fill_gui(self.xml_root)  # microenv
-        self.tab3.fill_gui(self.xml_root, "foobar")  # cell defs
-        self.tab3.fill_motility_substrates(self.xml_root)
+        # self.xml_root = self.tree.getroot()
+        self.reset_xml_root()
+        # self.config_tab.fill_gui(self.xml_root)  # 
+        # self.microenv_tab.fill_gui(self.xml_root)  # microenv
+        # self.celldef_tab.fill_gui("foobar")  # cell defs
+        # self.celldef_tab.fill_motility_substrates()
 
     def new_model_cb(self):
         name = "copy_template2D"
@@ -187,17 +205,20 @@ class PhysiCellXMLCreator(QTabWidget):
         self.show_sample_model()
 
     def biorobots_cb(self):
-        name = "biorobots"
+        name = "biorobots_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
+
         # self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
-        # self.tab1.fill_gui(self.xml_root)
-        # self.tab2.fill_gui(self.xml_root)
+        # self.celldef_tab.xml_root = self.xml_root
+        # self.config_tab.fill_gui(self.xml_root)
+        # self.microenv_tab.fill_gui(self.xml_root)
+        # self.celldef_tab.fill_gui(self.xml_root)
 
     def cancer_biorobots_cb(self):
-        name = "cancer_biorobots"
+        name = "cancer_biorobots_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
@@ -209,13 +230,13 @@ class PhysiCellXMLCreator(QTabWidget):
         self.show_sample_model()
 
     def pred_prey_cb(self):
-        name = "pred_prey"
+        name = "pred_prey_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
     def virus_mac_cb(self):
-        name = "virus_macrophage"
+        name = "virus_macrophage_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
@@ -231,13 +252,13 @@ class PhysiCellXMLCreator(QTabWidget):
         self.show_sample_model()
 
     def cancer_immune_cb(self):
-        name = "cancer_immune3D"
+        name = "cancer_immune3D_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
     def template3D_cb(self):
-        name = "template3D"
+        name = "template3D_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()

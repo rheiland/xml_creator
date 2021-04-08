@@ -357,12 +357,12 @@ class CellDef(QWidget):
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.phase0_duration = QLineEdit()
-        self.phase0_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase0_duration)
+        self.apoptosis_phase0_duration = QLineEdit()
+        self.apoptosis_phase0_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_phase0_duration)
 
-        self.phase0_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.phase0_duration_fixed)
+        self.apoptosis_phase0_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.apoptosis_phase0_duration_fixed)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
@@ -376,12 +376,12 @@ class CellDef(QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.phase1_duration = QLineEdit()
-        self.phase1_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase1_duration)
+        self.apoptosis_phase1_duration = QLineEdit()
+        self.apoptosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_phase1_duration)
 
-        self.phase1_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.phase1_duration_fixed)
+        self.apoptosis_phase1_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.apoptosis_phase1_duration_fixed)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
@@ -395,12 +395,12 @@ class CellDef(QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.phase2_duration = QLineEdit()
-        self.phase2_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase2_duration)
+        self.apoptosis_phase2_duration = QLineEdit()
+        self.apoptosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_phase2_duration)
 
-        self.phase2_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.phase2_duration_fixed)
+        self.apoptosis_phase2_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.apoptosis_phase2_duration_fixed)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
@@ -414,12 +414,12 @@ class CellDef(QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.phase3_duration = QLineEdit()
-        self.phase3_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.phase3_duration)
+        self.apoptosis_phase3_duration = QLineEdit()
+        self.apoptosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.apoptosis_phase3_duration)
 
-        self.phase3_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.phase3_duration_fixed)
+        self.apoptosis_phase3_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.apoptosis_phase3_duration_fixed)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
@@ -548,6 +548,7 @@ class CellDef(QWidget):
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
+        #-----
         hbox = QHBoxLayout()
         label = QLabel("phase 0 duration")
         label.setFixedWidth(label_width)
@@ -566,6 +567,7 @@ class CellDef(QWidget):
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
+        #-----
         hbox = QHBoxLayout()
         label = QLabel("phase 1 duration")
         label.setFixedWidth(label_width)
@@ -584,9 +586,47 @@ class CellDef(QWidget):
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
+        #-----
+        hbox = QHBoxLayout()
+        label = QLabel("phase 2 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.necrosis_phase2_duration = QLineEdit()
+        self.necrosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_phase2_duration)
+
+        self.necrosis_phase2_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.necrosis_phase2_duration_fixed)
+
+        units = QLabel("min")
+        units.setFixedWidth(units_width)
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        hbox.addWidget(units)
+        self.vbox.addLayout(hbox)
+        #-----
+        hbox = QHBoxLayout()
+        label = QLabel("phase 3 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+        self.necrosis_phase3_duration = QLineEdit()
+        self.necrosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.necrosis_phase3_duration)
+
+        self.necrosis_phase3_duration_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.necrosis_phase3_duration_fixed)
+
+        units = QLabel("min")
+        units.setFixedWidth(units_width)
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        hbox.addWidget(units)
+        self.vbox.addLayout(hbox)
+
         # <phase_durations units="min">
         #     <duration index="0" fixed_duration="true">516</duration>
 
+        #----------------------------------------
         # <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
         # <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
         # <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
@@ -1145,7 +1185,8 @@ class CellDef(QWidget):
 
     @QtCore.Slot()
     def cycle_changed_cb(self, idx):
-        pass
+        # pass
+        print('------ cycle_changed_cb(): idx = ',idx)
         # QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
 
@@ -1198,22 +1239,6 @@ class CellDef(QWidget):
         self.cell_type_name.setText(cell_def_name)
 
 
-        # static const int advanced_Ki67_cycle_model= 0;
-        # static const int basic_Ki67_cycle_model=1;
-        # static const int flow_cytometry_cycle_model=2;
-        # static const int live_apoptotic_cycle_model=3;
-        # static const int total_cells_cycle_model=4;
-        # static const int live_cells_cycle_model = 5; 
-        # static const int flow_cytometry_separated_cycle_model = 6; 
-        # static const int cycling_quiescent_model = 7; 
-        self.cycle_dropdown.addItem("live cells")
-        self.cycle_dropdown.addItem("basic Ki67")
-        self.cycle_dropdown.addItem("advanced Ki67")
-        self.cycle_dropdown.addItem("flow cytometry")
-        self.cycle_dropdown.addItem("flow cytometry separated")
-        self.cycle_dropdown.addItem("cycling quiescent")
-
-
         uep = self.xml_root.find(".//cell_definitions")
         if uep:
             # self.tree.clear()
@@ -1238,6 +1263,27 @@ class CellDef(QWidget):
         cycle_path = ".//cell_definition[" + str(idx) + "]//phenotype//cycle"
         cycle_code = uep.find(cycle_path).attrib['code']
         print(' >> cycle_path=',cycle_path, ", code=",cycle_code)
+        # static const int advanced_Ki67_cycle_model= 0;
+        # static const int basic_Ki67_cycle_model=1;
+        # static const int flow_cytometry_cycle_model=2;
+        # static const int live_apoptotic_cycle_model=3;
+        # static const int total_cells_cycle_model=4;
+        # static const int live_cells_cycle_model = 5; 
+        # static const int flow_cytometry_separated_cycle_model = 6; 
+        # static const int cycling_quiescent_model = 7; 
+
+        # self.cycle_dropdown.addItem("live cells")
+        # self.cycle_dropdown.addItem("basic Ki67")
+        # self.cycle_dropdown.addItem("advanced Ki67")
+        # self.cycle_dropdown.addItem("flow cytometry")
+        # self.cycle_dropdown.addItem("flow cytometry separated")
+        # self.cycle_dropdown.addItem("cycling quiescent")
+
+        if cycle_code == 6:
+            self.cycle_dropdown.setCurrentIndex(4)
+        else:
+            self.cycle_dropdown.setCurrentIndex(1)
+
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
         #     <phase_durations units="min"> 
@@ -1288,9 +1334,45 @@ class CellDef(QWidget):
         # self.apoptosis_death_rate.setText(uep.find('.//cell_definition[1]//phenotype//death//model[1]//death_rate').text)
         self.apoptosis_death_rate.setText(uep.find(apoptosis_path + 'death_rate').text)
 
+        phase_durations_path = apoptosis_path + "phase_durations"
+        print(' >> phase_durations_path =',phase_durations_path )
+        pd_uep = uep.find(phase_durations_path)
+        print(' >> pd_uep =',pd_uep )
+        if pd_uep:
+            for pd in pd_uep: 
+                print(pd)
+                print("index=",pd.attrib["index"])
+                if  pd.attrib['index'] == "0":
+                    self.apoptosis_phase0_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "1":
+                    self.apoptosis_phase1_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "2":
+                    self.apoptosis_phase2_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "3":
+                    self.apoptosis_phase3_duration.setText(pd.text)
+
+        #-----
         necrosis_path = death_path + "model[2]//"
         self.necrosis_death_rate.setText(uep.find(necrosis_path + 'death_rate').text)
 
+        phase_durations_path = necrosis_path + "phase_durations"
+        print(' >> necrosis phase_durations_path =',phase_durations_path )
+        pd_uep = uep.find(phase_durations_path)
+        print(' >> pd_uep =',pd_uep )
+        if pd_uep:
+            for pd in pd_uep: 
+                print(pd)
+                print("index=",pd.attrib["index"])
+                if  pd.attrib['index'] == "0":
+                    self.necrosis_phase0_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "1":
+                    self.necrosis_phase1_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "2":
+                    self.necrosis_phase2_duration.setText(pd.text)
+                elif  pd.attrib['index'] == "3":
+                    self.necrosis_phase3_duration.setText(pd.text)
+
+        #-----
         apoptosis_params_path = apoptosis_path + "parameters//"
         necrosis_params_path = necrosis_path + "parameters//"
 
@@ -1443,3 +1525,58 @@ class CellDef(QWidget):
         # TODO: verify valid type (numeric) and range?
         # xml_root.find(".//x_min").text = str(self.xmin.value)
         # xml_root.find(".//x_max").text = str(self.xmax.value)
+
+    def clear_gui(self):
+        self.cell_type_name.setText('')
+        self.cycle_trate0_0.setText('')
+        self.cycle_trate0_1.setText('')
+        self.cycle_trate1_2.setText('')
+        self.cycle_trate2_3.setText('')
+        self.cycle_trate3_0.setText('')
+        self.cycle_duration0.setText('')
+        self.cycle_duration1.setText('')
+        self.cycle_duration2.setText('')
+        self.cycle_duration3.setText('')
+        self.apoptosis_death_rate.setText('')
+        self.apoptosis_phase0_duration.setText('')
+        self.apoptosis_phase1_duration.setText('')
+        self.apoptosis_phase2_duration.setText('')
+        self.apoptosis_phase3_duration.setText('')
+        self.apoptosis_unlysed_rate.setText('')
+        self.apoptosis_lysed_rate.setText('')
+        self.apoptosis_cytoplasmic_biomass_change_rate.setText('')
+        self.apoptosis_nuclear_biomass_change_rate.setText('')
+        self.apoptosis_calcification_rate.setText('')
+        self.apoptosis_relative_rupture_volume.setText('')
+        self.necrosis_death_rate.setText('')
+        self.necrosis_phase0_duration.setText('')
+        self.necrosis_phase1_duration.setText('')
+        self.necrosis_phase2_duration.setText('')
+        self.necrosis_phase3_duration.setText('')
+        self.necrosis_unlysed_rate.setText('')
+        self.necrosis_lysed_rate.setText('')
+        self.necrosis_cytoplasmic_biomass_change_rate.setText('')
+        self.necrosis_nuclear_biomass_change_rate.setText('')
+        self.necrosis_calcification_rate.setText('')
+        self.necrosis_relative_rupture_volume.setText('')
+        self.volume_total.setText('')
+        self.volume_fluid_fraction.setText('')
+        self.volume_nuclear.setText('')
+        self.volume_fluid_change_rate.setText('')
+        self.volume_cytoplasmic_biomass_change_rate.setText('')
+        self.volume_nuclear_biomass_change_rate.setText('')
+        self.volume_calcified_fraction.setText('')
+        self.volume_calcification_rate.setText('')
+        self.relative_rupture_volume.setText('')
+        self.cell_cell_adhesion_strength.setText('')
+        self.cell_cell_repulsion_strength.setText('')
+        self.relative_maximum_adhesion_distance.setText('')
+        self.set_relative_equilibrium_distance.setText('')
+        self.set_absolute_equilibrium_distance.setText('')
+        self.speed.setText('')
+        self.persistence_time.setText('')
+        self.migration_bias.setText('')
+        self.secretion_rate1.setText('')
+        self.secretion_target1.setText('')
+        self.uptake_rate1.setText('')
+        self.secretion_net_export_rate.setText('')
