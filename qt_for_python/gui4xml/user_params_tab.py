@@ -31,10 +31,22 @@ class NewUserParam(QtWidgets.QHBoxLayout):
         print(self.Main.count)
         name = "pushButton_"+str(self.Main.count)
         print(name)
-        self.name = QtWidgets.QPushButton('I am in Test widget '+str(self.Main.count))
+        # self.name = QtWidgets.QPushButton('I am in Test widget '+str(self.Main.count))
         # layout = QtWidgets.QHBoxLayout()
         # layout.addWidget(self.name)
-        self.addWidget(self.name)
+        # self.addWidget(self.name)
+
+        select = QtWidgets.QCheckBox("")
+        self.addWidget(select)
+        name = QtWidgets.QLineEdit()
+        self.addWidget(name)
+        mytype = QtWidgets.QLineEdit()
+        self.addWidget(mytype)
+        value = QtWidgets.QLineEdit()
+        self.addWidget(value)
+        units = QtWidgets.QLineEdit()
+        self.addWidget(units)
+
         # self.setLayout(layout)
 
 class UserParams(QtWidgets.QWidget):
@@ -47,9 +59,9 @@ class UserParams(QtWidgets.QWidget):
 
         #---------------
         # self.cell_defs = CellDefInstances()
-        self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
+        # self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
 
-        splitter = QtWidgets.QSplitter()
+        # splitter = QtWidgets.QSplitter()
 
         #-------------------------------------------
         # self.tab = QtWidgets.QWidget()
@@ -60,7 +72,7 @@ class UserParams(QtWidgets.QWidget):
         units_width = 70
 
         self.scroll = QtWidgets.QScrollArea()
-        splitter.addWidget(self.scroll)
+        # splitter.addWidget(self.scroll)
         # self.cell_def_horiz_layout.addWidget(self.scroll)
 
         self.params_user_params = QtWidgets.QWidget()
