@@ -72,9 +72,10 @@ class SubstrateDef(QtWidgets.QWidget):
         label_width = 150
         units_width = 70
 
-        self.scroll = QtWidgets.QScrollArea()
-        splitter.addWidget(self.scroll)
-        # self.cell_def_horiz_layout.addWidget(self.scroll)
+        # self.scroll = QtWidgets.QScrollArea()
+        self.scroll_area = QtWidgets.QScrollArea()
+        splitter.addWidget(self.scroll_area)
+        # self.cell_def_horiz_layout.addWidget(self.scroll_area)
 
         self.params_cell_def = QtWidgets.QWidget()
         self.vbox = QtWidgets.QVBoxLayout()
@@ -83,17 +84,17 @@ class SubstrateDef(QtWidgets.QWidget):
         # self.cell_def_horiz_layout.addWidget(self.)
 
         #------------------
-        hbox = QtWidgets.QHBoxLayout()
+        controls_hbox = QtWidgets.QHBoxLayout()
         self.new_button = QPushButton("New")
-        hbox.addWidget(self.new_button)
+        controls_hbox.addWidget(self.new_button)
 
         self.copy_button = QPushButton("Copy")
-        hbox.addWidget(self.copy_button)
+        controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
-        hbox.addWidget(self.delete_button)
+        controls_hbox.addWidget(self.delete_button)
 
-        self.vbox.addLayout(hbox)
+        # self.vbox.addLayout(hbox)
         self.vbox.addWidget(QHLine())
 
         #------------------
@@ -196,6 +197,21 @@ class SubstrateDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         #--------------------------
+# 			<Dirichlet_boundary_condition units="dimensionless" enabled="false">0</Dirichlet_boundary_condition>
+# <!--
+# 			<Dirichlet_options>
+# 				<boundary_value ID="xmin" enabled="false">0</boundary_value>
+# 				<boundary_value ID="xmax" enabled="false">0</boundary_value>
+# 				<boundary_value ID="ymin" enabled="false">0</boundary_value>
+# 				<boundary_value ID="ymax" enabled="false">0</boundary_value>
+# 				<boundary_value ID="zmin" enabled="false">1</boundary_value>
+# 				<boundary_value ID="zmax" enabled="false">0</boundary_value>
+# 			</Dirichlet_options>
+# -->			
+#  		</variable>
+
+
+        #--------------------------
         # Dummy widget for filler??
         label = QLabel("")
         label.setFixedHeight(1000)
@@ -206,10 +222,10 @@ class SubstrateDef(QtWidgets.QWidget):
         #==================================================================
         self.params_cell_def.setLayout(self.vbox)
 
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.params_cell_def)
+        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setWidget(self.params_cell_def)
 
 
         # self.save_button = QtWidgets.QPushButton("Save")
@@ -217,11 +233,13 @@ class SubstrateDef(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
+        self.layout.addLayout(controls_hbox)
+
         # self.layout.addWidget(self.tabs)
         # self.layout.addWidget(QHLine())
         # self.layout.addWidget(self.params)
 
-        # self.layout.addWidget(self.scroll)
+        # self.layout.addWidget(self.scroll_area)
         self.layout.addWidget(splitter)
 
         # self.layout.addWidget(self.vbox)
@@ -347,9 +365,76 @@ class SubstrateDef(QtWidgets.QWidget):
         # else:
         #   self.track_internal.value = False
 
+
+    #----------------------------------------------------------------------------
     # Read values from the GUI widgets and generate/write a new XML
+
+    # 	<microenvironment_setup>
+	# 	<variable name="director signal" units="dimensionless" ID="0">
+	# 		<physical_parameter_set>
+	# 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
+	# 			<decay_rate units="1/min">.1</decay_rate>  
+	# 		</physical_parameter_set>
+	# 		<initial_condition units="dimensionless">0</initial_condition>
+	# 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
+	# 	</variable>
+		
+	# 	<variable name="cargo signal" units="dimensionless" ID="1">
+	# 		<physical_parameter_set>
+	# 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
+	# 			<decay_rate units="1/min">.4</decay_rate>  
+	# 		</physical_parameter_set>
+	# 		<initial_condition units="dimensionless">0</initial_condition>
+	# 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
+	# 	</variable>
+		
+	# 	<options>
+	# 		<calculate_gradients>true</calculate_gradients>
+	# 		<track_internalized_substrates_in_each_agent>false</track_internalized_substrates_in_each_agent>
+			 
+	# 		<initial_condition type="matlab" enabled="false">
+	# 			<filename>./config/initial.mat</filename>
+	# 		</initial_condition>
+			 
+	# 		<dirichlet_nodes type="matlab" enabled="false">
+	# 			<filename>./config/dirichlet.mat</filename>
+	# 		</dirichlet_nodes>
+	# 	</options>
+	# </microenvironment_setup>
+
     def fill_xml(self):
-        pass
+        # pass
+
+        uep = self.xml_root.find('.//microenvironment_setup')
+        vp = []   # pointers to <variable> nodes
+        if uep:
+            for var in uep.findall('variable'):
+                vp.append(var)
+
+        uep = self.xml_root.find('.//microenvironment_setup')  
+
+        # self.diffusion_coef.setText(var_param_path.find('.//diffusion_coefficient').text)
+        # self.decay_rate.setText(var_param_path.find('.//decay_rate').text)
+
+        # self.init_cond.setText(var_path.find('.initial_condition').text)
+        # self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
+
+        vp[0].find('.//diffusion_coefficient').text = str(self.diffusion_coef.text)
+
+        # vp[0].find('.//diffusion_coefficient').text = str(self.director_signal_diffusion_coefficient.value)
+        # vp[0].find('.//decay_rate').text = str(self.director_signal_decay_rate.value)
+        # vp[0].find('.//initial_condition').text = str(self.director_signal_initial_condition.value)
+        # vp[0].find('.//Dirichlet_boundary_condition').text = str(self.director_signal_Dirichlet_boundary_condition.value)
+        # vp[0].find('.//Dirichlet_boundary_condition').attrib['enabled'] = str(self.director_signal_Dirichlet_boundary_condition_toggle.value).lower()
+
+        # vp[1].find('.//diffusion_coefficient').text = str(self.cargo_signal_diffusion_coefficient.value)
+        # vp[1].find('.//decay_rate').text = str(self.cargo_signal_decay_rate.value)
+        # vp[1].find('.//initial_condition').text = str(self.cargo_signal_initial_condition.value)
+        # vp[1].find('.//Dirichlet_boundary_condition').text = str(self.cargo_signal_Dirichlet_boundary_condition.value)
+        # vp[1].find('.//Dirichlet_boundary_condition').attrib['enabled'] = str(self.cargo_signal_Dirichlet_boundary_condition_toggle.value).lower()
+
+        # uep.find('.//options//calculate_gradients').text = str(self.calculate_gradient.value)
+        # uep.find('.//options//track_internalized_substrates_in_each_agent').text = str(self.track_internal.value)
     
     def clear_gui(self):
         pass
