@@ -20,35 +20,6 @@ class QHLine(QFrame):
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
-# class NewUserParam(QtWidgets.QWidget):
-class NewUserParam(QtWidgets.QHBoxLayout):
-    def __init__( self, main):
-        super(NewUserParam, self).__init__()
-        self.Main = main
-        self.setup()
-
-    def setup(self):
-        print(self.Main.count)
-        name = "pushButton_"+str(self.Main.count)
-        print(name)
-        # self.name = QtWidgets.QPushButton('I am in Test widget '+str(self.Main.count))
-        # layout = QtWidgets.QHBoxLayout()
-        # layout.addWidget(self.name)
-        # self.addWidget(self.name)
-
-        select = QtWidgets.QCheckBox("")
-        self.addWidget(select)
-        name = QtWidgets.QLineEdit()
-        self.addWidget(name)
-        mytype = QtWidgets.QLineEdit()
-        self.addWidget(mytype)
-        value = QtWidgets.QLineEdit()
-        self.addWidget(value)
-        units = QtWidgets.QLineEdit()
-        self.addWidget(units)
-
-        # self.setLayout(layout)
-
 class UserParams(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -57,49 +28,36 @@ class UserParams(QtWidgets.QWidget):
         self.xml_root = None
         self.count = 0
 
-        #---------------
-        # self.cell_defs = CellDefInstances()
-        # self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
-
-        # splitter = QtWidgets.QSplitter()
-
-        #-------------------------------------------
-        # self.tab = QtWidgets.QWidget()
-        # self.tabs.resize(200,5)
-        
         #-------------------------------------------
         label_width = 150
         units_width = 70
 
-        self.scroll = QtWidgets.QScrollArea()
+        self.scroll_area = QtWidgets.QScrollArea()
         # splitter.addWidget(self.scroll)
         # self.cell_def_horiz_layout.addWidget(self.scroll)
 
-        self.params_user_params = QtWidgets.QWidget()
-        self.vbox = QtWidgets.QVBoxLayout()
-        self.vbox.addStretch(0)
-
-        # self.cell_def_horiz_layout.addWidget(self.)
+        self.user_params = QtWidgets.QWidget()
+        self.main_layout = QtWidgets.QVBoxLayout()
+        # self.main_layout.addStretch(0)
 
         #------------------
-        hbox = QtWidgets.QHBoxLayout()
-        self.new_button = QPushButton("New")
-        hbox.addWidget(self.new_button)
-        self.new_button.clicked.connect(self.new_cb)
+        controls_hbox = QtWidgets.QHBoxLayout()
+        # self.new_button = QPushButton("New")
+        self.new_button = QPushButton("Append 5 more rows")
+        controls_hbox.addWidget(self.new_button)
+        self.new_button.clicked.connect(self.append_more_cb)
 
         self.copy_button = QPushButton("Copy")
-        hbox.addWidget(self.copy_button)
+        controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
-        hbox.addWidget(self.delete_button)
-
-        self.vbox.addLayout(hbox)
-        self.vbox.addWidget(QHLine())
+        controls_hbox.addWidget(self.delete_button)
 
         #------------------
 		# <random_seed type="int" units="dimensionless">0</random_seed> 
 		# <cargo_signal_D type="double" units="micron/min^2">1e3</cargo_signal_D>
 
+        # Fixed names for columns:
         hbox = QtWidgets.QHBoxLayout()
         # self.select = QtWidgets.QCheckBox("")
         col1 = QtWidgets.QLabel("Name")
@@ -115,89 +73,134 @@ class UserParams(QtWidgets.QWidget):
         col4.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col4)
         # label.setFixedWidth(180)
-        self.vbox.addLayout(hbox)
+        self.main_layout.addLayout(hbox)
 
         #------------------
-        hbox = QtWidgets.QHBoxLayout()
 
-        self.select = QtWidgets.QCheckBox("")
-        hbox.addWidget(self.select)
+        # Create lists for the various input boxes
+        self.select = []
+        self.name = []
+        self.type = []
+        self.value = []
+        self.units = []
 
-        self.name = QtWidgets.QLineEdit()
-        # self.name.setValidator(QtGui.QDoubleValidator())
-        # self.diffusion_coef.enter.connect(self.save_xml)
-        hbox.addWidget(self.name)
+        self.type_dropdown = QComboBox()
+        self.type_dropdown.setFixedWidth(300)
+        # self.type_dropdown.currentIndexChanged.connect(self.cycle_changed_cb)
+        self.type_dropdown.addItem("int")
+        self.type_dropdown.addItem("double")
+        self.type_dropdown.addItem("bool")
+        self.type_dropdown.addItem("text")
 
-        self.type = QtWidgets.QLineEdit()
-        hbox.addWidget(self.type)
+        for idx in range(15):
+            # self.main_layout.addLayout(NewUserParam(self))
+            hbox = QHBoxLayout()
+            w = QCheckBox("")
+            self.select.append(w)
+            hbox.addWidget(w)
 
-        self.value = QtWidgets.QLineEdit()
-        # self.name.setValidator(QtGui.QDoubleValidator())
-        # self.diffusion_coef.enter.connect(self.save_xml)
-        hbox.addWidget(self.value)
+            w = QLineEdit()
+            self.name.append(w)
+            # self.name.setValidator(QtGui.QDoubleValidator())
+            # self.diffusion_coef.enter.connect(self.save_xml)
+            hbox.addWidget(w)
+            if idx == 0:
+                w.setText("random_seed")
 
-        self.units = QtWidgets.QLineEdit()
-        hbox.addWidget(self.units)
+            # w = QLineEdit()
+            w = QComboBox()
+            # xml2jupyter: {"double":"FloatText", "int":"IntText", "bool":"Checkbox", "string":"Text", "divider":""}
+            w.addItem("double")
+            w.addItem("int")
+            w.addItem("bool")
+            w.addItem("string")
+            if idx == 0:
+                w.setCurrentIndex(1)
+            self.type.append(w)
+            hbox.addWidget(w)
 
-        # units = QtWidgets.QLabel("micron^2/min")
-        # units.setFixedWidth(units_width)
-        # hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+            w = QLineEdit()
+            self.value.append(w)
+            # w.setValidator(QtGui.QDoubleValidator())
+            if idx == 0:
+                w.setText("0")
+            hbox.addWidget(w)
 
-        #--------------------------
-        # Dummy widget for filler??
-        # label = QLabel("")
-        # label.setFixedHeight(1000)
-        # # label.setStyleSheet("background-color: orange")
-        # label.setAlignment(QtCore.Qt.AlignCenter)
-        # self.vbox.addWidget(label)
+            w = QLineEdit()
+            self.units.append(w)
+            hbox.addWidget(w)
+
+            # units = QtWidgets.QLabel("micron^2/min")
+            # units.setFixedWidth(units_width)
+            # hbox.addWidget(units)
+            self.main_layout.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            self.count = self.count + 1
+            # print(self.count)
 
 
         #==================================================================
-        self.params_user_params.setLayout(self.vbox)
+        self.user_params.setLayout(self.main_layout)
 
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.params_user_params)
+        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll_area.setWidgetResizable(True)
+
+        self.scroll_area.setWidget(self.user_params)
 
         self.layout = QVBoxLayout(self)
 
-        self.layout.addWidget(self.scroll)
+        self.layout.addLayout(controls_hbox)
+        self.layout.addWidget(self.scroll_area)
 
     @QtCore.Slot()
-    def new_cb(self):
-        print("---- new_cb()")
+    def append_more_cb(self):
+        # print("---- append_more_cb()")
         # self.create_user_param()
         # self.scrollLayout.addRow(NewUserParam(self))
-        self.vbox.addLayout(NewUserParam(self))
-        # self.vbox.addLayout(hbox)
-        # self.vbox.addLayout(hbox)
-        self.count = self.count + 1
-        print(self.count)
+        for idx in range(5):
+            # self.main_layout.addLayout(NewUserParam(self))
+            hbox = QHBoxLayout()
+            w = QCheckBox("")
+            self.select.append(w)
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.name.append(w)
+            # self.name.setValidator(QtGui.QDoubleValidator())
+            # self.diffusion_coef.enter.connect(self.save_xml)
+            hbox.addWidget(w)
+
+            w = QComboBox()
+            # xml2jupyter: {"double":"FloatText", "int":"IntText", "bool":"Checkbox", "string":"Text", "divider":""}
+            w.addItem("double")
+            w.addItem("int")
+            w.addItem("bool")
+            w.addItem("string")
+            self.type.append(w)
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.value.append(w)
+            # w.setValidator(QtGui.QDoubleValidator())
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.units.append(w)
+            hbox.addWidget(w)
+
+            # units = QtWidgets.QLabel("micron^2/min")
+            # units.setFixedWidth(units_width)
+            # hbox.addWidget(units)
+            self.main_layout.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            self.count = self.count + 1
+            print(self.count)
     #     # self.text.setText(random.choice(self.hello))
     #     pass
 
-    # def new_cb(self):
-    #     print('---- new_cb():')
-
-    def create_user_param(self):
-        print("--- create_user_param()")
-        hbox = QtWidgets.QHBoxLayout()
-        select = QtWidgets.QCheckBox("")
-        hbox.addWidget(select)
-        name = QtWidgets.QLineEdit()
-        hbox.addWidget(name)
-        mytype = QtWidgets.QLineEdit()
-        hbox.addWidget(mytype)
-        value = QtWidgets.QLineEdit()
-        hbox.addWidget(value)
-        units = QtWidgets.QLineEdit()
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
-
-        self.params_user_params.setLayout(self.vbox)
-        self.layout.addWidget(self.scroll)
 
     def fill_gui(self, substrate_name):
         pass
