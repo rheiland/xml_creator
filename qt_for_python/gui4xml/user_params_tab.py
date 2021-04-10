@@ -47,11 +47,12 @@ class UserParams(QtWidgets.QWidget):
         controls_hbox.addWidget(self.new_button)
         self.new_button.clicked.connect(self.append_more_cb)
 
-        self.copy_button = QPushButton("Copy")
-        controls_hbox.addWidget(self.copy_button)
+        # self.copy_button = QPushButton("Copy")
+        # controls_hbox.addWidget(self.copy_button)
 
-        self.delete_button = QPushButton("Delete")
-        controls_hbox.addWidget(self.delete_button)
+        self.clear_button = QPushButton("Clear selected rows")
+        controls_hbox.addWidget(self.clear_button)
+        self.clear_button.clicked.connect(self.clear_rows_cb)
 
         #------------------
 		# <random_seed type="int" units="dimensionless">0</random_seed> 
@@ -153,6 +154,10 @@ class UserParams(QtWidgets.QWidget):
 
         self.layout.addLayout(controls_hbox)
         self.layout.addWidget(self.scroll_area)
+
+    @QtCore.Slot()
+    def clear_rows_cb(self):
+        print("----- clearing all selected rows")
 
     @QtCore.Slot()
     def append_more_cb(self):

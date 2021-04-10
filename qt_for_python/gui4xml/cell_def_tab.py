@@ -27,6 +27,7 @@ class CellDef(QWidget):
 
         self.current_cell_def = None
         self.xml_root = None
+        self.custom_data_count = 0
 
         # self.cell_defs = CellDefInstances()
         self.cell_def_horiz_layout = QHBoxLayout()
@@ -97,18 +98,18 @@ class CellDef(QWidget):
         # self.cell_def_horiz_layout.addWidget(self.)
 
         #------------------
-        hbox = QHBoxLayout()
+        controls_hbox = QHBoxLayout()
         self.new_button = QPushButton("New")
-        hbox.addWidget(self.new_button)
+        controls_hbox.addWidget(self.new_button)
 
         self.copy_button = QPushButton("Copy")
-        hbox.addWidget(self.copy_button)
+        controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
-        hbox.addWidget(self.delete_button)
+        controls_hbox.addWidget(self.delete_button)
 
-        self.vbox.addLayout(hbox)
-        self.vbox.addWidget(QHLine())
+        # self.vbox.addLayout(hbox)
+        # self.vbox.addWidget(QHLine())
 
         #------------------
         hbox = QHBoxLayout()
@@ -156,6 +157,16 @@ class CellDef(QWidget):
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
         self.vbox.addWidget(label)
+
+        #----------------------------
+        hbox = QHBoxLayout()
+        rb1 = QRadioButton("transition rate(s)", self)
+        rb1.toggled.connect(self.cycle_phase_transition_cb)
+        hbox.addWidget(rb1)
+        rb2 = QRadioButton("duration(s)", self)
+        rb2.toggled.connect(self.cycle_phase_transition_cb)
+        hbox.addWidget(rb2)
+        self.vbox.addLayout(hbox)
 
         #----------------------------
         hbox = QHBoxLayout()
@@ -1148,6 +1159,66 @@ class CellDef(QWidget):
         label = QLabel("Custom data")
         label.setStyleSheet("background-color: cyan")
         self.vbox.addWidget(label)
+
+        # Fixed names for columns:
+        hbox = QHBoxLayout()
+        # self.select = QtWidgets.QCheckBox("")
+        w = QLabel("Name")
+        w.setAlignment(QtCore.Qt.AlignCenter)
+        hbox.addWidget(w)
+        # col2 = QtWidgets.QLabel("Type")
+        # col2.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(col2)
+        w = QLabel("Value (double)")
+        w.setAlignment(QtCore.Qt.AlignCenter)
+        hbox.addWidget(w)
+        w = QLabel("Units")
+        w.setAlignment(QtCore.Qt.AlignCenter)
+        hbox.addWidget(w)
+        # label.setFixedWidth(180)
+        self.vbox.addLayout(hbox)
+
+
+                # Create lists for the various input boxes
+        self.select = []
+        self.name = []
+        self.value = []
+        self.units = []
+
+        for idx in range(5):
+            # self.main_layout.addLayout(NewUserParam(self))
+            hbox = QHBoxLayout()
+            w = QCheckBox("")
+            self.select.append(w)
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.name.append(w)
+            # self.name.setValidator(QtGui.QDoubleValidator())
+            # self.diffusion_coef.enter.connect(self.save_xml)
+            hbox.addWidget(w)
+            # if idx == 0:
+            #     w.setText("random_seed")
+
+            w = QLineEdit()
+            self.value.append(w)
+            # w.setValidator(QtGui.QDoubleValidator())
+            # if idx == 0:
+            #     w.setText("0")
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.units.append(w)
+            hbox.addWidget(w)
+
+            # units = QtWidgets.QLabel("micron^2/min")
+            # units.setFixedWidth(units_width)
+            # hbox.addWidget(units)
+            self.vbox.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            # self.vbox.addLayout(hbox)
+            self.custom_data_count = self.custom_data_count + 1
+
         # self.vbox.addWidget(QHLine())
 
         #==================================================================
@@ -1167,6 +1238,8 @@ class CellDef(QWidget):
         # self.layout.addWidget(self.tabs)
         # self.layout.addWidget(QHLine())
         # self.layout.addWidget(self.params)
+
+        self.layout.addLayout(controls_hbox)
 
         # self.layout.addWidget(self.scroll)
         self.layout.addWidget(splitter)
@@ -1190,6 +1263,12 @@ class CellDef(QWidget):
         self.customize_cycle_choices(idx)
         # QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
+
+    def cycle_phase_transition_cb(self):
+        # rb1.toggled.connect(self.updateLabel)(self, idx_choice):
+        radioBtn = self.sender()
+        if radioBtn.isChecked():
+            print("--------- ",radioBtn.text())
 
     def customize_cycle_choices(self, idx_choice):
         self.cycle_trate0_0.setEnabled(True)
@@ -1215,6 +1294,7 @@ class CellDef(QWidget):
 
 
     def fill_motility_substrates(self):
+        self.motility_substrate_dropdown.clear()
         uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
         # vp = []   # pointers to <variable> nodes
         if uep:
@@ -1596,8 +1676,12 @@ class CellDef(QWidget):
         # # ---------  secretion 
         secretion_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//"
         print('secretion_path =',secretion_path)
+        secretion_sub1_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//substrate[1]//"
 
-        # self.speed.setText(uep.find(secretion_path+"speed").text)
+        self.secretion_rate1.setText(uep.find(secretion_sub1_path+"secretion_rate").text)
+        self.secretion_target1.setText(uep.find(secretion_sub1_path+"secretion_target").text)
+        self.uptake_rate1.setText(uep.find(secretion_sub1_path+"uptake_rate").text)
+        self.secretion_net_export_rate.setText(uep.find(secretion_sub1_path+"net_export_rate").text)
 
         # self.text0.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]').attrib['name']
         # self.float32.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_rate').text)
