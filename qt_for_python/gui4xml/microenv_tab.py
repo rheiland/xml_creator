@@ -95,7 +95,7 @@ class SubstrateDef(QtWidgets.QWidget):
         controls_hbox.addWidget(self.delete_button)
 
         # self.vbox.addLayout(hbox)
-        self.vbox.addWidget(QHLine())
+        # self.vbox.addWidget(QHLine())
 
         #------------------
         hbox = QtWidgets.QHBoxLayout()
@@ -213,13 +213,20 @@ class SubstrateDef(QtWidgets.QWidget):
 
         #--------------------------
         # Dummy widget for filler??
-        label = QLabel("")
-        label.setFixedHeight(1000)
-        # label.setStyleSheet("background-color: orange")
-        label.setAlignment(QtCore.Qt.AlignCenter)
-        self.vbox.addWidget(label)
+        # label = QLabel("")
+        # label.setFixedHeight(1000)
+        # # label.setStyleSheet("background-color: orange")
+        # label.setAlignment(QtCore.Qt.AlignCenter)
+        # self.vbox.addWidget(label)
 
         #==================================================================
+        # self.vbox.setAlignment(QtCore.Qt.AlignTop)
+
+        # spacerItem = QSpacerItem(20, 237, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        # spacerItem = QSpacerItem(100,500)
+        # self.vbox.addItem(spacerItem)
+        self.vbox.addStretch()
+
         self.params_cell_def.setLayout(self.vbox)
 
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)

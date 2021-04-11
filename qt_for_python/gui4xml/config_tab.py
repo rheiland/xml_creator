@@ -256,7 +256,9 @@ class Config(QWidget):
         label.setFixedHeight(1000)
         # label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
-        self.vbox.addWidget(label)
+        # self.vbox.addWidget(label)
+
+        self.vbox.addStretch()
 
 
         #==================================================================

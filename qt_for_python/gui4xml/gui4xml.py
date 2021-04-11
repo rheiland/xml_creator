@@ -78,6 +78,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.fill_substrates_comboboxes()
         
         self.user_params_tab = UserParams()
+        self.user_params_tab.xml_root = self.xml_root
+        self.user_params_tab.fill_gui()
 
         #------------------
         self.addTab(self.config_tab,"Config Basics")

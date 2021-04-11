@@ -93,7 +93,7 @@ class UserParams(QtWidgets.QWidget):
         self.type_dropdown.addItem("bool")
         self.type_dropdown.addItem("text")
 
-        for idx in range(15):
+        for idx in range(25):
             # self.main_layout.addLayout(NewUserParam(self))
             hbox = QHBoxLayout()
             w = QCheckBox("")
@@ -207,8 +207,24 @@ class UserParams(QtWidgets.QWidget):
     #     pass
 
 
-    def fill_gui(self, substrate_name):
-        pass
+    def fill_gui(self):
+        # pass
+        uep_user_params = self.xml_root.find(".//user_parameters")
+        # custom_data_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//custom_data//"
+        print('uep_user_params=',uep_user_params)
+
+        idx = 0
+        # rwh/TODO: if we have more vars than we initially created rows for, we'll need
+        # to call 'append_more_cb' for the excess.
+        for var in uep_user_params:
+            print(idx, ") ",var)
+            self.name[idx].setText(var.tag)
+            print("tag=",var.tag)
+            self.value[idx].setText(var.text)
+
+            if 'units' in var.keys():
+                self.units[idx].setText(var.attrib['units'])
+            idx += 1
 
     def fill_xml(self):
         pass
