@@ -18,7 +18,7 @@ from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout
 from config_tab import Config
 from cell_def_tab import CellDef 
 from microenv_tab import SubstrateDef 
-
+from user_params_tab import UserParams 
   
 class PhysiCellXMLCreator(QTabWidget):
     def __init__(self, parent = None):
@@ -48,6 +48,8 @@ class PhysiCellXMLCreator(QTabWidget):
         # By default, let's startup the app with a default of template2D (a copy)
         # self.new_model_cb()  # default on startup
         config_file = "config_samples/template2D_flat.xml"
+        config_file = "config_samples/subcellular_flat.xml"
+        config_file = "config_samples/cancer_biorobots_flat.xml"
         tree = ET.parse(config_file)
         self.xml_root = tree.getroot()
 
@@ -73,13 +75,15 @@ class PhysiCellXMLCreator(QTabWidget):
         print("gui4xml: cd_name=",cd_name)
         self.celldef_tab.fill_gui(cd_name)
         self.celldef_tab.populate_tree()
-        self.celldef_tab.fill_motility_substrates()
+        self.celldef_tab.fill_substrates_comboboxes()
         
+        self.user_params_tab = UserParams()
 
+        #------------------
         self.addTab(self.config_tab,"Config Basics")
         self.addTab(self.microenv_tab,"Microenvironment")
         self.addTab(self.celldef_tab,"Cell Types")
-
+        self.addTab(self.user_params_tab,"User Params")
 
 
     def menu(self):
@@ -88,11 +92,12 @@ class PhysiCellXMLCreator(QTabWidget):
         #--------------
         file_menu = menubar.addMenu('File')
 
+        # open_act = QtGui.QAction('Open', self, checkable=True)
         open_act = QtGui.QAction('Open', self)
         # recent_act = QtGui.QAction('Recent', self)
         save_act = QtGui.QAction('Save', self)
-        saveas_act = QtGui.QAction('Save As', self)
-        # open_act = QtGui.QAction('Open', self, checkable=True)
+        saveas_act = QtGui.QAction('Save As my.xml', self)
+        saveas_act.triggered.connect(self.save_as_cb)
 
         # file_menu.setStatusTip('enable/disable Dark mode')
         new_model_act = QtGui.QAction('New (template 2D)', self)
@@ -132,6 +137,10 @@ class PhysiCellXMLCreator(QTabWidget):
         template3D_act = QtGui.QAction('template (3D)', self)
         samples_menu.addAction(template3D_act)
         template3D_act.triggered.connect(self.template3D_cb)
+
+        subcell_act = QtGui.QAction('subcellular', self)
+        samples_menu.addAction(subcell_act)
+        subcell_act.triggered.connect(self.subcell_cb)
 
         #--------------
         file_menu.addAction(open_act)
@@ -205,6 +214,9 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.celldef_tab.fill_gui("foobar")  # cell defs
         # self.celldef_tab.fill_motility_substrates()
 
+    def save_as_cb(self):
+        self.microenv_tab.fill_xml()
+
     def new_model_cb(self):
         name = "copy_template2D"
         self.add_new_model(name, False)
@@ -266,6 +278,12 @@ class PhysiCellXMLCreator(QTabWidget):
 
     def template3D_cb(self):
         name = "template3D_flat"
+        self.add_new_model(name, True)
+        self.config_file = "config_samples/" + name + ".xml"
+        self.show_sample_model()
+
+    def subcell_cb(self):
+        name = "subcellular_flat"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()

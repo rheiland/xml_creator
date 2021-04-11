@@ -26,8 +26,22 @@ class CellDef(QWidget):
         # global self.params_cell_def
 
         self.current_cell_def = None
+        self.idx_current_cell_def = 1  # 1-offset for XML
         self.xml_root = None
         self.custom_data_count = 0
+
+        # <substrate name="virus">
+        #     <secretion_rate units="1/min">0</secretion_rate>
+        #     <secretion_target units="substrate density">1</secretion_target>
+        #     <uptake_rate units="1/min">10</uptake_rate>
+        #     <net_export_rate units="total substrate/min">0</net_export_rate> 
+        # </substrate> 
+
+        # Create lists for cell type secretion values, for each substrate (index by substrate index)
+        self.secretion_rate_val = []  # .setText(uep.find(secretion_sub1_path+"secretion_rate").text)
+        self.secretion_target_val = []
+        self.secretion_uptake_rate_val = []
+        self.secretion_net_export_rate_val = []
 
         # self.cell_defs = CellDefInstances()
         self.cell_def_horiz_layout = QHBoxLayout()
@@ -35,10 +49,12 @@ class CellDef(QWidget):
         splitter = QSplitter()
 
         tree_widget_width = 160
+        tree_widget_height = 400
 
         self.tree = QTreeWidget()
         self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
+        self.tree.setFixedHeight(tree_widget_height)
         # self.tree.setColumnCount(1)
         self.tree.itemClicked.connect(self.tree_item_changed_cb)
 
@@ -160,12 +176,12 @@ class CellDef(QWidget):
 
         #----------------------------
         hbox = QHBoxLayout()
-        rb1 = QRadioButton("transition rate(s)", self)
-        rb1.toggled.connect(self.cycle_phase_transition_cb)
-        hbox.addWidget(rb1)
-        rb2 = QRadioButton("duration(s)", self)
-        rb2.toggled.connect(self.cycle_phase_transition_cb)
-        hbox.addWidget(rb2)
+        self.rb1 = QRadioButton("transition rate(s)", self)
+        self.rb1.toggled.connect(self.cycle_phase_transition_cb)
+        hbox.addWidget(self.rb1)
+        self.rb2 = QRadioButton("duration(s)", self)
+        self.rb2.toggled.connect(self.cycle_phase_transition_cb)
+        hbox.addWidget(self.rb2)
         self.vbox.addLayout(hbox)
 
         #----------------------------
@@ -1062,7 +1078,7 @@ class CellDef(QWidget):
         self.motility_substrate_dropdown = QComboBox()
         self.motility_substrate_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
-        # self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)
+        self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)
         # self.motility_substrate_dropdown.addItem("oxygen")
         self.vbox.addWidget(self.motility_substrate_dropdown)
 
@@ -1086,19 +1102,44 @@ class CellDef(QWidget):
         #     <uptake_rate units="1/min">0</uptake_rate>
         #     <net_export_rate units="total substrate/min">0</net_export_rate> 
         # </substrate> 
-        label = QLabel("oxygen")
-        label.setStyleSheet('background-color: lightgreen')
-        label.setFixedWidth(150)
-        self.vbox.addWidget(label)
+
+        # cycle_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//cycle"
+        # phase_transition_path = cycle_path + "//phase_transition_rates"
+        # print(' >> phase_transition_path ')
+        # pt_uep = uep.find(phase_transition_path)
+
+        self.secretion_substrate_dropdown = QComboBox()
+        self.secretion_substrate_dropdown.setFixedWidth(300)
+        self.secretion_substrate_dropdown.currentIndexChanged.connect(self.secretion_substrate_changed_cb)
+        self.vbox.addWidget(self.secretion_substrate_dropdown)
+
+        # self.uep_cell_defs = self.xml_root.find(".//cell_definitions")
+        # print('self.uep_cell_defs= ',self.uep_cell_defs)
+        # # secretion_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//"
+        # uep_secretion = self.xml_root.find(".//cell_definitions//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion")
+        # print('uep_secretion = ',uep_secretion )
+        # # vp = []   # pointers to <variable> nodes
+        # if self.uep_cell_defs:
+        #     # uep = self.xml_root.find('.//secretion')  # find unique entry point
+        #     idx = 0
+        #     for sub in uep_secretion.findall('substrate'):
+        #         # vp.append(var)
+        #         print(idx,") -- secretion substrate = ",sub.attrib['name'])
+        #         idx += 1
+
+        # label = QLabel("oxygen")
+        # label.setStyleSheet('background-color: lightgreen')
+        # label.setFixedWidth(150)
+        # self.vbox.addWidget(label)
 
         hbox = QHBoxLayout()
         label = QLabel("secretion rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.secretion_rate1 = QLineEdit()
-        self.secretion_rate1.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.secretion_rate1)
+        self.secretion_rate = QLineEdit()
+        self.secretion_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.secretion_rate)
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -1110,9 +1151,9 @@ class CellDef(QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.secretion_target1 = QLineEdit()
-        self.secretion_target1.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.secretion_target1)
+        self.secretion_target = QLineEdit()
+        self.secretion_target.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.secretion_target)
         units = QLabel("")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -1124,9 +1165,9 @@ class CellDef(QWidget):
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
-        self.uptake_rate1 = QLineEdit()
-        self.uptake_rate1.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.uptake_rate1)
+        self.uptake_rate = QLineEdit()
+        self.uptake_rate.setValidator(QtGui.QDoubleValidator())
+        hbox.addWidget(self.uptake_rate)
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
@@ -1160,6 +1201,20 @@ class CellDef(QWidget):
         label.setStyleSheet("background-color: cyan")
         self.vbox.addWidget(label)
 
+        #-------------------------
+        custom_data_controls_hbox = QHBoxLayout()
+        # self.new_button = QPushButton("New")
+        self.new_button = QPushButton("Append 5 more rows")
+        custom_data_controls_hbox.addWidget(self.new_button)
+        self.new_button.clicked.connect(self.append_more_cb)
+
+        self.clear_button = QPushButton("Clear selected rows")
+        custom_data_controls_hbox.addWidget(self.clear_button)
+        self.clear_button.clicked.connect(self.clear_rows_cb)
+
+        self.vbox.addLayout(custom_data_controls_hbox)
+
+        #-------------------------
         # Fixed names for columns:
         hbox = QHBoxLayout()
         # self.select = QtWidgets.QCheckBox("")
@@ -1264,6 +1319,35 @@ class CellDef(QWidget):
         # QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
 
+    @QtCore.Slot()
+    def motility_substrate_changed_cb(self, idx):
+        print('------ motility_substrate_changed_cb(): idx = ',idx)
+        print(self.motility_substrate_dropdown.currentText())
+
+    @QtCore.Slot()
+    def secretion_substrate_changed_cb(self, idx):
+        print('------ secretion_substrate_changed_cb(): idx = ',idx)
+        print(self.secretion_substrate_dropdown.currentText())
+
+        # uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
+        secretion_substrate_path = self.xml_root.find(".//cell_definitions//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion//substrate[" + str(idx+1) + "]")
+        if (secretion_substrate_path):
+            print(secretion_substrate_path)
+
+        # <substrate name="virus">
+        #     <secretion_rate units="1/min">0</secretion_rate>
+        #     <secretion_target units="substrate density">1</secretion_target>
+        #     <uptake_rate units="1/min">10</uptake_rate>
+        #     <net_export_rate units="total substrate/min">0</net_export_rate> 
+        # </substrate> 
+        # uep = self.xml_root.find(".//cell_definitions//cell_definition")
+        # print(" secretion_rate=", secretion_substrate_path.find('.//secretion_rate').text ) 
+        self.secretion_rate.setText(secretion_substrate_path.find(".//secretion_rate").text)
+        self.secretion_target.setText(secretion_substrate_path.find(".//secretion_target").text)
+        self.uptake_rate.setText(secretion_substrate_path.find(".//uptake_rate").text)
+        self.secretion_net_export_rate.setText(secretion_substrate_path.find(".//net_export_rate").text)
+
+
     def cycle_phase_transition_cb(self):
         # rb1.toggled.connect(self.updateLabel)(self, idx_choice):
         radioBtn = self.sender()
@@ -1292,18 +1376,51 @@ class CellDef(QWidget):
         else:
             self.cycle_trate0_0.setEnabled(False)
 
+    @QtCore.Slot()
+    def clear_rows_cb(self):
+        print("----- clearing all selected rows")
 
-    def fill_motility_substrates(self):
+    @QtCore.Slot()
+    def append_more_cb(self):
+        for idx in range(5):
+            # self.main_layout.addLayout(NewUserParam(self))
+            hbox = QHBoxLayout()
+            w = QCheckBox("")
+            self.select.append(w)
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.name.append(w)
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.value.append(w)
+            # w.setValidator(QtGui.QDoubleValidator())
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.units.append(w)
+            hbox.addWidget(w)
+            self.main_layout.addLayout(hbox)
+            self.custom_data_count = self.custom_data_count + 1
+            print(self.custom_data_count)
+
+    #---------------------------------
+    # def fill_motility_substrates(self):
+    def fill_substrates_comboboxes(self):
+        print("------- fill_substrates_comboboxes")
         self.motility_substrate_dropdown.clear()
+        self.secretion_substrate_dropdown.clear()
         uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
         # vp = []   # pointers to <variable> nodes
         if uep:
             idx = 0
             for var in uep.findall('variable'):
                 # vp.append(var)
-                # print(var.attrib['name'])
+                print(" --> ",var.attrib['name'])
                 name = var.attrib['name']
                 self.motility_substrate_dropdown.addItem(name)
+                self.secretion_substrate_dropdown.addItem(name)
 
     def tree_item_changed_cb(self, it,col):
         print('--- tree_item_changed:', it, col, it.text(col) )
@@ -1360,9 +1477,9 @@ class CellDef(QWidget):
                 # self.tree.insertTopLevelItem(idx,cellname)
                 idx += 1
 
-        idx_current_cell_def = idx + 1  # we use 1-offset indices below 
+        self.idx_current_cell_def = idx + 1  # we use 1-offset indices below 
 
-        cycle_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//cycle"
+        cycle_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//cycle"
         cycle_code = int(uep.find(cycle_path).attrib['code'])
         print(' >> cycle_path=',cycle_path, ", code=",cycle_code)
         # static const int advanced_Ki67_cycle_model= 0;
@@ -1404,11 +1521,21 @@ class CellDef(QWidget):
         print(' >> phase_transition_path ')
         pt_uep = uep.find(phase_transition_path)
         if pt_uep:
+            # self.rb1 = QRadioButton("transition rate(s)", self)
+            self.rb1.setChecked(True)
             for rate in pt_uep: 
                 print(rate)
                 print("start_index=",rate.attrib["start_index"])
                 if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
                     self.cycle_trate0_0.setText(rate.text)
+                elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
+                    self.cycle_trate0_1.setText(rate.text)
+                elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
+                    self.cycle_trate1_2.setText(rate.text)
+                elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
+                    self.cycle_trate2_3.setText(rate.text)
+                elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
+                    self.cycle_trate3_0.setText(rate.text)
 
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
@@ -1425,6 +1552,7 @@ class CellDef(QWidget):
         pd_uep = uep.find(phase_durations_path)
         print(' >> pd_uep =',pd_uep )
         if pd_uep:
+            self.rb2.setChecked(True)
             for pd in pd_uep: 
                 print(pd)
                 print("index=",pd.attrib["index"])
@@ -1452,7 +1580,7 @@ class CellDef(QWidget):
 
         # ---------  death 
 
-        death_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//death//"
+        death_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//death//"
         print('death_path=',death_path)
 
         # rwh/TODO: validate we've got apoptosis or necrosis since order is not required in XML.
@@ -1563,7 +1691,7 @@ class CellDef(QWidget):
 					
 				# 	<relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
 
-        volume_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//volume//"
+        volume_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//volume//"
         print('volume_path=',volume_path)
 
         self.volume_total.setText(uep.find(volume_path+"total").text)
@@ -1599,14 +1727,14 @@ class CellDef(QWidget):
 				# 	</options>
 
         # # ---------  mechanics 
-        mechanics_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//mechanics//"
+        mechanics_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//mechanics//"
         print('mechanics_path=',mechanics_path)
 
         self.cell_cell_adhesion_strength.setText(uep.find(mechanics_path+"cell_cell_adhesion_strength").text)
         self.cell_cell_repulsion_strength.setText(uep.find(mechanics_path+"cell_cell_repulsion_strength").text)
         self.relative_maximum_adhesion_distance.setText(uep.find(mechanics_path+"relative_maximum_adhesion_distance").text)
 
-        mechanics_options_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//mechanics//options//"
+        mechanics_options_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//mechanics//options//"
         self.set_relative_equilibrium_distance.setText(uep.find(mechanics_options_path+"set_relative_equilibrium_distance").text)
         self.set_absolute_equilibrium_distance.setText(uep.find(mechanics_options_path+"set_absolute_equilibrium_distance").text)
 
@@ -1643,14 +1771,14 @@ class CellDef(QWidget):
 				# 	</options>
 
         # # ---------  motility 
-        motility_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//motility//"
+        motility_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//motility//"
         print('motility_path=',motility_path)
 
         self.speed.setText(uep.find(motility_path+"speed").text)
         self.persistence_time.setText(uep.find(motility_path+"persistence_time").text)
         self.migration_bias.setText(uep.find(motility_path+"migration_bias").text)
 
-        motility_options_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//motility//options//"
+        motility_options_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//motility//options//"
 
         # print(' motility options enabled', uep.find(motility_options_path +'enabled').text)
         if uep.find(motility_options_path +'enabled').text.lower() == 'true':
@@ -1674,14 +1802,44 @@ class CellDef(QWidget):
         # self.chemotaxis_direction1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//direction').text
 
         # # ---------  secretion 
-        secretion_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//"
-        print('secretion_path =',secretion_path)
-        secretion_sub1_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//substrate[1]//"
 
-        self.secretion_rate1.setText(uep.find(secretion_sub1_path+"secretion_rate").text)
-        self.secretion_target1.setText(uep.find(secretion_sub1_path+"secretion_target").text)
-        self.uptake_rate1.setText(uep.find(secretion_sub1_path+"uptake_rate").text)
-        self.secretion_net_export_rate.setText(uep.find(secretion_sub1_path+"net_export_rate").text)
+        # <substrate name="virus">
+        #     <secretion_rate units="1/min">0</secretion_rate>
+        #     <secretion_target units="substrate density">1</secretion_target>
+        #     <uptake_rate units="1/min">10</uptake_rate>
+        #     <net_export_rate units="total substrate/min">0</net_export_rate> 
+        # </substrate> 
+
+        secretion_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion//"
+        print('secretion_path =',secretion_path)
+        secretion_sub1_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion//substrate[1]//"
+
+
+        # if self.uep_cell_defs:
+        # self.uep_cell_defs = self.xml_root.find(".//cell_definitions")
+        # print('self.uep_cell_defs= ',self.uep_cell_defs)
+        # # secretion_path = ".//cell_definition[" + str(idx_current_cell_def) + "]//phenotype//secretion//"
+        uep_secretion = self.xml_root.find(".//cell_definitions//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion")
+        print('uep_secretion = ',uep_secretion )
+        
+        self.secretion_rate_val.clear()
+        self.secretion_target_val.clear()
+        self.secretion_uptake_rate_val.clear()
+        self.secretion_net_export_rate_val.clear()
+        idx = 0
+        for sub in uep_secretion.findall('substrate'):
+            print(idx,") -- secretion substrate = ",sub.attrib['name'])
+            self.secretion_rate_val.append(sub.find("secretion_rate").text)
+            self.secretion_target_val.append(sub.find("secretion_target").text)
+            self.secretion_uptake_rate_val.append(sub.find("uptake_rate").text)
+            self.secretion_net_export_rate_val.append(sub.find("net_export_rate").text)
+            idx += 1
+
+
+        self.secretion_rate.setText(self.secretion_rate_val[0])
+        self.secretion_target.setText(self.secretion_target_val[0])
+        self.uptake_rate.setText(self.secretion_uptake_rate_val[0])
+        self.secretion_net_export_rate.setText(self.secretion_net_export_rate_val[0])
 
         # self.text0.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]').attrib['name']
         # self.float32.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_rate').text)
