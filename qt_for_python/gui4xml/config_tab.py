@@ -149,9 +149,15 @@ class Config(QWidget):
         hbox.addWidget(self.virtual_walls)
         self.vbox.addLayout(hbox)
 
-        self.vbox.addWidget(QHLine())
+        # self.vbox.addWidget(QHLine())
 
-        #----------
+        #============  Misc ================================
+        label = QLabel("Misc runtime parameters")
+        label.setFixedHeight(label_height)
+        label.setStyleSheet("background-color: orange")
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        self.vbox.addWidget(label)
+
         hbox = QHBoxLayout()
         # hbox.setFixedHeight(label_width)
 
@@ -246,16 +252,22 @@ class Config(QWidget):
 
         self.vbox.addLayout(hbox)
 
-        #--------------
+        #============  Cells IC ================================
+        label = QLabel("Initial conditions of cells (x,y,z, type)")
+        label.setFixedHeight(label_height)
+        label.setStyleSheet("background-color: orange")
+        label.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.vbox.addWidget(label)
         self.cells_csv = QCheckBox("cells.csv")
         self.vbox.addWidget(self.cells_csv)
 
         #--------------------------
         # Dummy widget for filler??
-        label = QLabel("")
-        label.setFixedHeight(1000)
-        # label.setStyleSheet("background-color: orange")
-        label.setAlignment(QtCore.Qt.AlignCenter)
+        # label = QLabel("")
+        # label.setFixedHeight(1000)
+        # # label.setStyleSheet("background-color: orange")
+        # label.setAlignment(QtCore.Qt.AlignCenter)
         # self.vbox.addWidget(label)
 
         self.vbox.addStretch()

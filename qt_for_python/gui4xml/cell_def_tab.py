@@ -156,12 +156,12 @@ class CellDef(QWidget):
         # static const int live_cells_cycle_model = 5; 
         # static const int flow_cytometry_separated_cycle_model = 6; 
         # static const int cycling_quiescent_model = 7; 
-        self.cycle_dropdown.addItem("live cells")
-        self.cycle_dropdown.addItem("basic Ki67")
-        self.cycle_dropdown.addItem("advanced Ki67")
-        self.cycle_dropdown.addItem("flow cytometry")
-        self.cycle_dropdown.addItem("flow cytometry separated")
-        self.cycle_dropdown.addItem("cycling quiescent")
+        self.cycle_dropdown.addItem("live cells")   # 0 -> 0
+        self.cycle_dropdown.addItem("basic Ki67")   # 0 -> 1, 1 -> 0
+        self.cycle_dropdown.addItem("advanced Ki67")  # 0 -> 1, 1 -> 2, 2 -> 0
+        self.cycle_dropdown.addItem("flow cytometry") # 0 -> 1, 1 -> 2, 2 -> 0
+        self.cycle_dropdown.addItem("flow cytometry separated") # 0->1, 1->2, 2->3, 3->0
+        self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
         # self.cycle_dropdown.addItem("live apoptotic")
         # self.cycle_dropdown.addItem("total cells")
 
@@ -182,92 +182,150 @@ class CellDef(QWidget):
         self.rb2 = QRadioButton("duration(s)", self)
         self.rb2.toggled.connect(self.cycle_phase_transition_cb)
         hbox.addWidget(self.rb2)
+        hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
         self.vbox.addLayout(hbox)
 
         #----------------------------
+        # self.stack2 = QWidget()
+        # self.stack3 = QWidget()
+
+        # self.stack1UI()
+        # self.stack2UI()
+        # self.stack3UI()
+
+        # self.stacked = QStackedWidget (self)
+        # self.stacked.addWidget (self.stack1)
+        # self.stacked.addWidget (self.stack2)
+        # self.stacked.addWidget (self.stack3)
+
+        self.stacked = QStackedWidget()
+
+        self.cycle_rows_vbox = QVBoxLayout()
+        # self.cycle_rows_vbox = QListView()
+        # self.cycle_rows_vbox = QStackedLayout()
+
+        # transition rates
+        self.stack_t00 = QWidget()
+        self.stack_t01 = QWidget()
+        self.stack_t02 = QWidget()
+        self.stack_t03 = QWidget()
+
+        # durations 
+        self.stack_d00 = QWidget()
+        self.stack_d01 = QWidget()
+        self.stack_d02 = QWidget()
+        self.stack_d03 = QWidget()
+
+        # self.trate00_hbox = QHBoxLayout()
         hbox = QHBoxLayout()
         label = QLabel("phase 0->0 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
+        # self.trate00_hbox.addWidget(label)
         hbox.addWidget(label)
+        # self.stacked.addWidget(label)
+        # self.stacked.addLayout(self.trate00_hbox)
 
         self.cycle_trate0_0 = QLineEdit()
         # self.cycle_trate0_1.setValidator(QtGui.QIntValidator())
         self.cycle_trate0_0.setValidator(QtGui.QDoubleValidator())
         # self.cycle_trate0_1.enter.connect(self.save_xml)
         hbox.addWidget(self.cycle_trate0_0)
+        # self.stacked.addWidget(self.cycle_trate0_0)
+
+        self.cycle_trate0_0 = QCheckBox("Fixed")
+        hbox.addWidget(self.cycle_trate0_0 )
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+
+        # self.cycle_rows_vbox.addLayout(self.trate00_hbox)
+
+        # self.vbox.addLayout(hbox)
+        # self.vbox.addLayout(self.cycle_rows_vbox)
         
+        # self.stack_t00.setLayout(self.trate00_hbox)
+        self.stack_t00.setLayout(hbox)
+
+        # self.vbox.addWidget(self.stacked)
+        # self.vbox.addWidget(self.stack1)
+        self.stacked.addWidget(self.stack_t00)
+
+        self.vbox.addWidget(self.stacked)
+
         #------ Cycle transition rates ----------------------
-        hbox = QHBoxLayout()
+        self.trate01_hbox = QHBoxLayout()
         label = QLabel("phase 0->1 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        self.trate01_hbox.addWidget(label)
 
         self.cycle_trate0_1 = QLineEdit()
         # self.cycle_trate0_1.setValidator(QtGui.QIntValidator())
         self.cycle_trate0_1.setValidator(QtGui.QDoubleValidator())
         # self.cycle_trate0_1.enter.connect(self.save_xml)
-        hbox.addWidget(self.cycle_trate0_1)
+        self.trate01_hbox.addWidget(self.cycle_trate0_1)
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.trate01_hbox.addWidget(units)
+
+        # self.vbox.addLayout(hbox)
         #----------
-        hbox = QHBoxLayout()
+        self.trate12_hbox = QHBoxLayout()
         label = QLabel("phase 1->2 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        self.trate12_hbox.addWidget(label)
 
         self.cycle_trate1_2 = QLineEdit()
         self.cycle_trate1_2.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_trate1_2)
+        self.trate12_hbox.addWidget(self.cycle_trate1_2)
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.trate12_hbox.addWidget(units)
+
+        # self.vbox.addLayout(hbox)
         #----------
-        hbox = QHBoxLayout()
+        self.trate23_hbox = QHBoxLayout()
         label = QLabel("phase 2->3 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        self.trate23_hbox.addWidget(label)
 
         self.cycle_trate2_3 = QLineEdit()
         self.cycle_trate2_3.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_trate2_3)
+        self.trate23_hbox.addWidget(self.cycle_trate2_3)
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.trate23_hbox.addWidget(units)
+
+        # self.vbox.addLayout(hbox)
         #----------
-        hbox = QHBoxLayout()
+        self.trate30_hbox = QHBoxLayout()
         label = QLabel("phase 3->0 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        self.trate30_hbox.addWidget(label)
 
         self.cycle_trate3_0 = QLineEdit()
         self.cycle_trate3_0.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_trate3_0)
+        self.trate30_hbox.addWidget(self.cycle_trate3_0)
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.trate30_hbox.addWidget(units)
+
+        # self.vbox.addLayout(hbox)
 
 
         #------ Cycle duration rates ----------------------
+        # self.phase0_hbox = QHBoxLayout()
         hbox = QHBoxLayout()
+        # self.stack_d00 = QWidget()
         label = QLabel("phase 0 duration")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
@@ -284,26 +342,43 @@ class CellDef(QWidget):
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+
+        # self.vbox.addLayout(self.phase0_hbox)
+
+        # self.stack1.setLayout(self.phase0_hbox)
+        # self.stacked.addWidget(self.stack1)
+
+        # self.stack_d00.setLayout(self.drate00_hbox)
+        self.stack_d00.setLayout(hbox)
+        # self.stack1.addLayout(self.trate00_hbox)
+
+        # self.vbox.addWidget(self.stacked)
+        # self.vbox.addWidget(self.stack1)
+        self.stacked.addWidget(self.stack_d00)
+
+        self.vbox.addWidget(self.stacked)
+
+        # self.vbox.addWidget(self.stacked)
         #----------
-        hbox = QHBoxLayout()
+        self.phase1_hbox = QHBoxLayout()
         label = QLabel("phase 1 duration")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        self.phase1_hbox.addWidget(label)
 
         self.cycle_duration1 = QLineEdit()
         self.cycle_duration1.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_duration1)
+        self.phase1_hbox.addWidget(self.cycle_duration1)
 
         self.cycle_duration1_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_duration1_fixed)
+        self.phase1_hbox.addWidget(self.cycle_duration1_fixed)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        self.phase1_hbox.addWidget(units)
+
+        # self.vbox.addLayout(self.phase1_hbox)
         #----------
         hbox = QHBoxLayout()
         label = QLabel("phase 2 duration")
@@ -322,7 +397,8 @@ class CellDef(QWidget):
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+
+        # self.vbox.addLayout(hbox)
         #----------
         hbox = QHBoxLayout()
         label = QLabel("phase 3 duration")
@@ -341,7 +417,8 @@ class CellDef(QWidget):
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+
+        # self.vbox.addLayout(hbox)
 
         #============  Death ================================
         label = QLabel("Phenotype: death")
@@ -1235,20 +1312,20 @@ class CellDef(QWidget):
 
 
                 # Create lists for the various input boxes
-        self.select = []
-        self.name = []
-        self.value = []
-        self.units = []
+        self.custom_data_select = []
+        self.custom_data_name = []
+        self.custom_data_value = []
+        self.custom_data_units = []
 
-        for idx in range(5):
+        for idx in range(10):   # rwh/TODO - this should depend on how many in the .xml
             # self.main_layout.addLayout(NewUserParam(self))
             hbox = QHBoxLayout()
             w = QCheckBox("")
-            self.select.append(w)
+            self.custom_data_select.append(w)
             hbox.addWidget(w)
 
             w = QLineEdit()
-            self.name.append(w)
+            self.custom_data_name.append(w)
             # self.name.setValidator(QtGui.QDoubleValidator())
             # self.diffusion_coef.enter.connect(self.save_xml)
             hbox.addWidget(w)
@@ -1256,14 +1333,14 @@ class CellDef(QWidget):
             #     w.setText("random_seed")
 
             w = QLineEdit()
-            self.value.append(w)
+            self.custom_data_value.append(w)
             # w.setValidator(QtGui.QDoubleValidator())
             # if idx == 0:
             #     w.setText("0")
             hbox.addWidget(w)
 
             w = QLineEdit()
-            self.units.append(w)
+            self.custom_data_units.append(w)
             hbox.addWidget(w)
 
             # units = QtWidgets.QLabel("micron^2/min")
@@ -1348,13 +1425,38 @@ class CellDef(QWidget):
         self.secretion_net_export_rate.setText(secretion_substrate_path.find(".//net_export_rate").text)
 
 
+        # self.cycle_dropdown.addItem("live cells")   # 0 -> 0
+        # self.cycle_dropdown.addItem("basic Ki67")   # 0 -> 1, 1 -> 0
+        # self.cycle_dropdown.addItem("advanced Ki67")  # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry") # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry separated") # 0->1, 1->2, 2->3, 3->0
+        # self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
     def cycle_phase_transition_cb(self):
         # rb1.toggled.connect(self.updateLabel)(self, idx_choice):
+        print('self.cycle_rows_vbox.count()=', self.cycle_rows_vbox.count())
+
         radioBtn = self.sender()
         if radioBtn.isChecked():
             print("--------- ",radioBtn.text())
 
+        print("self.cycle_dropdown.currentText() = ",self.cycle_dropdown.currentText())
+        print("self.cycle_dropdown.currentIndex() = ",self.cycle_dropdown.currentIndex())
+
+        # self.cycle_rows_vbox.clear()
+        if radioBtn.text().find("duration"):
+            self.stacked.setCurrentIndex(0)
+            # pass
+            # self.stacked.hide()
+            # self.cycle_rows_vbox.(self.trate00_hbox) # "already has a parent"
+            # self.cycle_rows_vbox.addLayout(self.trate00_hbox) # "already has a parent"
+            # self.cycle_rows_vbox.addLayout(self.trate30_hbox)
+        else:  # transition rates
+            # pass
+            self.stacked.setCurrentIndex(1)
+        
+
     def customize_cycle_choices(self, idx_choice):
+        return
         self.cycle_trate0_0.setEnabled(True)
         self.cycle_trate0_1.setEnabled(True)
         self.cycle_trate1_2.setEnabled(True)
@@ -1386,22 +1488,24 @@ class CellDef(QWidget):
             # self.main_layout.addLayout(NewUserParam(self))
             hbox = QHBoxLayout()
             w = QCheckBox("")
-            self.select.append(w)
+            self.custom_data_select.append(w)
             hbox.addWidget(w)
 
             w = QLineEdit()
-            self.name.append(w)
+            self.custom_data_name.append(w)
             hbox.addWidget(w)
 
             w = QLineEdit()
-            self.value.append(w)
+            self.custom_data_value.append(w)
             # w.setValidator(QtGui.QDoubleValidator())
             hbox.addWidget(w)
 
             w = QLineEdit()
-            self.units.append(w)
+            self.custom_data_units.append(w)
             hbox.addWidget(w)
-            self.main_layout.addLayout(hbox)
+
+            self.vbox.addLayout(hbox)
+            # self.main_layout.addLayout(hbox)
             self.custom_data_count = self.custom_data_count + 1
             print(self.custom_data_count)
 
@@ -1792,15 +1896,6 @@ class CellDef(QWidget):
             self.motility_2D.setChecked(False)
 
 
-        # self.float29.value = float(uep.find('.//cell_definition[1]//phenotype//motility//speed').text)
-        # self.float30.value = float(uep.find('.//cell_definition[1]//phenotype//motility//persistence_time').text)
-        # self.float31.value = float(uep.find('.//cell_definition[1]//phenotype//motility//migration_bias').text)
-        # self.bool2.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//enabled').text.lower()))
-        # self.bool3.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//use_2D').text.lower()))
-        # self.bool4.value = ('true' == (uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//enabled').text.lower()))
-        # self.chemotaxis_substrate1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//substrate').text
-        # self.chemotaxis_direction1.value = uep.find('.//cell_definition[1]//phenotype//motility//options//chemotaxis//direction').text
-
         # # ---------  secretion 
 
         # <substrate name="virus">
@@ -1841,16 +1936,30 @@ class CellDef(QWidget):
         self.uptake_rate.setText(self.secretion_uptake_rate_val[0])
         self.secretion_net_export_rate.setText(self.secretion_net_export_rate_val[0])
 
-        # self.text0.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]').attrib['name']
-        # self.float32.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_rate').text)
-        # self.float33.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//secretion_target').text)
-        # self.float34.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//uptake_rate').text)
-        # self.float35.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[1]//net_export_rate').text)
-        # self.text1.value = uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]').attrib['name']
-        # self.float36.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//secretion_rate').text)
-        # self.float37.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//secretion_target').text)
-        # self.float38.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//uptake_rate').text)
-        # self.float39.value = float(uep.find('.//cell_definition[1]//phenotype//secretion//substrate[2]//net_export_rate').text)
+        # # ---------  molecular 
+
+
+        # # ---------  custom data 
+        # <custom_data>  
+        # 	<receptor units="dimensionless">0.0</receptor>
+        # 	<cargo_release_o2_threshold units="mmHg">10</cargo_release_o2_threshold>
+
+        uep_custom_data = self.xml_root.find(".//cell_definitions//cell_definition[" + str(self.idx_current_cell_def) + "]//custom_data")
+        # custom_data_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//custom_data//"
+        print('uep_custom_data=',uep_custom_data)
+
+        idx = 0
+        # rwh/TODO: if we have more vars than we initially created rows for, we'll need
+        # to call 'append_more_cb' for the excess.
+        for var in uep_custom_data:
+            print(idx, ") ",var)
+            self.custom_data_name[idx].setText(var.tag)
+            print("tag=",var.tag)
+            self.custom_data_value[idx].setText(var.text)
+
+            if 'units' in var.keys():
+                self.custom_data_units[idx].setText(var.attrib['units'])
+            idx += 1
 
 
     # Read values from the GUI widgets and generate/write a new XML
@@ -1910,7 +2019,7 @@ class CellDef(QWidget):
         self.speed.setText('')
         self.persistence_time.setText('')
         self.migration_bias.setText('')
-        self.secretion_rate1.setText('')
-        self.secretion_target1.setText('')
-        self.uptake_rate1.setText('')
+        self.secretion_rate.setText('')
+        self.secretion_target.setText('')
+        self.uptake_rate.setText('')
         self.secretion_net_export_rate.setText('')

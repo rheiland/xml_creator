@@ -204,7 +204,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.clear_gui()
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_gui(None)
-        self.celldef_tab.fill_motility_substrates()
+        self.celldef_tab.fill_substrates_comboboxes()
 
     def show_sample_model(self):
         # self.config_file = "config_samples/biorobots.xml"
