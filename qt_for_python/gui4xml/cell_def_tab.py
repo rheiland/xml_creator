@@ -29,6 +29,7 @@ class CellDef(QWidget):
         self.idx_current_cell_def = 1  # 1-offset for XML
         self.xml_root = None
         self.custom_data_count = 0
+        self.custom_data_units_width = 90
 
         # <substrate name="virus">
         #     <secretion_rate units="1/min">0</secretion_rate>
@@ -52,7 +53,7 @@ class CellDef(QWidget):
         tree_widget_height = 400
 
         self.tree = QTreeWidget()
-        self.tree.setStyleSheet("background-color: lightgray")
+        # self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         self.tree.setFixedHeight(tree_widget_height)
         # self.tree.setColumnCount(1)
@@ -233,8 +234,8 @@ class CellDef(QWidget):
         hbox.addWidget(self.cycle_trate0_0)
         # self.stacked.addWidget(self.cycle_trate0_0)
 
-        self.cycle_trate0_0 = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_trate0_0 )
+        self.cycle_trate0_0_fixed = QCheckBox("Fixed")
+        hbox.addWidget(self.cycle_trate0_0_fixed )
 
         units = QLabel("1/min")
         units.setFixedWidth(units_width)
@@ -1340,6 +1341,7 @@ class CellDef(QWidget):
             hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setFixedWidth(self.custom_data_units_width)
             self.custom_data_units.append(w)
             hbox.addWidget(w)
 
@@ -1501,6 +1503,7 @@ class CellDef(QWidget):
             hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setFixedWidth(self.custom_data_units_width)
             self.custom_data_units.append(w)
             hbox.addWidget(w)
 

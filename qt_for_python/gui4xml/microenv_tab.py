@@ -37,7 +37,7 @@ class SubstrateDef(QtWidgets.QWidget):
         tree_widget_width = 160
 
         self.tree = QtWidgets.QTreeWidget()
-        self.tree.setStyleSheet("background-color: lightgray")
+        # self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.currentChanged(self.tree_item_changed_cb)
         self.tree.itemClicked.connect(self.tree_item_changed_cb)
