@@ -30,6 +30,18 @@ class CellDef(QWidget):
         self.xml_root = None
         self.custom_data_count = 0
         self.custom_data_units_width = 90
+        self.cycle_duration_flag = False
+
+        self.stacked = QStackedWidget()
+        self.stack_idx_t00 = -1
+        self.stack_idx_t01 = -1
+        self.stack_idx_t02 = -1
+        self.stack_idx_t03 = -1
+
+        self.stack_idx_d00 = -1
+        self.stack_idx_d01 = -1
+        self.stack_idx_d02 = -1
+        self.stack_idx_d03 = -1
 
         # <substrate name="virus">
         #     <secretion_rate units="1/min">0</secretion_rate>
@@ -147,6 +159,7 @@ class CellDef(QWidget):
         self.cycle_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
         self.cycle_dropdown.currentIndexChanged.connect(self.cycle_changed_cb)
+        # self.cycle_dropdown.currentIndexChanged.connect(self.cycle_phase_transition_cb)
 
         # Rf. Section 17 of User Guide and core/PhysiCell_constants.{h,cpp}
         # static const int advanced_Ki67_cycle_model= 0;
@@ -178,32 +191,19 @@ class CellDef(QWidget):
         #----------------------------
         hbox = QHBoxLayout()
         self.rb1 = QRadioButton("transition rate(s)", self)
-        self.rb1.toggled.connect(self.cycle_phase_transition_cb)
+        self.rb1.clicked.connect(self.cycle_phase_transition_cb)
         hbox.addWidget(self.rb1)
         self.rb2 = QRadioButton("duration(s)", self)
-        self.rb2.toggled.connect(self.cycle_phase_transition_cb)
+        self.rb2.clicked.connect(self.cycle_phase_transition_cb)
         hbox.addWidget(self.rb2)
         hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
         self.vbox.addLayout(hbox)
 
-        #----------------------------
-        # self.stack2 = QWidget()
-        # self.stack3 = QWidget()
-
-        # self.stack1UI()
-        # self.stack2UI()
-        # self.stack3UI()
-
-        # self.stacked = QStackedWidget (self)
-        # self.stacked.addWidget (self.stack1)
-        # self.stacked.addWidget (self.stack2)
-        # self.stacked.addWidget (self.stack3)
-
-        self.stacked = QStackedWidget()
-
-        self.cycle_rows_vbox = QVBoxLayout()
-        # self.cycle_rows_vbox = QListView()
-        # self.cycle_rows_vbox = QStackedLayout()
+        #-----------------------------
+        # We'll create a unique widget to hold different rates or durations, depending
+        # on which cycle and method of defining it (transition rates or duration times) is chosen.
+        # Then we will only display the relevant one, based on these choices.
+        # self.stacked = QStackedWidget()
 
         # transition rates
         self.stack_t00 = QWidget()
@@ -211,215 +211,407 @@ class CellDef(QWidget):
         self.stack_t02 = QWidget()
         self.stack_t03 = QWidget()
 
-        # durations 
+        # duration times
         self.stack_d00 = QWidget()
         self.stack_d01 = QWidget()
         self.stack_d02 = QWidget()
         self.stack_d03 = QWidget()
 
-        # self.trate00_hbox = QHBoxLayout()
-        hbox = QHBoxLayout()
+
+        #------ Cycle transition rate (1 node) ----------------------
+        # self.cycle_dropdown.addItem("live cells")   # 0 -> 0
+
+        glayout = QGridLayout()
+
         label = QLabel("phase 0->0 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        # self.trate00_hbox.addWidget(label)
-        hbox.addWidget(label)
-        # self.stacked.addWidget(label)
-        # self.stacked.addLayout(self.trate00_hbox)
+        # glayout.addWidget(*Widget, row, column, rowspan, colspan)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_trate0_0 = QLineEdit()
-        # self.cycle_trate0_1.setValidator(QtGui.QIntValidator())
-        self.cycle_trate0_0.setValidator(QtGui.QDoubleValidator())
-        # self.cycle_trate0_1.enter.connect(self.save_xml)
-        hbox.addWidget(self.cycle_trate0_0)
-        # self.stacked.addWidget(self.cycle_trate0_0)
+        self.cycle_trate00 = QLineEdit()
+        self.cycle_trate00.setValidator(QtGui.QDoubleValidator())
+        # self.cycle_trate0_0.enter.connect(self.save_xml)
+        glayout.addWidget(self.cycle_trate00, 0,1,1,2) # w, row, column, rowspan, colspan
 
-        self.cycle_trate0_0_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_trate0_0_fixed )
+        self.cycle_trate00_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate00_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
         units.setFixedWidth(units_width)
-        hbox.addWidget(units)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+        # hbox.addWidget(units_1min)
+        self.stack_t00.setLayout(glayout)   
 
-        # self.cycle_rows_vbox.addLayout(self.trate00_hbox)
+        idx_stacked_widget = 0
+        self.stack_idx_t00 = idx_stacked_widget 
+        print(" new stacked widget: t00 -------------> ",idx_stacked_widget)
+        self.stacked.addWidget(self.stack_t00)  # <------------- stack widget 0
 
-        # self.vbox.addLayout(hbox)
-        # self.vbox.addLayout(self.cycle_rows_vbox)
-        
-        # self.stack_t00.setLayout(self.trate00_hbox)
-        self.stack_t00.setLayout(hbox)
 
-        # self.vbox.addWidget(self.stacked)
-        # self.vbox.addWidget(self.stack1)
-        self.stacked.addWidget(self.stack_t00)
+        #------ Cycle transition rates (2 nodes) ----------------------
+        # self.cycle_dropdown.addItem("basic Ki67")   # 0 -> 1, 1 -> 0
+        # self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
 
-        self.vbox.addWidget(self.stacked)
+        glayout = QGridLayout()
 
-        #------ Cycle transition rates ----------------------
-        self.trate01_hbox = QHBoxLayout()
         label = QLabel("phase 0->1 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.trate01_hbox.addWidget(label)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_trate0_1 = QLineEdit()
-        # self.cycle_trate0_1.setValidator(QtGui.QIntValidator())
-        self.cycle_trate0_1.setValidator(QtGui.QDoubleValidator())
-        # self.cycle_trate0_1.enter.connect(self.save_xml)
-        self.trate01_hbox.addWidget(self.cycle_trate0_1)
+        self.cycle_trate01 = QLineEdit()
+        self.cycle_trate01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
         units.setFixedWidth(units_width)
-        self.trate01_hbox.addWidget(units)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(hbox)
-        #----------
-        self.trate12_hbox = QHBoxLayout()
+        #-------
+        label = QLabel("phase 1->0 transition rate")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_trate10 = QLineEdit()
+        self.cycle_trate10.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate10, 1,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate10_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate10_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        # glayout.addWidget(QLabel("rwh-------------------------------AAAAAAAAAAAAAAAAAAAAAaa"), 2,0,4,4) # w, row, column, rowspan, colspan
+        # glayout.addWidget(QLabel(""), 2,0,3,4) # w, row, column, rowspan, colspan
+        # glayout.addStretch(0)
+
+        #---
+        self.stack_t01.setLayout(glayout)
+
+        idx_stacked_widget += 1
+        self.stack_idx_t01 = idx_stacked_widget 
+        print(" new stacked widget: t01 -------------> ",idx_stacked_widget)
+        self.stacked.addWidget(self.stack_t01) # <------------- stack widget 1
+
+
+        #------ Cycle transition rates (3 nodes) ----------------------
+        # self.cycle_dropdown.addItem("advanced Ki67")  # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry") # 0 -> 1, 1 -> 2, 2 -> 0
+
+        glayout = QGridLayout()
+
+        label = QLabel("phase 0->1 transition rate")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_02_01 = QLineEdit()
+        self.cycle_trate_02_01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_02_01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_02_01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_02_01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
         label = QLabel("phase 1->2 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.trate12_hbox.addWidget(label)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_trate1_2 = QLineEdit()
-        self.cycle_trate1_2.setValidator(QtGui.QDoubleValidator())
-        self.trate12_hbox.addWidget(self.cycle_trate1_2)
+        self.cycle_trate_02_12 = QLineEdit()
+        self.cycle_trate_02_12.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_02_12, 1,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_02_12_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_02_12_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
         units.setFixedWidth(units_width)
-        self.trate12_hbox.addWidget(units)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(hbox)
-        #----------
-        self.trate23_hbox = QHBoxLayout()
+        #-------
+        label = QLabel("phase 2->0 transition rate")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_02_20 = QLineEdit()
+        self.cycle_trate_02_20.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_02_20, 2,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_02_20_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_02_20_fixed, 2,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
+
+        #-----
+        self.stack_t02.setLayout(glayout)
+        idx_stacked_widget += 1
+        print(" new stacked widget: t02 -------------> ",idx_stacked_widget)
+        self.stack_idx_t02 = idx_stacked_widget 
+        self.stacked.addWidget(self.stack_t02)
+
+
+        #------ Cycle transition rates (4 nodes) ----------------------
+        # self.cycle_dropdown.addItem("flow cytometry separated") # 0->1, 1->2, 2->3, 3->0
+
+        glayout = QGridLayout()
+
+        label = QLabel("phase 0->1 transition rate")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_01 = QLineEdit()
+        self.cycle_trate_03_01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_03_01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_03_01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        label = QLabel("phase 1->2 transition rate")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_12 = QLineEdit()
+        self.cycle_trate_03_12.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_03_12, 1,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_12_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_03_12_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
         label = QLabel("phase 2->3 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.trate23_hbox.addWidget(label)
+        glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_trate2_3 = QLineEdit()
-        self.cycle_trate2_3.setValidator(QtGui.QDoubleValidator())
-        self.trate23_hbox.addWidget(self.cycle_trate2_3)
+        self.cycle_trate_03_23 = QLineEdit()
+        self.cycle_trate_03_23.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_03_23, 2,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_23_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_03_23_fixed, 2,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
         units.setFixedWidth(units_width)
-        self.trate23_hbox.addWidget(units)
+        glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(hbox)
-        #----------
-        self.trate30_hbox = QHBoxLayout()
+        #-------
         label = QLabel("phase 3->0 transition rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.trate30_hbox.addWidget(label)
+        glayout.addWidget(label, 3,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_trate3_0 = QLineEdit()
-        self.cycle_trate3_0.setValidator(QtGui.QDoubleValidator())
-        self.trate30_hbox.addWidget(self.cycle_trate3_0)
+        self.cycle_trate_03_30 = QLineEdit()
+        self.cycle_trate_03_30.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_trate_03_30, 3,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_trate_03_30_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_trate_03_30_fixed, 3,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("1/min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
         units.setFixedWidth(units_width)
-        self.trate30_hbox.addWidget(units)
+        glayout.addWidget(units, 3,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(hbox)
+        #-----
+        self.stack_t03.setLayout(glayout)
+        idx_stacked_widget += 1
+        print(" new stacked widget: t03 -------------> ",idx_stacked_widget)
+        self.stack_idx_t03 = idx_stacked_widget 
+        self.stacked.addWidget(self.stack_t03)
 
 
+        #===========================================================================
         #------ Cycle duration rates ----------------------
-        # self.phase0_hbox = QHBoxLayout()
-        hbox = QHBoxLayout()
-        # self.stack_d00 = QWidget()
+        # self.cycle_dropdown.addItem("live cells")   # 0 -> 0
+
+        glayout = QGridLayout()
+
         label = QLabel("phase 0 duration")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        glayout.addWidget(label, 0,0,1,1)
+        # glayout.addWidget(*Widget, row, column, rowspan, colspan)
 
-        self.cycle_duration0 = QLineEdit()
-        self.cycle_duration0.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_duration0)
+        self.cycle_duration00 = QLineEdit()
+        self.cycle_duration00.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration00, 0,1,1,2)
 
-        self.cycle_duration0_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_duration0_fixed)
+        self.cycle_duration00_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration00_fixed, 0,3,1,1)
 
         units = QLabel("min")
         units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
+        glayout.addWidget(units, 0,4,1,1)
 
-        # self.vbox.addLayout(self.phase0_hbox)
-
-        # self.stack1.setLayout(self.phase0_hbox)
-        # self.stacked.addWidget(self.stack1)
-
-        # self.stack_d00.setLayout(self.drate00_hbox)
-        self.stack_d00.setLayout(hbox)
-        # self.stack1.addLayout(self.trate00_hbox)
-
-        # self.vbox.addWidget(self.stacked)
-        # self.vbox.addWidget(self.stack1)
+        #-----
+        self.stack_d00.setLayout(glayout)
+        idx_stacked_widget += 1
+        print(" new stacked widget: d00 -------------> ",idx_stacked_widget)
+        self.stack_idx_d00 = idx_stacked_widget 
         self.stacked.addWidget(self.stack_d00)
 
-        self.vbox.addWidget(self.stacked)
 
-        # self.vbox.addWidget(self.stacked)
-        #----------
-        self.phase1_hbox = QHBoxLayout()
+        #------ Cycle duration rates (2 nodes) ----------------------
+        # self.cycle_dropdown.addItem("basic Ki67")   # 0 -> 1, 1 -> 0
+        # self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
+
+        glayout = QGridLayout()
+
+        label = QLabel("phase 0 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration01 = QLineEdit()
+        self.cycle_duration01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
         label = QLabel("phase 1 duration")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.phase1_hbox.addWidget(label)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_duration1 = QLineEdit()
-        self.cycle_duration1.setValidator(QtGui.QDoubleValidator())
-        self.phase1_hbox.addWidget(self.cycle_duration1)
+        self.cycle_duration10 = QLineEdit()
+        self.cycle_duration10.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration10, 1,1,1,2) # w, row, column, rowspan, colspan
 
-        self.cycle_duration1_fixed = QCheckBox("Fixed")
-        self.phase1_hbox.addWidget(self.cycle_duration1_fixed)
+        self.cycle_duration10_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration10_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
-        self.phase1_hbox.addWidget(units)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(self.phase1_hbox)
-        #----------
-        hbox = QHBoxLayout()
+        # glayout.addWidget(QLabel(""), 2,0,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        self.stack_d01.setLayout(glayout)
+
+        idx_stacked_widget += 1
+        print(" new stacked widget: d01 -------------> ",idx_stacked_widget)
+        self.stack_idx_d01 = idx_stacked_widget 
+        self.stacked.addWidget(self.stack_d01)
+
+
+        #------ Cycle duration (3 nodes) ----------------------
+        # self.cycle_dropdown.addItem("advanced Ki67")  # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry") # 0 -> 1, 1 -> 2, 2 -> 0
+
+        glayout = QGridLayout()
+
+        label = QLabel("phase 0 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_02_01 = QLineEdit()
+        self.cycle_duration_02_01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_02_01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_02_01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_02_01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        label = QLabel("phase 1 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_02_12 = QLineEdit()
+        self.cycle_duration_02_12.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_02_12, 1,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_02_12_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_02_12_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
         label = QLabel("phase 2 duration")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
-        self.cycle_duration2 = QLineEdit()
-        self.cycle_duration2.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_duration2)
+        self.cycle_duration_02_20 = QLineEdit()
+        self.cycle_duration_02_20.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_02_20, 2,1,1,2) # w, row, column, rowspan, colspan
 
-        self.cycle_duration2_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_duration2_fixed)
-
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-
-        # self.vbox.addLayout(hbox)
-        #----------
-        hbox = QHBoxLayout()
-        label = QLabel("phase 3 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-
-        self.cycle_duration3 = QLineEdit()
-        self.cycle_duration3.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.cycle_duration3)
-
-        self.cycle_duration3_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.cycle_duration3_fixed)
+        self.cycle_duration_02_20_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_02_20_fixed, 2,3,1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
-        # self.vbox.addLayout(hbox)
+        #-----
+        self.stack_d02.setLayout(glayout)
+
+        idx_stacked_widget += 1
+        print(" new stacked widget: d02 -------------> ",idx_stacked_widget)
+        self.stack_idx_d02 = idx_stacked_widget 
+        self.stacked.addWidget(self.stack_d02) 
+
+
+        #---------------------------------------------
+        # After adding all combos of cycle widgets (groups) to the stacked widget, 
+        # add it to this panel.
+        self.vbox.addWidget(self.stacked)
 
         #============  Death ================================
         label = QLabel("Phenotype: death")
@@ -1394,7 +1586,7 @@ class CellDef(QWidget):
     def cycle_changed_cb(self, idx):
         # pass
         print('------ cycle_changed_cb(): idx = ',idx)
-        self.customize_cycle_choices(idx)
+        self.customize_cycle_choices()
         # QMessageBox.information(self, "Cycle Changed:",
                 #   "Current Cycle Index: %d" % idx )
 
@@ -1435,7 +1627,8 @@ class CellDef(QWidget):
         # self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
     def cycle_phase_transition_cb(self):
         # rb1.toggled.connect(self.updateLabel)(self, idx_choice):
-        print('self.cycle_rows_vbox.count()=', self.cycle_rows_vbox.count())
+        # print('self.cycle_rows_vbox.count()=', self.cycle_rows_vbox.count())
+        print('cycle_phase_transition_cb: self.stacked.count()=', self.stacked.count())
 
         radioBtn = self.sender()
         if radioBtn.isChecked():
@@ -1445,40 +1638,53 @@ class CellDef(QWidget):
         print("self.cycle_dropdown.currentIndex() = ",self.cycle_dropdown.currentIndex())
 
         # self.cycle_rows_vbox.clear()
-        if radioBtn.text().find("duration"):
-            self.stacked.setCurrentIndex(0)
-            # pass
-            # self.stacked.hide()
-            # self.cycle_rows_vbox.(self.trate00_hbox) # "already has a parent"
-            # self.cycle_rows_vbox.addLayout(self.trate00_hbox) # "already has a parent"
-            # self.cycle_rows_vbox.addLayout(self.trate30_hbox)
+        # if radioBtn.text().find("duration"):
+        if "duration" in radioBtn.text():
+            print('cycle_phase_transition_cb: --> duration')
+            self.cycle_duration_flag = True
+            self.customize_cycle_choices()
         else:  # transition rates
+            print('cycle_phase_transition_cb: NOT duration')
+            self.cycle_duration_flag = False
+            self.customize_cycle_choices()
             # pass
-            self.stacked.setCurrentIndex(1)
         
 
-    def customize_cycle_choices(self, idx_choice):
-        return
-        self.cycle_trate0_0.setEnabled(True)
-        self.cycle_trate0_1.setEnabled(True)
-        self.cycle_trate1_2.setEnabled(True)
-        self.cycle_trate2_3.setEnabled(True)
-        self.cycle_trate3_0.setEnabled(True)
+        # self.cycle_dropdown.addItem("live cells")   # 0 -> 0
+        # self.cycle_dropdown.addItem("basic Ki67")   # 0 -> 1, 1 -> 0
+        # self.cycle_dropdown.addItem("advanced Ki67")  # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry") # 0 -> 1, 1 -> 2, 2 -> 0
+        # self.cycle_dropdown.addItem("flow cytometry separated") # 0->1, 1->2, 2->3, 3->0
+        # self.cycle_dropdown.addItem("cycling quiescent") # 0 -> 1, 1 -> 0
+    def customize_cycle_choices(self):
 
-        self.cycle_duration0.setEnabled(True)
-        self.cycle_duration1.setEnabled(True)
-        self.cycle_duration2.setEnabled(True)
-        self.cycle_duration3.setEnabled(True)
-        if idx_choice == 0:
-            self.cycle_trate0_1.setEnabled(False)
-            self.cycle_trate1_2.setEnabled(False)
-            self.cycle_trate2_3.setEnabled(False)
-            self.cycle_trate3_0.setEnabled(False)
-            self.cycle_duration1.setEnabled(False)
-            self.cycle_duration2.setEnabled(False)
-            self.cycle_duration3.setEnabled(False)
-        else:
-            self.cycle_trate0_0.setEnabled(False)
+        if self.cycle_duration_flag:  # specifying duration times (radio button)
+            if self.cycle_dropdown.currentIndex() == 0:  # live
+                print("customize_cycle_choices():  idx = ",self.stack_idx_d00)
+                self.stacked.setCurrentIndex(self.stack_idx_d00)
+            elif (self.cycle_dropdown.currentIndex() == 1) or (self.cycle_dropdown.currentIndex() == 5):  # basic Ki67 or cycling quiescent
+                print("customize_cycle_choices():  idx = ",self.stack_idx_d01)
+                self.stacked.setCurrentIndex(self.stack_idx_d01)
+            elif (self.cycle_dropdown.currentIndex() == 2) or (self.cycle_dropdown.currentIndex() == 3):  # advanced Ki67 or flow cytometry
+                print("customize_cycle_choices():  idx = ",self.stack_idx_d02)
+                self.stacked.setCurrentIndex(self.stack_idx_d02)
+            elif (self.cycle_dropdown.currentIndex() == 4):  # flow cytometry separated
+                print("customize_cycle_choices():  idx = ",self.stack_idx_d03)
+                self.stacked.setCurrentIndex(self.stack_idx_d03)
+
+        else:  # specifying transition rates (radio button)
+            if self.cycle_dropdown.currentIndex() == 0:  # live
+                print("customize_cycle_choices():  idx = ",self.stack_idx_t00)
+                self.stacked.setCurrentIndex(self.stack_idx_t00)
+            elif (self.cycle_dropdown.currentIndex() == 1) or (self.cycle_dropdown.currentIndex() == 5):  # basic Ki67 or cycling quiescent
+                print("customize_cycle_choices():  idx = ",self.stack_idx_t01)
+                self.stacked.setCurrentIndex(self.stack_idx_t01)
+            elif (self.cycle_dropdown.currentIndex() == 2) or (self.cycle_dropdown.currentIndex() == 3):  # advanced Ki67 or flow cytometry
+                print("customize_cycle_choices():  idx = ",self.stack_idx_t02)
+                self.stacked.setCurrentIndex(self.stack_idx_t02)
+            elif (self.cycle_dropdown.currentIndex() == 4):  # flow cytometry separated
+                print("customize_cycle_choices():  idx = ",self.stack_idx_t03)
+                self.stacked.setCurrentIndex(self.stack_idx_t03)
 
     @QtCore.Slot()
     def clear_rows_cb(self):
@@ -1634,15 +1840,15 @@ class CellDef(QWidget):
                 print(rate)
                 print("start_index=",rate.attrib["start_index"])
                 if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
-                    self.cycle_trate0_0.setText(rate.text)
+                    self.cycle_trate00.setText(rate.text)
                 elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
-                    self.cycle_trate0_1.setText(rate.text)
+                    self.cycle_trate01.setText(rate.text)
                 elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
-                    self.cycle_trate1_2.setText(rate.text)
+                    self.cycle_trate12.setText(rate.text)
                 elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
-                    self.cycle_trate2_3.setText(rate.text)
+                    self.cycle_trate23.setText(rate.text)
                 elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
-                    self.cycle_trate3_0.setText(rate.text)
+                    self.cycle_trate30.setText(rate.text)
 
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
