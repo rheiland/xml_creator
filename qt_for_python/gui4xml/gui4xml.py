@@ -10,15 +10,24 @@ Dr. Paul Macklin (macklinp@iu.edu)
 # https://doc.qt.io/qtforpython/gettingstarted.html
 
 import sys
+import shutil
 import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
 
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox, QMenuBar,QStyle,QGridLayout, QTreeWidgetItem
+from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox, QMenuBar,QStyle,QGridLayout, QTreeWidgetItem, QFileDialog
 
 from config_tab import Config
 from cell_def_tab import CellDef 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
+
+def SingleBrowse(self):
+        # if len(self.csv) < 2:
+    filePath = QFileDialog.getOpenFileName(self,'',".",'*.xml')
+
+        #     if filePath != "" and not filePath in self.csv:
+        #         self.csv.append(filePath)
+        # print(self.csv)
   
 class PhysiCellXMLCreator(QTabWidget):
     def __init__(self, parent = None):
@@ -100,10 +109,11 @@ class PhysiCellXMLCreator(QTabWidget):
 
         # open_act = QtGui.QAction('Open', self, checkable=True)
         open_act = QtGui.QAction('Open', self)
+        open_act.triggered.connect(self.open_as_cb)
         # recent_act = QtGui.QAction('Recent', self)
         save_act = QtGui.QAction('Save', self)
-        saveas_act = QtGui.QAction('Save As my.xml', self)
-        saveas_act.triggered.connect(self.save_as_cb)
+        save_act.triggered.connect(self.save_cb)
+        # saveas_act = QtGui.QAction('Save As my.xml', self)
 
         # file_menu.setStatusTip('enable/disable Dark mode')
         new_model_act = QtGui.QAction('New (template 2D)', self)
@@ -111,7 +121,7 @@ class PhysiCellXMLCreator(QTabWidget):
         new_model_act.triggered.connect(self.new_model_cb)
 
         #--------------
-        samples_menu = file_menu.addMenu("Samples (read-only)")
+        samples_menu = file_menu.addMenu("Samples (copy of)")
         biorobots_act = QtGui.QAction('biorobots', self)
         samples_menu.addAction(biorobots_act)
         biorobots_act.triggered.connect(self.biorobots_cb)
@@ -152,7 +162,7 @@ class PhysiCellXMLCreator(QTabWidget):
         file_menu.addAction(open_act)
         # file_menu.addAction(recent_act)
         file_menu.addAction(save_act)
-        file_menu.addAction(saveas_act)
+        # file_menu.addAction(saveas_act)
 
 
         #--------------
@@ -174,12 +184,13 @@ class PhysiCellXMLCreator(QTabWidget):
             return
         self.model[name] = read_only
         self.num_models += 1
-        print(" self.model (dict)= ",self.model)
+        print("add_new_model: self.model (dict)= ",self.model)
 
         models_menu_act = QtGui.QAction(name, self)
         self.models_menu.addAction(models_menu_act)
         models_menu_act.triggered.connect(self.select_current_model_cb)
 
+        print("add_new_model: title suffix= ",name)
         self.setWindowTitle(self.title_prefix + name)
 
     def select_current_model_cb(self):
@@ -189,7 +200,7 @@ class PhysiCellXMLCreator(QTabWidget):
         print('select_current_model_cb: ',model_act)
         action = self.sender()
         model_name = action.text()
-        print('select_current_model_cb: name= ',model_name)
+        print('select_current_model_cb: title suffix name= ',model_name)
 
         self.setWindowTitle(self.title_prefix + model_name)
 
@@ -211,6 +222,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.fill_substrates_comboboxes()
 
     def show_sample_model(self):
+        print("show_sample_model: self.config_file = ", self.config_file)
         # self.config_file = "config_samples/biorobots.xml"
         self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
@@ -220,8 +232,18 @@ class PhysiCellXMLCreator(QTabWidget):
         # self.celldef_tab.fill_gui("foobar")  # cell defs
         # self.celldef_tab.fill_motility_substrates()
 
-    def save_as_cb(self):
+    def open_as_cb(self):
+        # self.microenv_tab.fill_xml()
+        # filePath = QFileDialog.getOpenFileName(self,'',".",'*.xml')
+        filePath = QFileDialog.getOpenFileName(self,'',".")
+
+    def save_cb(self):
+        # self.config_file = copy_file
+        self.config_tab.fill_xml()
         self.microenv_tab.fill_xml()
+        # filePath = QFileDialog.getOpenFileName(self,'',".",'*.xml')
+        print("gui4xml:  save_cb: writing to: ",self.config_file)
+        self.tree.write(self.config_file)
 
     def new_model_cb(self):
         name = "copy_template2D"
@@ -230,9 +252,15 @@ class PhysiCellXMLCreator(QTabWidget):
         self.show_sample_model()
 
     def biorobots_cb(self):
+        print("\n\n\n================ copy/load sample ======================================")
         name = "biorobots_flat"
-        self.add_new_model(name, True)
-        self.config_file = "config_samples/" + name + ".xml"
+        sample_file = "config_samples/" + name + ".xml"
+        copy_file = "copy_" + name + ".xml"
+        shutil.copy(sample_file, copy_file)
+
+        self.add_new_model(copy_file, True)
+        # self.config_file = "config_samples/" + name + ".xml"
+        self.config_file = copy_file
         self.show_sample_model()
 
         # self.tree = ET.parse(self.config_file)

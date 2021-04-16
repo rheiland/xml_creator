@@ -1432,7 +1432,7 @@ class CellDef(QWidget):
         self.motility_substrate_dropdown = QComboBox()
         self.motility_substrate_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
-        self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)
+        self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)  # beware: will be triggered on a ".clear" too
         # self.motility_substrate_dropdown.addItem("oxygen")
         self.vbox.addWidget(self.motility_substrate_dropdown)
 
@@ -1464,7 +1464,7 @@ class CellDef(QWidget):
 
         self.secretion_substrate_dropdown = QComboBox()
         self.secretion_substrate_dropdown.setFixedWidth(300)
-        self.secretion_substrate_dropdown.currentIndexChanged.connect(self.secretion_substrate_changed_cb)
+        self.secretion_substrate_dropdown.currentIndexChanged.connect(self.secretion_substrate_changed_cb)  # beware: will be triggered on a ".clear" too
         self.vbox.addWidget(self.secretion_substrate_dropdown)
 
         # self.uep_cell_defs = self.xml_root.find(".//cell_definitions")
@@ -1678,11 +1678,15 @@ class CellDef(QWidget):
     def motility_substrate_changed_cb(self, idx):
         print('------ motility_substrate_changed_cb(): idx = ',idx)
         print(self.motility_substrate_dropdown.currentText())
+        if idx == -1:
+            return
 
     @QtCore.Slot()
     def secretion_substrate_changed_cb(self, idx):
         print('------ secretion_substrate_changed_cb(): idx = ',idx)
         print(self.secretion_substrate_dropdown.currentText())
+        if idx == -1:
+            return
 
         # uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
         secretion_substrate_path = self.xml_root.find(".//cell_definitions//cell_definition[" + str(self.idx_current_cell_def) + "]//phenotype//secretion//substrate[" + str(idx+1) + "]")
@@ -1805,7 +1809,7 @@ class CellDef(QWidget):
     #---------------------------------
     # def fill_motility_substrates(self):
     def fill_substrates_comboboxes(self):
-        print("------- fill_substrates_comboboxes")
+        print("cell_def_tab.py: ------- fill_substrates_comboboxes")
         self.motility_substrate_dropdown.clear()
         self.secretion_substrate_dropdown.clear()
         uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
@@ -2274,15 +2278,26 @@ class CellDef(QWidget):
 
     def clear_gui(self):
         self.cell_type_name.setText('')
-        self.cycle_trate0_0.setText('')
-        self.cycle_trate0_1.setText('')
-        self.cycle_trate1_2.setText('')
-        self.cycle_trate2_3.setText('')
-        self.cycle_trate3_0.setText('')
-        self.cycle_duration0.setText('')
-        self.cycle_duration1.setText('')
-        self.cycle_duration2.setText('')
-        self.cycle_duration3.setText('')
+        self.cycle_trate00.setText('')
+        self.cycle_trate01.setText('')
+        self.cycle_trate10.setText('')
+        self.cycle_trate_02_01.setText('')
+        self.cycle_trate_02_12.setText('')
+        self.cycle_trate_02_20.setText('')
+        self.cycle_trate_03_01.setText('')
+        self.cycle_trate_03_12.setText('')
+        self.cycle_trate_03_23.setText('')
+        self.cycle_trate_03_30.setText('')
+        self.cycle_duration00.setText('')
+        self.cycle_duration01.setText('')
+        self.cycle_duration10.setText('')
+        self.cycle_duration_02_01.setText('')
+        self.cycle_duration_02_12.setText('')
+        self.cycle_duration_02_20.setText('')
+        self.cycle_duration_03_01.setText('')
+        self.cycle_duration_03_12.setText('')
+        self.cycle_duration_03_23.setText('')
+        self.cycle_duration_03_30.setText('')
         self.apoptosis_death_rate.setText('')
         self.apoptosis_phase0_duration.setText('')
         # self.apoptosis_phase1_duration.setText('')

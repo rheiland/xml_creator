@@ -230,9 +230,9 @@ class Config(QWidget):
         hbox.addWidget(label)
 
         #------
-        self.save_svg = QCheckBox("Full")
+        self.save_full = QCheckBox("Full")
         # self.motility_2D.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(self.save_svg)
+        hbox.addWidget(self.save_full)
 
         label = QLabel("every")
         # label_width = 210
@@ -259,7 +259,7 @@ class Config(QWidget):
         label.setAlignment(QtCore.Qt.AlignCenter)
 
         self.vbox.addWidget(label)
-        self.cells_csv = QCheckBox("cells.csv")
+        self.cells_csv = QCheckBox("config/cells.csv")
         self.vbox.addWidget(self.cells_csv)
 
         #--------------------------
@@ -326,7 +326,46 @@ class Config(QWidget):
 
     # Read values from the GUI widgets and generate/write a new XML
     def fill_xml(self):
-        pass
+        # pass
+        # self.xmin.setText(self.xml_root.find(".//x_min").text)
+        print("config_tab: fill_xml: xmin=",str(self.xmin.text))
+        self.xml_root.find(".//x_min").text = self.xmin.text()
+        self.xml_root.find(".//x_max").text = self.xmax.text()
+        self.xml_root.find(".//dx").text = self.xdel.text()
+
+        self.xml_root.find(".//y_min").text = self.ymin.text()
+        self.xml_root.find(".//y_max").text = self.ymax.text()
+        self.xml_root.find(".//dy").text = self.ydel.text()
+
+        self.xml_root.find(".//z_min").text = self.zmin.text()
+        self.xml_root.find(".//z_max").text = self.zmax.text()
+        self.xml_root.find(".//dz").text = self.zdel.text()
+
+        if self.virtual_walls.isChecked():
+            self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'true'
+        else:
+            self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'false'
+
+        self.xml_root.find(".//max_time").text = self.max_time.text()
+        self.xml_root.find(".//omp_num_threads").text = self.num_threads.text()
+
+        if self.save_svg.isChecked():
+            self.xml_root.find(".//SVG//enable").text = 'true'
+        else:
+            self.xml_root.find(".//SVG//enable").text = 'false'
+        self.xml_root.find(".//SVG//interval").text = self.svg_interval.text()
+
+        if self.save_full.isChecked():
+            self.xml_root.find(".//full_data//enable").text = 'true'
+        else:
+            self.xml_root.find(".//full_data//enable").text = 'false'
+        self.xml_root.find(".//full_data//interval").text = self.full_interval.text()
+
+        if self.cells_csv.isChecked():
+            self.xml_root.find(".//initial_conditions//cell_positions").attrib['enabled'] = 'true'
+        else:
+            self.xml_root.find(".//initial_conditions//cell_positions").attrib['enabled'] = 'false'
+
         # TODO: verify valid type (numeric) and range?
         # xml_root.find(".//x_min").text = str(self.xmin.value)
         # xml_root.find(".//x_max").text = str(self.xmax.value)
