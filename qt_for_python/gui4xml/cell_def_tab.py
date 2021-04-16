@@ -608,6 +608,90 @@ class CellDef(QWidget):
         self.stacked.addWidget(self.stack_d02) 
 
 
+        #------ Cycle duration (4 nodes) ----------------------
+        # self.cycle_dropdown.addItem("flow cytometry separated") # 0->1, 1->2, 2->3, 3->0
+
+        glayout = QGridLayout()
+
+        label = QLabel("phase 0 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_01 = QLineEdit()
+        self.cycle_duration_03_01.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_03_01, 0,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_01_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_03_01_fixed, 0,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        label = QLabel("phase 1 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_12 = QLineEdit()
+        self.cycle_duration_03_12.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_03_12, 1,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_12_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_03_12_fixed, 1,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        label = QLabel("phase 2 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_23 = QLineEdit()
+        self.cycle_duration_03_23.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_03_23, 2,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_23_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_03_23_fixed, 2,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
+
+        #-------
+        label = QLabel("phase 3 duration")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        glayout.addWidget(label, 3,0,1,1) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_30 = QLineEdit()
+        self.cycle_duration_03_30.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.cycle_duration_03_30, 3,1,1,2) # w, row, column, rowspan, colspan
+
+        self.cycle_duration_03_30_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.cycle_duration_03_30_fixed, 3,3,1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        units.setFixedWidth(units_width)
+        glayout.addWidget(units, 3,4,1,1) # w, row, column, rowspan, colspan
+
+        #-----
+        self.stack_d03.setLayout(glayout)
+        idx_stacked_widget += 1
+        print(" new stacked widget: d03 -------------> ",idx_stacked_widget)
+        self.stack_idx_d03 = idx_stacked_widget 
+        self.stacked.addWidget(self.stack_d03)
+
+
         #---------------------------------------------
         # After adding all combos of cycle widgets (groups) to the stacked widget, 
         # add it to this panel.
@@ -668,61 +752,61 @@ class CellDef(QWidget):
         self.vbox.addLayout(hbox)
 
         #-------
-        hbox = QHBoxLayout()
-        label = QLabel("phase 1 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-        self.apoptosis_phase1_duration = QLineEdit()
-        self.apoptosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.apoptosis_phase1_duration)
+        # hbox = QHBoxLayout()
+        # label = QLabel("phase 1 duration")
+        # label.setFixedWidth(label_width)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        # self.apoptosis_phase1_duration = QLineEdit()
+        # self.apoptosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.apoptosis_phase1_duration)
 
-        self.apoptosis_phase1_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.apoptosis_phase1_duration_fixed)
+        # self.apoptosis_phase1_duration_fixed = QCheckBox("Fixed")
+        # hbox.addWidget(self.apoptosis_phase1_duration_fixed)
 
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        # units = QLabel("min")
+        # units.setFixedWidth(units_width)
+        # units.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(units)
+        # self.vbox.addLayout(hbox)
 
-        #-------
-        hbox = QHBoxLayout()
-        label = QLabel("phase 2 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-        self.apoptosis_phase2_duration = QLineEdit()
-        self.apoptosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.apoptosis_phase2_duration)
+        # #-------
+        # hbox = QHBoxLayout()
+        # label = QLabel("phase 2 duration")
+        # label.setFixedWidth(label_width)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        # self.apoptosis_phase2_duration = QLineEdit()
+        # self.apoptosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.apoptosis_phase2_duration)
 
-        self.apoptosis_phase2_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.apoptosis_phase2_duration_fixed)
+        # self.apoptosis_phase2_duration_fixed = QCheckBox("Fixed")
+        # hbox.addWidget(self.apoptosis_phase2_duration_fixed)
 
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        # units = QLabel("min")
+        # units.setFixedWidth(units_width)
+        # units.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(units)
+        # self.vbox.addLayout(hbox)
 
-        #-------
-        hbox = QHBoxLayout()
-        label = QLabel("phase 3 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-        self.apoptosis_phase3_duration = QLineEdit()
-        self.apoptosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.apoptosis_phase3_duration)
+        # #-------
+        # hbox = QHBoxLayout()
+        # label = QLabel("phase 3 duration")
+        # label.setFixedWidth(label_width)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        # self.apoptosis_phase3_duration = QLineEdit()
+        # self.apoptosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.apoptosis_phase3_duration)
 
-        self.apoptosis_phase3_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.apoptosis_phase3_duration_fixed)
+        # self.apoptosis_phase3_duration_fixed = QCheckBox("Fixed")
+        # hbox.addWidget(self.apoptosis_phase3_duration_fixed)
 
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        # units = QLabel("min")
+        # units.setFixedWidth(units_width)
+        # units.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(units)
+        # self.vbox.addLayout(hbox)
 
         #-------
         # <phase_durations units="min">
@@ -884,41 +968,41 @@ class CellDef(QWidget):
         self.vbox.addLayout(hbox)
 
         #-----
-        hbox = QHBoxLayout()
-        label = QLabel("phase 2 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-        self.necrosis_phase2_duration = QLineEdit()
-        self.necrosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.necrosis_phase2_duration)
+        # hbox = QHBoxLayout()
+        # label = QLabel("phase 2 duration")
+        # label.setFixedWidth(label_width)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        # self.necrosis_phase2_duration = QLineEdit()
+        # self.necrosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.necrosis_phase2_duration)
 
-        self.necrosis_phase2_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.necrosis_phase2_duration_fixed)
+        # self.necrosis_phase2_duration_fixed = QCheckBox("Fixed")
+        # hbox.addWidget(self.necrosis_phase2_duration_fixed)
 
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
-        #-----
-        hbox = QHBoxLayout()
-        label = QLabel("phase 3 duration")
-        label.setFixedWidth(label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
-        self.necrosis_phase3_duration = QLineEdit()
-        self.necrosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
-        hbox.addWidget(self.necrosis_phase3_duration)
+        # units = QLabel("min")
+        # units.setFixedWidth(units_width)
+        # units.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(units)
+        # self.vbox.addLayout(hbox)
+        # #-----
+        # hbox = QHBoxLayout()
+        # label = QLabel("phase 3 duration")
+        # label.setFixedWidth(label_width)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        # self.necrosis_phase3_duration = QLineEdit()
+        # self.necrosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.necrosis_phase3_duration)
 
-        self.necrosis_phase3_duration_fixed = QCheckBox("Fixed")
-        hbox.addWidget(self.necrosis_phase3_duration_fixed)
+        # self.necrosis_phase3_duration_fixed = QCheckBox("Fixed")
+        # hbox.addWidget(self.necrosis_phase3_duration_fixed)
 
-        units = QLabel("min")
-        units.setFixedWidth(units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(units)
-        self.vbox.addLayout(hbox)
+        # units = QLabel("min")
+        # units.setFixedWidth(units_width)
+        # units.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(units)
+        # self.vbox.addLayout(hbox)
 
         # <phase_durations units="min">
         #     <duration index="0" fixed_duration="true">516</duration>
@@ -1911,12 +1995,12 @@ class CellDef(QWidget):
                 print("index=",pd.attrib["index"])
                 if  pd.attrib['index'] == "0":
                     self.apoptosis_phase0_duration.setText(pd.text)
-                elif  pd.attrib['index'] == "1":
-                    self.apoptosis_phase1_duration.setText(pd.text)
-                elif  pd.attrib['index'] == "2":
-                    self.apoptosis_phase2_duration.setText(pd.text)
-                elif  pd.attrib['index'] == "3":
-                    self.apoptosis_phase3_duration.setText(pd.text)
+                # elif  pd.attrib['index'] == "1":
+                #     self.apoptosis_phase1_duration.setText(pd.text)
+                # elif  pd.attrib['index'] == "2":
+                #     self.apoptosis_phase2_duration.setText(pd.text)
+                # elif  pd.attrib['index'] == "3":
+                #     self.apoptosis_phase3_duration.setText(pd.text)
 
         #-----
         necrosis_path = death_path + "model[2]//"
@@ -1934,10 +2018,10 @@ class CellDef(QWidget):
                     self.necrosis_phase0_duration.setText(pd.text)
                 elif  pd.attrib['index'] == "1":
                     self.necrosis_phase1_duration.setText(pd.text)
-                elif  pd.attrib['index'] == "2":
-                    self.necrosis_phase2_duration.setText(pd.text)
-                elif  pd.attrib['index'] == "3":
-                    self.necrosis_phase3_duration.setText(pd.text)
+                # elif  pd.attrib['index'] == "2":
+                #     self.necrosis_phase2_duration.setText(pd.text)
+                # elif  pd.attrib['index'] == "3":
+                #     self.necrosis_phase3_duration.setText(pd.text)
 
         #-----
         apoptosis_params_path = apoptosis_path + "parameters//"
@@ -2191,9 +2275,9 @@ class CellDef(QWidget):
         self.cycle_duration3.setText('')
         self.apoptosis_death_rate.setText('')
         self.apoptosis_phase0_duration.setText('')
-        self.apoptosis_phase1_duration.setText('')
-        self.apoptosis_phase2_duration.setText('')
-        self.apoptosis_phase3_duration.setText('')
+        # self.apoptosis_phase1_duration.setText('')
+        # self.apoptosis_phase2_duration.setText('')
+        # self.apoptosis_phase3_duration.setText('')
         self.apoptosis_unlysed_rate.setText('')
         self.apoptosis_lysed_rate.setText('')
         self.apoptosis_cytoplasmic_biomass_change_rate.setText('')
@@ -2203,8 +2287,8 @@ class CellDef(QWidget):
         self.necrosis_death_rate.setText('')
         self.necrosis_phase0_duration.setText('')
         self.necrosis_phase1_duration.setText('')
-        self.necrosis_phase2_duration.setText('')
-        self.necrosis_phase3_duration.setText('')
+        # self.necrosis_phase2_duration.setText('')
+        # self.necrosis_phase3_duration.setText('')
         self.necrosis_unlysed_rate.setText('')
         self.necrosis_lysed_rate.setText('')
         self.necrosis_cytoplasmic_biomass_change_rate.setText('')
