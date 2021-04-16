@@ -27,6 +27,7 @@ class SubstrateDef(QtWidgets.QWidget):
 
         self.current_substrate = None
         self.xml_root = None
+        self.celldef_tab = None
 
         #---------------
         # self.cell_defs = CellDefInstances()
@@ -36,7 +37,7 @@ class SubstrateDef(QtWidgets.QWidget):
 
         tree_widget_width = 160
 
-        self.tree = QtWidgets.QTreeWidget()
+        self.tree = QTreeWidget()
         # self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.currentChanged(self.tree_item_changed_cb)
@@ -92,6 +93,7 @@ class SubstrateDef(QtWidgets.QWidget):
         controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
+        self.delete_button.clicked.connect(self.delete_substrate)
         controls_hbox.addWidget(self.delete_button)
 
         # self.vbox.addLayout(hbox)
@@ -251,10 +253,24 @@ class SubstrateDef(QtWidgets.QWidget):
 
         # self.layout.addWidget(self.vbox)
         # self.layout.addWidget(self.text)
-
         # self.layout.addWidget(self.save_button)
         # self.save_button.clicked.connect(self.save_xml)
 
+
+    @QtCore.Slot()
+    def delete_substrate(self):
+        print('------ delete_substrate')
+        item_idx = self.tree.indexFromItem(self.tree.currentItem()).row() 
+        print('------      item_idx=',item_idx)
+        # self.tree.removeItemWidget(self.tree.currentItem(), 0)
+        self.tree.takeTopLevelItem(self.tree.indexOfTopLevelItem(self.tree.currentItem()))
+
+        self.celldef_tab.delete_substrate_from_comboboxes(item_idx)
+        print('------      new name=',self.tree.currentItem().text(0))
+        self.current_substrate = self.tree.currentItem().text(0)
+
+        self.fill_gui(self.current_substrate)
+        
 
     # @QtCore.Slot()
     # def save_xml(self):
@@ -266,6 +282,8 @@ class SubstrateDef(QtWidgets.QWidget):
         print('tree_item_changed:', it, col, it.text(col) )
         self.current_substrate = it.text(col)
         print('self.current_substrate= ',self.current_substrate )
+        # print('self.= ',self.tree.indexFromItem )
+
         # fill in the GUI with this one's params
         self.fill_gui(self.current_substrate)
 

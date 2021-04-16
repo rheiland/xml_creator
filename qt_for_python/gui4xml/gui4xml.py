@@ -76,6 +76,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.fill_gui(cd_name)
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_substrates_comboboxes()
+
+        self.microenv_tab.celldef_tab = self.celldef_tab
         
         self.user_params_tab = UserParams()
         self.user_params_tab.xml_root = self.xml_root
@@ -86,6 +88,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.addTab(self.microenv_tab,"Microenvironment")
         self.addTab(self.celldef_tab,"Cell Types")
         self.addTab(self.user_params_tab,"User Params")
+
+        self.setCurrentIndex(2)  # debug: display the Cell Types tab on startup
 
 
     def menu(self):

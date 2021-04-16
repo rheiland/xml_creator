@@ -1819,6 +1819,15 @@ class CellDef(QWidget):
                 self.motility_substrate_dropdown.addItem(name)
                 self.secretion_substrate_dropdown.addItem(name)
 
+    # def delete_substrate_from_comboboxes(self, name):
+    def delete_substrate_from_comboboxes(self, item_idx):
+        # print("------- delete_substrate_from_comboboxes: name=",name)
+        print("------- delete_substrate_from_comboboxes: name=",item_idx)
+        self.motility_substrate_dropdown.removeItem(item_idx)
+        self.secretion_substrate_dropdown.removeItem(item_idx)
+        # self.motility_substrate_dropdown.clear()
+        # self.secretion_substrate_dropdown.clear()
+
     def tree_item_changed_cb(self, it,col):
         print('--- tree_item_changed:', it, col, it.text(col) )
         self.current_cell_def = it.text(col)
@@ -1843,6 +1852,7 @@ class CellDef(QWidget):
         if uep:
                 return(uep.attrib['name'])
 
+    #-------------------------------------------------------------------
     def fill_gui(self, cell_def_name):
 	# <cell_definitions>
 	# 	<cell_definition name="default" ID="0">
