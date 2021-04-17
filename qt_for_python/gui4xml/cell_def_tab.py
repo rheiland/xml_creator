@@ -1968,13 +1968,16 @@ class CellDef(QWidget):
                 print(pd)
                 print("index=",pd.attrib["index"])
                 if  pd.attrib['index'] == "0":
-                    self.cycle_duration0.setText(pd.text)
+                    self.cycle_duration00.setText(pd.text)
+                    self.cycle_duration01.setText(pd.text)
                 elif  pd.attrib['index'] == "1":
-                    self.cycle_duration1.setText(pd.text)
+                    self.cycle_duration_02_01.setText(pd.text)
+                    self.cycle_duration_03_01.setText(pd.text)
                 elif  pd.attrib['index'] == "2":
-                    self.cycle_duration2.setText(pd.text)
+                    self.cycle_duration_02_20.setText(pd.text)
+                    self.cycle_duration_03_23.setText(pd.text)
                 elif  pd.attrib['index'] == "3":
-                    self.cycle_duration3.setText(pd.text)
+                    self.cycle_duration_03_30.setText(pd.text)
 
         # rf. microenv:
         # self.cell_type_name.setText(var.attrib['name'])

@@ -108,17 +108,20 @@ class PhysiCellXMLCreator(QTabWidget):
         file_menu = menubar.addMenu('File')
 
         # open_act = QtGui.QAction('Open', self, checkable=True)
-        open_act = QtGui.QAction('Open', self)
-        open_act.triggered.connect(self.open_as_cb)
+        # open_act = QtGui.QAction('Open', self)
+        # open_act.triggered.connect(self.open_as_cb)
+        file_menu.addAction("New (template 2D)", self.new_model_cb, QtGui.QKeySequence('Ctrl+n'))
+        file_menu.addAction("Open", self.open_as_cb, QtGui.QKeySequence('Ctrl+o'))
+        file_menu.addAction("Save", self.save_cb, QtGui.QKeySequence('Ctrl+s'))
         # recent_act = QtGui.QAction('Recent', self)
-        save_act = QtGui.QAction('Save', self)
-        save_act.triggered.connect(self.save_cb)
+        # save_act = QtGui.QAction('Save', self)
+        # save_act.triggered.connect(self.save_cb)
         # saveas_act = QtGui.QAction('Save As my.xml', self)
 
         # file_menu.setStatusTip('enable/disable Dark mode')
-        new_model_act = QtGui.QAction('New (template 2D)', self)
-        file_menu.addAction(new_model_act)
-        new_model_act.triggered.connect(self.new_model_cb)
+        # new_model_act = QtGui.QAction('', self)
+        # file_menu.addAction(new_model_act)
+        # new_model_act.triggered.connect(self.new_model_cb)
 
         #--------------
         samples_menu = file_menu.addMenu("Samples (copy of)")
@@ -159,9 +162,10 @@ class PhysiCellXMLCreator(QTabWidget):
         subcell_act.triggered.connect(self.subcell_cb)
 
         #--------------
-        file_menu.addAction(open_act)
+        # file_menu.addAction(open_act)
         # file_menu.addAction(recent_act)
-        file_menu.addAction(save_act)
+        # file_menu.addAction(save_act)
+        # file_menu.addAction(save_act, self.save_act, QtGui.QKeySequence("Ctrl+s"))
         # file_menu.addAction(saveas_act)
 
 
@@ -246,7 +250,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.tree.write(self.config_file)
 
     def new_model_cb(self):
-        name = "copy_template2D"
+        name = "copy_template"
         self.add_new_model(name, False)
         self.config_file = "config_samples/template2D_flat.xml"
         self.show_sample_model()

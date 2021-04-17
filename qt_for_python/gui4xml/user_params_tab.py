@@ -29,8 +29,8 @@ class UserParams(QtWidgets.QWidget):
         self.count = 0
 
         #-------------------------------------------
-        label_width = 150
-        units_width = 70
+        self.label_width = 150
+        self.units_width = 90
 
         self.scroll_area = QtWidgets.QScrollArea()
         # splitter.addWidget(self.scroll)
@@ -71,6 +71,7 @@ class UserParams(QtWidgets.QWidget):
         col3.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col3)
         col4 = QtWidgets.QLabel("Units")
+        col4.setFixedWidth(self.units_width)
         col4.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col4)
         # label.setFixedWidth(180)
@@ -128,6 +129,7 @@ class UserParams(QtWidgets.QWidget):
             hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setFixedWidth(self.units_width)
             self.units.append(w)
             hbox.addWidget(w)
 
@@ -192,6 +194,7 @@ class UserParams(QtWidgets.QWidget):
             hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setFixedWidth(self.units_width)
             self.units.append(w)
             hbox.addWidget(w)
 
