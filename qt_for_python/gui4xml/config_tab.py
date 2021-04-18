@@ -20,6 +20,7 @@ class QHLine(QFrame):
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
+
 class Config(QWidget):
     def __init__(self):
         super().__init__()

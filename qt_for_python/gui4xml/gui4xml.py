@@ -18,6 +18,7 @@ from PySide6.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout
 
 from config_tab import Config
 from cell_def_tab import CellDef 
+from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
 
@@ -85,8 +86,11 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.fill_gui(cd_name)
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_substrates_comboboxes()
-
         self.microenv_tab.celldef_tab = self.celldef_tab
+
+        self.cell_customdata_tab = CellCustomData()
+        self.cell_customdata_tab.xml_root = self.xml_root
+        self.cell_customdata_tab.fill_gui()
         
         self.user_params_tab = UserParams()
         self.user_params_tab.xml_root = self.xml_root
@@ -96,6 +100,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.addTab(self.config_tab,"Config Basics")
         self.addTab(self.microenv_tab,"Microenvironment")
         self.addTab(self.celldef_tab,"Cell Types")
+        self.addTab(self.cell_customdata_tab,"Cell Custom Data")
         self.addTab(self.user_params_tab,"User Params")
 
         self.setCurrentIndex(2)  # debug: display the Cell Types tab on startup

@@ -20,12 +20,62 @@ class QHLine(QFrame):
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
+# class BaseParams(QWidget):
+#     def __init__(self):
+#         super().__init__()
+
+#         self.xml_root = None
+
+# class CycleParams(QWidget, BaseParams):
+#     def __init__(self):
+#         super().__init__()
+
+#         self.xml_root = None
+
+#         label_width = 110
+#         domain_value_width = 100
+#         value_width = 60
+#         label_height = 20
+#         units_width = 70
+
+#         self.scroll = QScrollArea()  # might contain centralWidget
+
+#         self.params_cell_def = QWidget()
+#         self.vbox = QVBoxLayout()
+#         self.vbox.addStretch(0)
+
+#         self.vbox.addStretch()
+
+#         #==================================================================
+#         self.params_cell_def.setLayout(self.vbox)
+
+#         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+#         self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+#         self.scroll.setWidgetResizable(True)
+#         self.scroll.setWidget(self.params_cell_def)
+
+#         self.layout = QVBoxLayout(self)
+
+#         self.layout.addWidget(self.scroll)
+
+# #--------------------------------------------------------------------
+# class DeathParams(QWidget, BaseParams):
+#     def __init__(self):
+#         super().__init__()
+
+#         self.xml_root = None
+
+#         label_width = 110
+
+#--------------------------------------------------------------------
 class CellDef(QWidget):
     def __init__(self):
         super().__init__()
         # global self.params_cell_def
 
         self.current_cell_def = None
+        self.label_width = 210
+        self.units_width = 70
         self.idx_current_cell_def = 1  # 1-offset for XML
         self.xml_root = None
         self.custom_data_count = 0
@@ -59,7 +109,7 @@ class CellDef(QWidget):
         # self.cell_defs = CellDefInstances()
         self.cell_def_horiz_layout = QHBoxLayout()
 
-        splitter = QSplitter()
+        self.splitter = QSplitter()
 
         tree_widget_width = 160
         tree_widget_height = 400
@@ -107,18 +157,16 @@ class CellDef(QWidget):
         self.scroll_cell_def_tree.setWidget(self.tree)
 
         # splitter.addWidget(self.tree)
-        splitter.addWidget(self.scroll_cell_def_tree)
+        self.splitter.addWidget(self.scroll_cell_def_tree)
 
         #-------------------------------------------
         # self.tab = QWidget()
         # self.tabs.resize(200,5)
         
         #-------------------------------------------
-        label_width = 210
-        units_width = 70
 
         self.scroll = QScrollArea()
-        splitter.addWidget(self.scroll)
+        self.splitter.addWidget(self.scroll)
         # self.cell_def_horiz_layout.addWidget(self.scroll)
 
         self.params_cell_def = QWidget()
@@ -127,34 +175,67 @@ class CellDef(QWidget):
         # self.cell_def_horiz_layout.addWidget(self.)
 
         #------------------
-        controls_hbox = QHBoxLayout()
+        self.controls_hbox = QHBoxLayout()
         self.new_button = QPushButton("New")
-        controls_hbox.addWidget(self.new_button)
+        self.controls_hbox.addWidget(self.new_button)
 
         self.copy_button = QPushButton("Copy")
-        controls_hbox.addWidget(self.copy_button)
+        self.controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
-        controls_hbox.addWidget(self.delete_button)
+        self.controls_hbox.addWidget(self.delete_button)
+
+        #------------------
+        # self.cycle_tab = CycleParams()
+        self.cycle_tab = QWidget()
+        self.death_tab = QWidget()
+        self.volume_tab = QWidget()
+        self.mechanics_tab = QWidget()
+        self.motility_tab = QWidget()
+        self.secretion_tab = QWidget()
+        self.custom_data_tab = QWidget()
+
+        self.cell_types_tabs_hbox = QHBoxLayout()
+        self.tab_widget = QTabWidget()
+        self.tab_widget.addTab(self.cycle_tab,"Cycle")
+        self.tab_widget.addTab(self.death_tab,"Death")
+        self.tab_widget.addTab(self.volume_tab,"Volume")
+        self.tab_widget.addTab(self.mechanics_tab,"Mechanics")
+        self.tab_widget.addTab(self.motility_tab,"Motlity")
+        self.tab_widget.addTab(self.secretion_tab,"Secretion")
+        self.tab_widget.addTab(self.custom_data_tab,"Custom Data")
+        # self.tab_widget.addTab(self.celldef_tab,"Cell Types")
+        # self.tab_widget.addTab(self.user_params_tab,"User Params")
+        self.cell_types_tabs_hbox.addWidget(self.tab_widget)
+
 
         # self.vbox.addLayout(hbox)
         # self.vbox.addWidget(QHLine())
 
         #------------------
-        hbox = QHBoxLayout()
-        label = QLabel("Name of cell type:")
-        label.setFixedWidth(110)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        hbox.addWidget(label)
+        # hbox = QHBoxLayout()
+        # label = QLabel("Name of cell type:")
+        # label.setFixedWidth(110)
+        # label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
 
-        self.cell_type_name = QLineEdit()
-        # Want to validate name, e.g., starts with alpha, no special chars, etc.
-        # self.cycle_trate0_0.setValidator(QtGui.QDoubleValidator())
-        # self.cycle_trate0_1.enter.connect(self.save_xml)
-        hbox.addWidget(self.cell_type_name)
-        self.vbox.addLayout(hbox)
+        # self.cell_type_name = QLineEdit()
+        # # Want to validate name, e.g., starts with alpha, no special chars, etc.
+        # # self.cycle_trate0_0.setValidator(QtGui.QDoubleValidator())
+        # # self.cycle_trate0_1.enter.connect(self.save_xml)
+        # hbox.addWidget(self.cell_type_name)
+        # self.vbox.addLayout(hbox)
 
-        #------------------
+        self.create_cycle_tab()
+        self.create_death_tab()
+        self.create_volume_tab()
+        self.create_mechanics_tab()
+        self.create_motility_tab()
+        self.create_secretion_tab()
+        self.create_custom_data_tab()
+
+    #--------------------------------------------------------
+    def create_cycle_tab(self):
         self.cycle_dropdown = QComboBox()
         self.cycle_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
@@ -181,8 +262,6 @@ class CellDef(QWidget):
 
         self.vbox.addWidget(self.cycle_dropdown)
 
-        #=====  Phenotype 
-        #============  Cycle ================================
         label = QLabel("Phenotype: cycle")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -224,7 +303,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0->0 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         # glayout.addWidget(*Widget, row, column, rowspan, colspan)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
@@ -239,7 +318,7 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
         # hbox.addWidget(units_1min)
         self.stack_t00.setLayout(glayout)   
@@ -257,7 +336,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0->1 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -270,12 +349,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1->0 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -288,7 +367,7 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
@@ -312,7 +391,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0->1 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -325,12 +404,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1->2 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -343,12 +422,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 2->0 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
@@ -361,7 +440,7 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
         #-----
@@ -378,7 +457,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0->1 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -391,12 +470,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1->2 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -409,12 +488,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 2->3 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
@@ -427,12 +506,12 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 3->0 transition rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 3,0,1,1) # w, row, column, rowspan, colspan
 
@@ -445,7 +524,7 @@ class CellDef(QWidget):
 
         units = QLabel("1/min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 3,4,1,1) # w, row, column, rowspan, colspan
 
         #-----
@@ -463,7 +542,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1)
         # glayout.addWidget(*Widget, row, column, rowspan, colspan)
@@ -476,7 +555,7 @@ class CellDef(QWidget):
         glayout.addWidget(self.cycle_duration00_fixed, 0,3,1,1)
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         glayout.addWidget(units, 0,4,1,1)
 
@@ -495,7 +574,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -508,12 +587,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -526,7 +605,7 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         # glayout.addWidget(QLabel(""), 2,0,1,1) # w, row, column, rowspan, colspan
@@ -547,7 +626,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -560,12 +639,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -578,12 +657,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 2 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
@@ -596,7 +675,7 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
         #-----
@@ -614,7 +693,7 @@ class CellDef(QWidget):
         glayout = QGridLayout()
 
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 0,0,1,1) # w, row, column, rowspan, colspan
 
@@ -627,12 +706,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 0,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 1 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 1,0,1,1) # w, row, column, rowspan, colspan
 
@@ -645,12 +724,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 1,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 2 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 2,0,1,1) # w, row, column, rowspan, colspan
 
@@ -663,12 +742,12 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 2,4,1,1) # w, row, column, rowspan, colspan
 
         #-------
         label = QLabel("phase 3 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         glayout.addWidget(label, 3,0,1,1) # w, row, column, rowspan, colspan
 
@@ -681,7 +760,7 @@ class CellDef(QWidget):
 
         units = QLabel("min")
         units.setAlignment(QtCore.Qt.AlignCenter)
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         glayout.addWidget(units, 3,4,1,1) # w, row, column, rowspan, colspan
 
         #-----
@@ -697,7 +776,8 @@ class CellDef(QWidget):
         # add it to this panel.
         self.vbox.addWidget(self.stacked)
 
-        #============  Death ================================
+    #--------------------------------------------------------
+    def create_death_tab(self):
         label = QLabel("Phenotype: death")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -712,14 +792,14 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("death rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_death_rate = QLineEdit()
         self.apoptosis_death_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_death_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -734,7 +814,7 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
@@ -746,7 +826,7 @@ class CellDef(QWidget):
         hbox.addWidget(self.apoptosis_phase0_duration_fixed)
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -754,7 +834,7 @@ class CellDef(QWidget):
         #-------
         # hbox = QHBoxLayout()
         # label = QLabel("phase 1 duration")
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         # label.setAlignment(QtCore.Qt.AlignRight)
         # hbox.addWidget(label)
         # self.apoptosis_phase1_duration = QLineEdit()
@@ -765,7 +845,7 @@ class CellDef(QWidget):
         # hbox.addWidget(self.apoptosis_phase1_duration_fixed)
 
         # units = QLabel("min")
-        # units.setFixedWidth(units_width)
+        # units.setFixedWidth(self.units_width)
         # units.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(units)
         # self.vbox.addLayout(hbox)
@@ -773,7 +853,7 @@ class CellDef(QWidget):
         # #-------
         # hbox = QHBoxLayout()
         # label = QLabel("phase 2 duration")
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         # label.setAlignment(QtCore.Qt.AlignRight)
         # hbox.addWidget(label)
         # self.apoptosis_phase2_duration = QLineEdit()
@@ -784,7 +864,7 @@ class CellDef(QWidget):
         # hbox.addWidget(self.apoptosis_phase2_duration_fixed)
 
         # units = QLabel("min")
-        # units.setFixedWidth(units_width)
+        # units.setFixedWidth(self.units_width)
         # units.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(units)
         # self.vbox.addLayout(hbox)
@@ -792,7 +872,7 @@ class CellDef(QWidget):
         # #-------
         # hbox = QHBoxLayout()
         # label = QLabel("phase 3 duration")
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         # label.setAlignment(QtCore.Qt.AlignRight)
         # hbox.addWidget(label)
         # self.apoptosis_phase3_duration = QLineEdit()
@@ -803,7 +883,7 @@ class CellDef(QWidget):
         # hbox.addWidget(self.apoptosis_phase3_duration_fixed)
 
         # units = QLabel("min")
-        # units.setFixedWidth(units_width)
+        # units.setFixedWidth(self.units_width)
         # units.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(units)
         # self.vbox.addLayout(hbox)
@@ -820,42 +900,42 @@ class CellDef(QWidget):
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
         hbox = QHBoxLayout()
         label = QLabel("unlysed fluid change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_unlysed_rate = QLineEdit()
         self.apoptosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_unlysed_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("lysed fluid change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_lysed_rate = QLineEdit()
         self.apoptosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_lysed_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("cytoplasmic biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_cytoplasmic_biomass_change_rate = QLineEdit()
         self.apoptosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_cytoplasmic_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -865,42 +945,42 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("nuclear biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_nuclear_biomass_change_rate = QLineEdit()
         self.apoptosis_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_nuclear_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("calcification rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_calcification_rate = QLineEdit()
         self.apoptosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_calcification_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("relative rupture volume")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.apoptosis_relative_rupture_volume = QLineEdit()
         self.apoptosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.apoptosis_relative_rupture_volume)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -913,18 +993,18 @@ class CellDef(QWidget):
         self.vbox.addWidget(label)
         # self.vbox.addWidget(QHLine())
 
-        # label_width = 210
-        # units_width = 45
+        # self.label_width = 210
+        # self.units_width = 45
         hbox = QHBoxLayout()
         label = QLabel("death rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_death_rate = QLineEdit()
         self.necrosis_death_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_death_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -932,7 +1012,7 @@ class CellDef(QWidget):
         #-----
         hbox = QHBoxLayout()
         label = QLabel("phase 0 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_phase0_duration = QLineEdit()
@@ -943,7 +1023,7 @@ class CellDef(QWidget):
         hbox.addWidget(self.necrosis_phase0_duration_fixed)
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -951,7 +1031,7 @@ class CellDef(QWidget):
         #-----
         hbox = QHBoxLayout()
         label = QLabel("phase 1 duration")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_phase1_duration = QLineEdit()
@@ -962,7 +1042,7 @@ class CellDef(QWidget):
         hbox.addWidget(self.necrosis_phase1_duration_fixed)
 
         units = QLabel("min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -970,7 +1050,7 @@ class CellDef(QWidget):
         #-----
         # hbox = QHBoxLayout()
         # label = QLabel("phase 2 duration")
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         # label.setAlignment(QtCore.Qt.AlignRight)
         # hbox.addWidget(label)
         # self.necrosis_phase2_duration = QLineEdit()
@@ -981,14 +1061,14 @@ class CellDef(QWidget):
         # hbox.addWidget(self.necrosis_phase2_duration_fixed)
 
         # units = QLabel("min")
-        # units.setFixedWidth(units_width)
+        # units.setFixedWidth(self.units_width)
         # units.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(units)
         # self.vbox.addLayout(hbox)
         # #-----
         # hbox = QHBoxLayout()
         # label = QLabel("phase 3 duration")
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         # label.setAlignment(QtCore.Qt.AlignRight)
         # hbox.addWidget(label)
         # self.necrosis_phase3_duration = QLineEdit()
@@ -999,7 +1079,7 @@ class CellDef(QWidget):
         # hbox.addWidget(self.necrosis_phase3_duration_fixed)
 
         # units = QLabel("min")
-        # units.setFixedWidth(units_width)
+        # units.setFixedWidth(self.units_width)
         # units.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(units)
         # self.vbox.addLayout(hbox)
@@ -1016,42 +1096,42 @@ class CellDef(QWidget):
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
         hbox = QHBoxLayout()
         label = QLabel("unlysed fluid change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_unlysed_rate = QLineEdit()
         self.necrosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_unlysed_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("lysed fluid change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_lysed_rate = QLineEdit()
         self.necrosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_lysed_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("cytoplasmic biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_cytoplasmic_biomass_change_rate = QLineEdit()
         self.necrosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_cytoplasmic_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1061,47 +1141,48 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("nuclear biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_nuclear_biomass_change_rate = QLineEdit()
         self.necrosis_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_nuclear_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("calcification rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_calcification_rate = QLineEdit()
         self.necrosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_calcification_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("relative rupture volume")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.necrosis_relative_rupture_volume = QLineEdit()
         self.necrosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.necrosis_relative_rupture_volume)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
-        #============  Volume ================================
+    #--------------------------------------------------------
+    def create_volume_tab(self):
         label = QLabel("Phenotype: volume")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -1111,42 +1192,42 @@ class CellDef(QWidget):
         # <nuclear units="micron^3">540</nuclear>
         hbox = QHBoxLayout()
         label = QLabel("total")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_total = QLineEdit()
         self.volume_total.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_total)
         units = QLabel("micron^3")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("fluid fraction")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_fluid_fraction = QLineEdit()
         self.volume_fluid_fraction.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_fluid_fraction)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("nuclear")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_nuclear = QLineEdit()
         self.volume_nuclear.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_nuclear)
         units = QLabel("micron^3")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1157,42 +1238,42 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("fluid change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_fluid_change_rate = QLineEdit()
         self.volume_fluid_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_fluid_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("cytoplasmic biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_cytoplasmic_biomass_change_rate = QLineEdit()
         self.volume_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_cytoplasmic_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("nuclear biomass change rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_nuclear_biomass_change_rate = QLineEdit()
         self.volume_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_nuclear_biomass_change_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1201,28 +1282,28 @@ class CellDef(QWidget):
         # <calcification_rate units="1/min">0</calcification_rate>
         hbox = QHBoxLayout()
         label = QLabel("calcification fraction")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_calcified_fraction = QLineEdit()
         self.volume_calcified_fraction.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_calcified_fraction)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("calcified rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.volume_calcification_rate = QLineEdit()
         self.volume_calcification_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.volume_calcification_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1231,21 +1312,23 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("relative rupture volume")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.relative_rupture_volume = QLineEdit()
         self.relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.relative_rupture_volume)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
 
         # self.vbox.addWidget(QHLine())
-        #============  Mechanics ================================
+
+    #--------------------------------------------------------
+    def create_mechanics_tab(self):
         label = QLabel("Phenotype: mechanics")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -1257,42 +1340,42 @@ class CellDef(QWidget):
     # <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
         hbox = QHBoxLayout()
         label = QLabel("cell-cell adhesion strength")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.cell_cell_adhesion_strength = QLineEdit()
         self.cell_cell_adhesion_strength.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.cell_cell_adhesion_strength)
         units = QLabel("micron/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("cell-cell repulsion strength")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.cell_cell_repulsion_strength = QLineEdit()
         self.cell_cell_repulsion_strength.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.cell_cell_repulsion_strength)
         units = QLabel("micron/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("relative max adhesion distance")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.relative_maximum_adhesion_distance = QLineEdit()
         self.relative_maximum_adhesion_distance.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.relative_maximum_adhesion_distance)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1302,14 +1385,14 @@ class CellDef(QWidget):
     #     <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
     # </options>
         label = QLabel("Options:")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignLeft)
         self.vbox.addWidget(label)
 
         #--------
         hbox = QHBoxLayout()
         label = QLabel("relative equilibrium distance")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.set_relative_equilibrium_distance = QLineEdit()
@@ -1320,7 +1403,7 @@ class CellDef(QWidget):
         hbox.addWidget(self.set_relative_equilibrium_distance_enabled)
 
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1328,7 +1411,7 @@ class CellDef(QWidget):
         #--------
         hbox = QHBoxLayout()
         label = QLabel("absolute equilibrium distance")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.set_absolute_equilibrium_distance = QLineEdit()
@@ -1339,13 +1422,14 @@ class CellDef(QWidget):
         hbox.addWidget(self.set_absolute_equilibrium_distance_enabled)
 
         units = QLabel("micron")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
 
-        #============  Motility ================================
+    #--------------------------------------------------------
+    def create_motility_tab(self):
         label = QLabel("Phenotype: motility")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -1357,42 +1441,42 @@ class CellDef(QWidget):
         # <migration_bias units="dimensionless">.75</migration_bias>
         hbox = QHBoxLayout()
         label = QLabel("speed")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.speed = QLineEdit()
         self.speed.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.speed)
         units = QLabel("micron/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("persistence time")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.persistence_time = QLineEdit()
         self.persistence_time.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.persistence_time)
         units = QLabel("min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("migration bias")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.migration_bias = QLineEdit()
         self.migration_bias.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.migration_bias)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
@@ -1409,7 +1493,7 @@ class CellDef(QWidget):
         hbox = QHBoxLayout()
         self.motility_enabled = QCheckBox("enable")
         # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
-        # label.setFixedWidth(label_width)
+        # label.setFixedWidth(self.label_width)
         hbox.addWidget(self.motility_enabled)
 
         self.motility_2D = QCheckBox("2D")
@@ -1436,7 +1520,8 @@ class CellDef(QWidget):
         # self.motility_substrate_dropdown.addItem("oxygen")
         self.vbox.addWidget(self.motility_substrate_dropdown)
 
-        #============  Secretion ================================
+    #--------------------------------------------------------
+    def create_secretion_tab(self):
         label = QLabel("Phenotype: secretion")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -1488,85 +1573,88 @@ class CellDef(QWidget):
 
         hbox = QHBoxLayout()
         label = QLabel("secretion rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.secretion_rate = QLineEdit()
         self.secretion_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.secretion_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("target")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.secretion_target = QLineEdit()
         self.secretion_target.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.secretion_target)
         units = QLabel("")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("uptake rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.uptake_rate = QLineEdit()
         self.uptake_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.uptake_rate)
         units = QLabel("1/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         label = QLabel("net export rate")
-        label.setFixedWidth(label_width)
+        label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
         self.secretion_net_export_rate = QLineEdit()
         self.secretion_net_export_rate.setValidator(QtGui.QDoubleValidator())
         hbox.addWidget(self.secretion_net_export_rate)
         units = QLabel("total/min")
-        units.setFixedWidth(units_width)
+        units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
 
-        #============  Molecular ================================
+    #--------------------------------------------------------
+    def create_molecular_tab(self):
         label = QLabel("Phenotype: molecular")
         label.setStyleSheet("background-color: orange")
         label.setAlignment(QtCore.Qt.AlignCenter)
         self.vbox.addWidget(label)
         # self.vbox.addWidget(QHLine())
 
+    #--------------------------------------------------------
+    def create_custom_data_tab(self):
         #=====  Custom data 
         label = QLabel("Custom data")
         label.setStyleSheet("background-color: cyan")
         self.vbox.addWidget(label)
 
         #-------------------------
-        custom_data_controls_hbox = QHBoxLayout()
+        self.custom_data_controls_hbox = QHBoxLayout()
         # self.new_button = QPushButton("New")
         self.new_button = QPushButton("Append 5 more rows")
-        custom_data_controls_hbox.addWidget(self.new_button)
+        self.custom_data_controls_hbox.addWidget(self.new_button)
         self.new_button.clicked.connect(self.append_more_cb)
 
         self.clear_button = QPushButton("Clear selected rows")
-        custom_data_controls_hbox.addWidget(self.clear_button)
+        self.custom_data_controls_hbox.addWidget(self.clear_button)
         self.clear_button.clicked.connect(self.clear_rows_cb)
 
-        self.vbox.addLayout(custom_data_controls_hbox)
+        self.vbox.addLayout(self.custom_data_controls_hbox)
 
         #-------------------------
         # Fixed names for columns:
@@ -1622,7 +1710,7 @@ class CellDef(QWidget):
             hbox.addWidget(w)
 
             # units = QtWidgets.QLabel("micron^2/min")
-            # units.setFixedWidth(units_width)
+            # units.setFixedWidth(self.units_width)
             # hbox.addWidget(units)
             self.vbox.addLayout(hbox)
             # self.vbox.addLayout(hbox)
@@ -1640,7 +1728,7 @@ class CellDef(QWidget):
         self.scroll.setWidget(self.params_cell_def)
 
 
-        self.save_button = QPushButton("Save")
+        # self.save_button = QPushButton("Save")
         # self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
 
         self.layout = QVBoxLayout(self)
@@ -1649,10 +1737,11 @@ class CellDef(QWidget):
         # self.layout.addWidget(QHLine())
         # self.layout.addWidget(self.params)
 
-        self.layout.addLayout(controls_hbox)
+        self.layout.addLayout(self.controls_hbox)
+        self.layout.addLayout(self.cell_types_tabs_hbox)
 
         # self.layout.addWidget(self.scroll)
-        self.layout.addWidget(splitter)
+        self.layout.addWidget(self.splitter)
 
         # self.layout.addWidget(self.vbox)
         # self.layout.addWidget(self.text)
@@ -1666,6 +1755,8 @@ class CellDef(QWidget):
     #     # self.text.setText(random.choice(self.hello))
     #     pass
 
+
+    #--------------------------------------------------------
     @QtCore.Slot()
     def cycle_changed_cb(self, idx):
         # pass
@@ -1866,7 +1957,7 @@ class CellDef(QWidget):
             cell_def_name = self.xml_root.find(".//cell_definitions//cell_definition").attrib['name']
 
         print('--------- fill_gui: cell_def_name=',cell_def_name)
-        self.cell_type_name.setText(cell_def_name)
+        # self.cell_type_name.setText(cell_def_name)
 
 
         uep = self.xml_root.find(".//cell_definitions")
