@@ -24,11 +24,11 @@ class QHLine(QFrame):
 class Config(QWidget):
     def __init__(self):
         super().__init__()
-        # global self.params_cell_def
+        # global self.config_params
 
         self.xml_root = None
 
-        self.tab = QWidget()
+        # self.tab = QWidget()
         # self.tabs.resize(200,5)
         
         #-------------------------------------------
@@ -40,7 +40,7 @@ class Config(QWidget):
 
         self.scroll = QScrollArea()  # might contain centralWidget
 
-        self.params_cell_def = QWidget()
+        self.config_params = QWidget()
         self.vbox = QVBoxLayout()
         self.vbox.addStretch(0)
 
@@ -275,12 +275,13 @@ class Config(QWidget):
 
 
         #==================================================================
-        self.params_cell_def.setLayout(self.vbox)
+        self.config_params.setLayout(self.vbox)
 
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.params_cell_def)
+
+        self.scroll.setWidget(self.config_params) # self.config_params = QWidget()
 
         self.layout = QVBoxLayout(self)
 

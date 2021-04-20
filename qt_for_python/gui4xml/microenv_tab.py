@@ -9,8 +9,7 @@ Dr. Paul Macklin (macklinp@iu.edu)
 """
 
 import sys
-from PySide6 import QtCore, QtWidgets, QtGui
-#from PySide6.QtWidgets import QFrame
+from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import *
 from PySide6.QtGui import QDoubleValidator
 
@@ -20,10 +19,10 @@ class QHLine(QFrame):
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
-class SubstrateDef(QtWidgets.QWidget):
+class SubstrateDef(QWidget):
     def __init__(self):
         super().__init__()
-        # global self.params_cell_def
+        # global self.microenv_params
 
         self.current_substrate = None
         self.xml_root = None
@@ -31,9 +30,9 @@ class SubstrateDef(QtWidgets.QWidget):
 
         #---------------
         # self.cell_defs = CellDefInstances()
-        self.cell_def_horiz_layout = QtWidgets.QHBoxLayout()
+        self.microenv_hbox = QHBoxLayout()
 
-        splitter = QtWidgets.QSplitter()
+        splitter = QSplitter()
 
         tree_widget_width = 160
 
@@ -57,35 +56,35 @@ class SubstrateDef(QtWidgets.QWidget):
         # self.tree.insertTopLevelItem(1,cellname)
 
 
-        self.cell_def_horiz_layout.addWidget(self.tree)
+        self.microenv_hbox.addWidget(self.tree)
 
-        self.scroll_cell_def_tree = QtWidgets.QScrollArea()
+        self.scroll_cell_def_tree = QScrollArea()
         self.scroll_cell_def_tree.setWidget(self.tree)
 
         # splitter.addWidget(self.tree)
         splitter.addWidget(self.scroll_cell_def_tree)
 
         #-------------------------------------------
-        # self.tab = QtWidgets.QWidget()
+        # self.tab = QWidget()
         # self.tabs.resize(200,5)
         
         #-------------------------------------------
         label_width = 150
         units_width = 70
 
-        # self.scroll = QtWidgets.QScrollArea()
-        self.scroll_area = QtWidgets.QScrollArea()
+        # self.scroll = QScrollArea()
+        self.scroll_area = QScrollArea()
         splitter.addWidget(self.scroll_area)
-        # self.cell_def_horiz_layout.addWidget(self.scroll_area)
+        # self.microenv_hbox.addWidget(self.scroll_area)
 
-        self.params_cell_def = QtWidgets.QWidget()
-        self.vbox = QtWidgets.QVBoxLayout()
+        self.microenv_params = QWidget()
+        self.vbox = QVBoxLayout()
         self.vbox.addStretch(0)
 
-        # self.cell_def_horiz_layout.addWidget(self.)
+        # self.microenv_hbox.addWidget(self.)
 
         #------------------
-        controls_hbox = QtWidgets.QHBoxLayout()
+        controls_hbox = QHBoxLayout()
         self.new_button = QPushButton("New")
         controls_hbox.addWidget(self.new_button)
 
@@ -100,8 +99,8 @@ class SubstrateDef(QtWidgets.QWidget):
         # self.vbox.addWidget(QHLine())
 
         #------------------
-        hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Name of substrate:")
+        hbox = QHBoxLayout()
+        label = QLabel("Name of substrate:")
         label.setFixedWidth(180)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
@@ -114,73 +113,73 @@ class SubstrateDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
 
         #------------------
-        hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("diffusion coefficient")
+        hbox = QHBoxLayout()
+        label = QLabel("diffusion coefficient")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.diffusion_coef = QtWidgets.QLineEdit()
+        self.diffusion_coef = QLineEdit()
         self.diffusion_coef.setValidator(QtGui.QDoubleValidator())
         # self.diffusion_coef.enter.connect(self.save_xml)
         hbox.addWidget(self.diffusion_coef)
 
-        units = QtWidgets.QLabel("micron^2/min")
+        units = QLabel("micron^2/min")
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         #----------
-        hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("decay rate")
+        hbox = QHBoxLayout()
+        label = QLabel("decay rate")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.decay_rate = QtWidgets.QLineEdit()
+        self.decay_rate = QLineEdit()
         self.decay_rate.setValidator(QtGui.QDoubleValidator())
         # self.decay_rate.enter.connect(self.save_xml)
         hbox.addWidget(self.decay_rate)
 
-        units = QtWidgets.QLabel("1/min")
+        units = QLabel("1/min")
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
 
         #----------
-        hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("initial condition")
+        hbox = QHBoxLayout()
+        label = QLabel("initial condition")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.init_cond = QtWidgets.QLineEdit()
+        self.init_cond = QLineEdit()
         self.init_cond.setValidator(QtGui.QDoubleValidator())
         # self.init_cond.enter.connect(self.save_xml)
         hbox.addWidget(self.init_cond)
 
-        units = QtWidgets.QLabel("mmol")
+        units = QLabel("mmol")
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
         self.vbox.addLayout(hbox)
         #----------
 
-        hbox = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Dirichlet BC")
+        hbox = QHBoxLayout()
+        label = QLabel("Dirichlet BC")
         label.setFixedWidth(label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
         hbox.addWidget(label)
 
-        self.dirichlet_bc = QtWidgets.QLineEdit()
+        self.dirichlet_bc = QLineEdit()
         self.dirichlet_bc.setValidator(QtGui.QDoubleValidator())
         # self.bdy_cond.enter.connect(self.save_xml)
         hbox.addWidget(self.dirichlet_bc)
 
-        units = QtWidgets.QLabel("mmol")
+        units = QLabel("mmol")
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
 
-        self.dirichlet_bc_enabled = QtWidgets.QCheckBox("on/off")
+        self.dirichlet_bc_enabled = QCheckBox("on/off")
         # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
         # label.setFixedWidth(label_width)
         hbox.addWidget(self.dirichlet_bc_enabled)
@@ -188,13 +187,13 @@ class SubstrateDef(QtWidgets.QWidget):
         self.vbox.addLayout(hbox)
         #-------------
 
-        hbox = QtWidgets.QHBoxLayout()
-        self.gradients = QtWidgets.QCheckBox("calculate gradients")
+        hbox = QHBoxLayout()
+        self.gradients = QCheckBox("calculate gradients")
         hbox.addWidget(self.gradients)
         self.vbox.addLayout(hbox)
 
-        hbox = QtWidgets.QHBoxLayout()
-        self.track_in_agents = QtWidgets.QCheckBox("track in agents")
+        hbox = QHBoxLayout()
+        self.track_in_agents = QCheckBox("track in agents")
         hbox.addWidget(self.track_in_agents)
         self.vbox.addLayout(hbox)
 
@@ -229,18 +228,18 @@ class SubstrateDef(QtWidgets.QWidget):
         # self.vbox.addItem(spacerItem)
         self.vbox.addStretch()
 
-        self.params_cell_def.setLayout(self.vbox)
+        self.microenv_params.setLayout(self.vbox)
 
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.params_cell_def)
+        self.scroll_area.setWidget(self.microenv_params)
 
 
-        # self.save_button = QtWidgets.QPushButton("Save")
-        # self.text = QtWidgets.QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
+        # self.save_button = QPushButton("Save")
+        # self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
         self.layout.addLayout(controls_hbox)
 

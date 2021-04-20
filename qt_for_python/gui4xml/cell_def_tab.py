@@ -167,11 +167,11 @@ class CellDef(QWidget):
         #-------------------------------------------
 
         self.scroll = QScrollArea()
-        self.splitter.addWidget(self.scroll)
+        # self.splitter.addWidget(self.scroll)
         # self.cell_def_horiz_layout.addWidget(self.scroll)
 
-        self.params_cell_def = QWidget()
-        self.vbox = QVBoxLayout()
+        # self.params_cell_def = QWidget()
+        # self.vbox = QVBoxLayout()
         # self.vbox.addStretch(0)
 
         # self.cell_def_horiz_layout.addWidget(self.)
@@ -197,8 +197,14 @@ class CellDef(QWidget):
         self.secretion_tab = QWidget()
         self.custom_data_tab = QWidget()
 
+        self.scroll = QScrollArea()
+
         # self.cell_types_tabs_hbox = QHBoxLayout()
         self.tab_widget = QTabWidget()
+        # self.layout.addWidget(self.scroll)
+        self.splitter.addWidget(self.scroll)
+        # self.splitter.addWidget(self.tab_widget)
+
         # self.tab_widget.setStyleSheet('''
         # QTabWidget {
         #     background: magenta;
@@ -208,14 +214,17 @@ class CellDef(QWidget):
         #     background: green;
         # }
         # ''')
-        self.tab_widget.addTab(self.cycle_tab,"Cycle")
-        self.tab_widget.addTab(self.death_tab,"Death")
-        self.tab_widget.addTab(self.volume_tab,"Volume")
-        self.tab_widget.addTab(self.mechanics_tab,"Mechanics")
-        self.tab_widget.addTab(self.motility_tab,"Motlity")
-        self.tab_widget.addTab(self.secretion_tab,"Secretion")
-        self.tab_widget.addTab(self.custom_data_tab,"Custom Data")
-        self.tab_widget.tabBarClicked.connect(self.tabbar_clicked_cb)
+        self.tab_widget.addTab(self.create_cycle_tab(),"Cycle")
+        self.tab_widget.addTab(self.create_death_tab(),"Death")
+
+        # self.tab_widget.addTab(self.cycle_tab,"Cycle")
+        # self.tab_widget.addTab(self.death_tab,"Death")
+        # self.tab_widget.addTab(self.volume_tab,"Volume")
+        # self.tab_widget.addTab(self.mechanics_tab,"Mechanics")
+        # self.tab_widget.addTab(self.motility_tab,"Motlity")
+        # self.tab_widget.addTab(self.secretion_tab,"Secretion")
+        # self.tab_widget.addTab(self.custom_data_tab,"Custom Data")
+        # self.tab_widget.tabBarClicked.connect(self.tabbar_clicked_cb)
 
         # lay = QVBoxLayout(self)
         # lay.setContentsMargins(5, 35, 5, 5)
@@ -246,17 +255,16 @@ class CellDef(QWidget):
         # hbox.addWidget(self.cell_type_name)
         # self.vbox.addLayout(hbox)
 
-        self.create_cycle_tab()
-        # self.show_cycle_tab()
-        self.create_death_tab()
+        # self.create_cycle_tab()
+        # self.create_death_tab()
         self.create_volume_tab()
         self.create_mechanics_tab()
         self.create_motility_tab()
         self.create_secretion_tab()
         self.create_custom_data_tab()
 
-        # self.vbox.hide()
-        self.show_cycle_tab()
+        # # self.vbox.hide()
+        # self.show_cycle_tab()
 
     #--------------------------------------------------------
     def tabbar_clicked_cb(self,idx):
@@ -281,6 +289,7 @@ class CellDef(QWidget):
         # self.group_cycle = QGroupBox()
         self.params_cycle = QWidget()
         self.vbox_cycle = QVBoxLayout()
+        # glayout = QGridLayout()
 
         self.cycle_dropdown = QComboBox()
         self.cycle_dropdown.setFixedWidth(300)
@@ -316,14 +325,14 @@ class CellDef(QWidget):
         # self.vbox.addWidget(self.cycle_label)
 
         #----------------------------
-        self.cycle_rate_duration_hbox = QHBoxLayout()
-        self.rb1 = QRadioButton("transition rate(s)", self)
-        self.rb1.clicked.connect(self.cycle_phase_transition_cb)
-        self.cycle_rate_duration_hbox.addWidget(self.rb1)
-        self.rb2 = QRadioButton("duration(s)", self)
-        self.rb2.clicked.connect(self.cycle_phase_transition_cb)
-        self.cycle_rate_duration_hbox.addWidget(self.rb2)
-        self.cycle_rate_duration_hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
+        # self.cycle_rate_duration_hbox = QHBoxLayout()
+        # self.rb1 = QRadioButton("transition rate(s)", self)
+        # self.rb1.clicked.connect(self.cycle_phase_transition_cb)
+        # self.cycle_rate_duration_hbox.addWidget(self.rb1)
+        # self.rb2 = QRadioButton("duration(s)", self)
+        # self.rb2.clicked.connect(self.cycle_phase_transition_cb)
+        # self.cycle_rate_duration_hbox.addWidget(self.rb2)
+        # self.cycle_rate_duration_hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
         # self.vbox.addLayout(self.cycle_rate_duration_hbox)
 
         #-----------------------------
@@ -825,66 +834,54 @@ class CellDef(QWidget):
         # self.vbox.addWidget(self.stacked)
         self.vbox_cycle.addWidget(self.stacked_cycle)
 
+        # spacerItem = QSpacerItem(100,500)
+        # self.vbox.addItem(spacerItem)
+        self.vbox_cycle.addStretch()
+
         self.params_cycle.setLayout(self.vbox_cycle)
 
-    #--------------------------------------------------------
-    def show_cycle_tab(self):
-        self.vbox.addWidget(self.cycle_dropdown)
-        self.vbox.addLayout(self.cycle_rate_duration_hbox)
-        # self.vbox.setLayout(self.cycle_rate_duration_hbox)
-        # self.vbox.addWidget(self.stacked_cycle)
-
-        self.vbox.addWidget(self.params_cycle)
-        # self.vbox.addLayout(self.vbox_cycle)
-
-    #--------------------------------------------------------
-    def show_death_tab(self):
-        self.vbox.addWidget(self.apoptosis_label)
-        self.vbox.addLayout(self.apoptosis_rate_hbox)
-        self.vbox.addLayout(self.apoptosis_phase0_duration_hbox)
-        self.vbox.addLayout(self.apoptosis_unlysed_rate_hbox)
-        self.vbox.addLayout(self.apoptosis_lysed_rate_hbox)
-        self.vbox.addLayout(self.apoptosis_cytoplasmic_hbox)
-        self.vbox.addLayout(self.apoptosis_nuclear_hbox)
-        self.vbox.addLayout(self.apoptosis_calcification_hbox)
-        self.vbox.addLayout(self.apoptosis_rel_rupture_volume_hbox)
-
-        self.vbox.addWidget(self.necrosis_label)
-        self.vbox.addLayout(self.necrosis_rate_hbox)
-        self.vbox.addLayout(self.necrosis_phase0_duration_hbox)
-        self.vbox.addLayout(self.necrosis_phase1_duration_hbox)
-        self.vbox.addLayout(self.necrosis_unlysed_rate_hbox)
-        self.vbox.addLayout(self.necrosis_lysed_rate_hbox)
-        self.vbox.addLayout(self.necrosis_cytoplasmic_hbox)
-        self.vbox.addLayout(self.necrosis_nuclear_hbox)
-        self.vbox.addLayout(self.necrosis_calcification_hbox)
-        self.vbox.addLayout(self.necrosis_rel_rupture_volume_hbox)
+        return self.params_cycle
+        # return cycle_tab
 
     #--------------------------------------------------------
     def create_death_tab(self):
-        label = QLabel("Phenotype: death")
-        label.setStyleSheet("background-color: orange")
-        label.setAlignment(QtCore.Qt.AlignCenter)
+        death_tab = QWidget()
+        # layout = QVBoxLayout()
+        glayout = QGridLayout()
+
+        # label = QLabel("Phenotype: death")
+        # label.setStyleSheet("background-color: orange")
+        # label.setAlignment(QtCore.Qt.AlignCenter)
         # self.vbox.addWidget(label)
         # self.vbox.addWidget(QHLine())
 
         #----------------
-        self.apoptosis_label = QLabel("Apoptosis")
-        self.apoptosis_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.apoptosis_label.setStyleSheet('background-color: yellow')
+        label = QLabel("Apoptosis")
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        label.setStyleSheet('background-color: yellow')
+        # layout.addWidget(apoptosis_label)
+        idr = 0
+        glayout.addWidget(label, idr,0, 1,4) # w, row, column, rowspan, colspan
 
-        self.apoptosis_rate_hbox = QHBoxLayout()
+        # hbox = QHBoxLayout()
         label = QLabel("death rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_rate_hbox.addWidget(label)
+        # hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
         self.apoptosis_death_rate = QLineEdit()
         self.apoptosis_death_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_rate_hbox.addWidget(self.apoptosis_death_rate)
+        # hbox.addWidget(self.apoptosis_death_rate)
+        glayout.addWidget(self.apoptosis_death_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_rate_hbox.addWidget(units)
+        # hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # layout.addLayout(hbox)
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
         #     <phase_durations units="min"> 
@@ -894,80 +891,236 @@ class CellDef(QWidget):
         #         <duration index="3" fixed_duration="true">60</duration>
         #     </phase_durations>
 
-        self.apoptosis_phase0_duration_hbox = QHBoxLayout()
+        # self.apoptosis_phase0_duration_hbox = QHBoxLayout()
         label = QLabel("phase 0 duration")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_phase0_duration_hbox.addWidget(label)
+    #    self.apoptosis_phase0_duration_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
 
         self.apoptosis_phase0_duration = QLineEdit()
         self.apoptosis_phase0_duration.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_phase0_duration_hbox.addWidget(self.apoptosis_phase0_duration)
+        # self.apoptosis_phase0_duration_hbox.addWidget(self.apoptosis_phase0_duration)
+        glayout.addWidget(self.apoptosis_phase0_duration, idr,1, 1,1) # w, row, column, rowspan, colspan
 
         self.apoptosis_phase0_duration_fixed = QCheckBox("Fixed")
-        self.apoptosis_phase0_duration_hbox.addWidget(self.apoptosis_phase0_duration_fixed)
+        # self.apoptosis_phase0_duration_hbox.addWidget(self.apoptosis_phase0_duration_fixed)
+        glayout.addWidget(self.apoptosis_phase0_duration_fixed, idr,2, 1,1) # w, row, column, rowspan, colspan
 
         units = QLabel("min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignCenter)
-        self.apoptosis_phase0_duration_hbox.addWidget(units)
-
+        glayout.addWidget(units, idr,3, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_phase0_duration_hbox.addWidget(units)
         #-------
-        # hbox = QHBoxLayout()
-        # label = QLabel("phase 1 duration")
-        # label.setFixedWidth(self.label_width)
-        # label.setAlignment(QtCore.Qt.AlignRight)
-        # hbox.addWidget(label)
-        # self.apoptosis_phase1_duration = QLineEdit()
-        # self.apoptosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
-        # hbox.addWidget(self.apoptosis_phase1_duration)
+        # <phase_durations units="min">
+        #     <duration index="0" fixed_duration="true">516</duration>
 
-        # self.apoptosis_phase1_duration_fixed = QCheckBox("Fixed")
-        # hbox.addWidget(self.apoptosis_phase1_duration_fixed)
+        # <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+        # <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+        # <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+        # <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+        # <calcification_rate units="1/min">0</calcification_rate>
+        # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+        # self.apoptosis_unlysed_rate_hbox = QHBoxLayout()
+        label = QLabel("unlysed fluid change rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
 
-        # units = QLabel("min")
-        # units.setFixedWidth(self.units_width)
-        # units.setAlignment(QtCore.Qt.AlignCenter)
-        # hbox.addWidget(units)
+        # self.apoptosis_unlysed_rate_hbox.addWidget(label)
+        self.apoptosis_unlysed_rate = QLineEdit()
+        self.apoptosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
+        # self.apoptosis_unlysed_rate_hbox.addWidget(self.apoptosis_unlysed_rate)
+        glayout.addWidget(self.apoptosis_unlysed_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_unlysed_rate_hbox.addWidget(units)
+        # self.vbox.addLayout(self.apoptosis_unlysed_rate_hbox)
+
+        # self.apoptosis_lysed_rate_hbox = QHBoxLayout()
+        label = QLabel("lysed fluid change rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_lysed_rate_hbox.addWidget(label)
+
+        self.apoptosis_lysed_rate = QLineEdit()
+        self.apoptosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.apoptosis_lysed_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_lysed_rate_hbox.addWidget(self.apoptosis_lysed_rate)
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_lysed_rate_hbox.addWidget(units)
+        # self.vbox.addLayout(self.apoptosis_lysed_rate_hbox)
+
+        # self.apoptosis_cytoplasmic_hbox = QHBoxLayout()
+        label = QLabel("cytoplasmic biomass change rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_cytoplasmic_hbox.addWidget(label)
+
+        self.apoptosis_cytoplasmic_biomass_change_rate = QLineEdit()
+        self.apoptosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.apoptosis_cytoplasmic_biomass_change_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_cytoplasmic_hbox.addWidget(self.apoptosis_cytoplasmic_biomass_change_rate)
+
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.apoptosis_cytoplasmic_hbox.addWidget(units)
+        # self.vbox.addLayout(self.apoptosis_cytoplasmic_biomass_change_rate_hbox)
+
+        # <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+        # <calcification_rate units="1/min">0</calcification_rate>
+        # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+
+        # self.apoptosis_nuclear_hbox = QHBoxLayout()
+        label = QLabel("nuclear biomass change rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        # self.apoptosis_nuclear_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
+        self.apoptosis_nuclear_biomass_change_rate = QLineEdit()
+        self.apoptosis_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
+        # self.apoptosis_nuclear_hbox.addWidget(self.apoptosis_nuclear_biomass_change_rate)
+        glayout.addWidget(self.apoptosis_nuclear_biomass_change_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        # self.apoptosis_nuclear_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
         # self.vbox.addLayout(hbox)
 
-        # #-------
-        # hbox = QHBoxLayout()
-        # label = QLabel("phase 2 duration")
-        # label.setFixedWidth(self.label_width)
-        # label.setAlignment(QtCore.Qt.AlignRight)
-        # hbox.addWidget(label)
-        # self.apoptosis_phase2_duration = QLineEdit()
-        # self.apoptosis_phase2_duration.setValidator(QtGui.QDoubleValidator())
-        # hbox.addWidget(self.apoptosis_phase2_duration)
+        # self.apoptosis_calcification_hbox = QHBoxLayout()
+        label = QLabel("calcification rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        # self.apoptosis_calcification_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
 
-        # self.apoptosis_phase2_duration_fixed = QCheckBox("Fixed")
-        # hbox.addWidget(self.apoptosis_phase2_duration_fixed)
+        self.apoptosis_calcification_rate = QLineEdit()
+        self.apoptosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
+        # self.apoptosis_calcification_hbox.addWidget(self.apoptosis_calcification_rate)
+        glayout.addWidget(self.apoptosis_calcification_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
 
-        # units = QLabel("min")
-        # units.setFixedWidth(self.units_width)
-        # units.setAlignment(QtCore.Qt.AlignCenter)
-        # hbox.addWidget(units)
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        # self.apoptosis_calcification_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
         # self.vbox.addLayout(hbox)
 
-        # #-------
-        # hbox = QHBoxLayout()
-        # label = QLabel("phase 3 duration")
-        # label.setFixedWidth(self.label_width)
-        # label.setAlignment(QtCore.Qt.AlignRight)
-        # hbox.addWidget(label)
-        # self.apoptosis_phase3_duration = QLineEdit()
-        # self.apoptosis_phase3_duration.setValidator(QtGui.QDoubleValidator())
-        # hbox.addWidget(self.apoptosis_phase3_duration)
+        # self.apoptosis_rel_rupture_volume_hbox = QHBoxLayout()
+        label = QLabel("relative rupture volume")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        # self.apoptosis_rel_rupture_volume_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
 
-        # self.apoptosis_phase3_duration_fixed = QCheckBox("Fixed")
-        # hbox.addWidget(self.apoptosis_phase3_duration_fixed)
+        self.apoptosis_relative_rupture_volume = QLineEdit()
+        self.apoptosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
+        # self.apoptosis_rel_rupture_volume_hbox.addWidget(self.apoptosis_relative_rupture_volume)
+        glayout.addWidget(self.apoptosis_relative_rupture_volume, idr,1, 1,1) # w, row, column, rowspan, colspan
 
-        # units = QLabel("min")
-        # units.setFixedWidth(self.units_width)
-        # units.setAlignment(QtCore.Qt.AlignCenter)
-        # hbox.addWidget(units)
+        units = QLabel("")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        # self.apoptosis_rel_rupture_volume_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
         # self.vbox.addLayout(hbox)
+
+        #----------------
+        label = QLabel("Necrosis")
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        label.setStyleSheet('background-color: yellow')
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,4) # w, row, column, rowspan, colspan
+
+        label = QLabel("death rate")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        # hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
+        self.necrosis_death_rate = QLineEdit()
+        self.necrosis_death_rate.setValidator(QtGui.QDoubleValidator())
+        # hbox.addWidget(self.necrosis_death_rate)
+        glayout.addWidget(self.necrosis_death_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("1/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        # hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # layout.addLayout(hbox)
+
+        # <cycle code="6" name="Flow cytometry model (separated)">  
+        #     <phase_durations units="min"> 
+        #         <duration index="0" fixed_duration="false">300.0</duration>
+        #         <duration index="1" fixed_duration="true">480</duration>
+        #         <duration index="2" fixed_duration="true">240</duration>
+        #         <duration index="3" fixed_duration="true">60</duration>
+        #     </phase_durations>
+
+        # self.necrosis_phase0_duration_hbox = QHBoxLayout()
+        label = QLabel("phase 0 duration")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+    #    self.necrosis_phase0_duration_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
+        self.necrosis_phase0_duration = QLineEdit()
+        self.necrosis_phase0_duration.setValidator(QtGui.QDoubleValidator())
+        # self.necrosis_phase0_duration_hbox.addWidget(self.necrosis_phase0_duration)
+        glayout.addWidget(self.necrosis_phase0_duration, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        self.necrosis_phase0_duration_fixed = QCheckBox("Fixed")
+        # self.necrosis_phase0_duration_hbox.addWidget(self.necrosis_phase0_duration_fixed)
+        glayout.addWidget(self.necrosis_phase0_duration_fixed, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        glayout.addWidget(units, idr,3, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_phase0_duration_hbox.addWidget(units)
+
+        #----
+        label = QLabel("phase 1 duration")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
+        self.necrosis_phase1_duration = QLineEdit()
+        self.necrosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.necrosis_phase1_duration, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        self.necrosis_phase1_duration_fixed = QCheckBox("Fixed")
+        glayout.addWidget(self.necrosis_phase1_duration_fixed, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+        units = QLabel("min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignCenter)
+        glayout.addWidget(units, idr,3, 1,1) # w, row, column, rowspan, colspan
 
         #-------
         # <phase_durations units="min">
@@ -979,225 +1132,219 @@ class CellDef(QWidget):
         # <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
         # <calcification_rate units="1/min">0</calcification_rate>
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
-        self.apoptosis_unlysed_rate_hbox = QHBoxLayout()
+        # self.necrosis_unlysed_rate_hbox = QHBoxLayout()
         label = QLabel("unlysed fluid change rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_unlysed_rate_hbox.addWidget(label)
-        self.apoptosis_unlysed_rate = QLineEdit()
-        self.apoptosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_unlysed_rate_hbox.addWidget(self.apoptosis_unlysed_rate)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
+        # self.necrosis_unlysed_rate_hbox.addWidget(label)
+        self.necrosis_unlysed_rate = QLineEdit()
+        self.necrosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
+        # self.necrosis_unlysed_rate_hbox.addWidget(self.necrosis_unlysed_rate)
+        glayout.addWidget(self.necrosis_unlysed_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_unlysed_rate_hbox.addWidget(units)
-        # self.vbox.addLayout(self.apoptosis_unlysed_rate_hbox)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_unlysed_rate_hbox.addWidget(units)
+        # self.vbox.addLayout(self.necrosis_unlysed_rate_hbox)
 
-        self.apoptosis_lysed_rate_hbox = QHBoxLayout()
+        # self.necrosis_lysed_rate_hbox = QHBoxLayout()
         label = QLabel("lysed fluid change rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_lysed_rate_hbox.addWidget(label)
-        self.apoptosis_lysed_rate = QLineEdit()
-        self.apoptosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_lysed_rate_hbox.addWidget(self.apoptosis_lysed_rate)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_lysed_rate_hbox.addWidget(label)
+
+        self.necrosis_lysed_rate = QLineEdit()
+        self.necrosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.necrosis_lysed_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_lysed_rate_hbox.addWidget(self.necrosis_lysed_rate)
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_lysed_rate_hbox.addWidget(units)
-        # self.vbox.addLayout(self.apoptosis_lysed_rate_hbox)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_lysed_rate_hbox.addWidget(units)
+        # self.vbox.addLayout(self.necrosis_lysed_rate_hbox)
 
-        self.apoptosis_cytoplasmic_hbox = QHBoxLayout()
+        # self.necrosis_cytoplasmic_hbox = QHBoxLayout()
         label = QLabel("cytoplasmic biomass change rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_cytoplasmic_hbox.addWidget(label)
-        self.apoptosis_cytoplasmic_biomass_change_rate = QLineEdit()
-        self.apoptosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_cytoplasmic_hbox.addWidget(self.apoptosis_cytoplasmic_biomass_change_rate)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_cytoplasmic_hbox.addWidget(label)
+
+        self.necrosis_cytoplasmic_biomass_change_rate = QLineEdit()
+        self.necrosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
+        glayout.addWidget(self.necrosis_cytoplasmic_biomass_change_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_cytoplasmic_hbox.addWidget(self.necrosis_cytoplasmic_biomass_change_rate)
+
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_cytoplasmic_hbox.addWidget(units)
-        # self.vbox.addLayout(self.apoptosis_cytoplasmic_biomass_change_rate_hbox)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+        # self.necrosis_cytoplasmic_hbox.addWidget(units)
+        # self.vbox.addLayout(self.necrosis_cytoplasmic_biomass_change_rate_hbox)
 
         # <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
         # <calcification_rate units="1/min">0</calcification_rate>
         # <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
 
-        self.apoptosis_nuclear_hbox = QHBoxLayout()
+        # self.necrosis_nuclear_hbox = QHBoxLayout()
         label = QLabel("nuclear biomass change rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_nuclear_hbox.addWidget(label)
-        self.apoptosis_nuclear_biomass_change_rate = QLineEdit()
-        self.apoptosis_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_nuclear_hbox.addWidget(self.apoptosis_nuclear_biomass_change_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_nuclear_hbox.addWidget(units)
-        # self.vbox.addLayout(hbox)
+        # self.necrosis_nuclear_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
 
-        self.apoptosis_calcification_hbox = QHBoxLayout()
-        label = QLabel("calcification rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_calcification_hbox.addWidget(label)
-        self.apoptosis_calcification_rate = QLineEdit()
-        self.apoptosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_calcification_hbox.addWidget(self.apoptosis_calcification_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_calcification_hbox.addWidget(units)
-        # self.vbox.addLayout(hbox)
-
-        self.apoptosis_rel_rupture_volume_hbox = QHBoxLayout()
-        label = QLabel("relative rupture volume")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.apoptosis_rel_rupture_volume_hbox.addWidget(label)
-        self.apoptosis_relative_rupture_volume = QLineEdit()
-        self.apoptosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
-        self.apoptosis_rel_rupture_volume_hbox.addWidget(self.apoptosis_relative_rupture_volume)
-        units = QLabel("")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.apoptosis_rel_rupture_volume_hbox.addWidget(units)
-        # self.vbox.addLayout(hbox)
-
-        #----------------
-        self.necrosis_label = QLabel("Necrosis")
-        self.necrosis_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.necrosis_label.setStyleSheet('background-color: yellow')
-
-        self.necrosis_rate_hbox = QHBoxLayout()
-        label = QLabel("death rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_rate_hbox.addWidget(label)
-        self.necrosis_death_rate = QLineEdit()
-        self.necrosis_death_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_rate_hbox.addWidget(self.necrosis_death_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_rate_hbox.addWidget(units)
-
-        self.necrosis_phase0_duration_hbox = QHBoxLayout()
-        label = QLabel("phase 0 duration")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_phase0_duration_hbox.addWidget(label)
-        self.necrosis_phase0_duration = QLineEdit()
-        self.necrosis_phase0_duration.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_phase0_duration_hbox.addWidget(self.necrosis_phase0_duration)
-        self.necrosis_phase0_duration_fixed = QCheckBox("Fixed")
-        self.necrosis_phase0_duration_hbox.addWidget(self.necrosis_phase0_duration_fixed)
-        units = QLabel("min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        self.necrosis_phase0_duration_hbox.addWidget(units)
-
-        self.necrosis_phase1_duration_hbox = QHBoxLayout()
-        label = QLabel("phase 1 duration")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_phase1_duration_hbox.addWidget(label)
-        self.necrosis_phase1_duration = QLineEdit()
-        self.necrosis_phase1_duration.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_phase1_duration_hbox.addWidget(self.necrosis_phase1_duration)
-        self.necrosis_phase1_duration_fixed = QCheckBox("Fixed")
-        self.necrosis_phase1_duration_hbox.addWidget(self.necrosis_phase1_duration_fixed)
-        units = QLabel("min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignCenter)
-        self.necrosis_phase1_duration_hbox.addWidget(units)
-
-
-        self.necrosis_unlysed_rate_hbox = QHBoxLayout()
-        label = QLabel("unlysed fluid change rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_unlysed_rate_hbox.addWidget(label)
-        self.necrosis_unlysed_rate = QLineEdit()
-        self.necrosis_unlysed_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_unlysed_rate_hbox.addWidget(self.necrosis_unlysed_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_unlysed_rate_hbox.addWidget(units)
-        # self.vbox.addLayout(self.necrosis_unlysed_rate_hbox)
-
-        self.necrosis_lysed_rate_hbox = QHBoxLayout()
-        label = QLabel("lysed fluid change rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_lysed_rate_hbox.addWidget(label)
-        self.necrosis_lysed_rate = QLineEdit()
-        self.necrosis_lysed_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_lysed_rate_hbox.addWidget(self.necrosis_lysed_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_lysed_rate_hbox.addWidget(units)
-        # self.vbox.addLayout(self.necrosis_lysed_rate_hbox)
-
-        self.necrosis_cytoplasmic_hbox = QHBoxLayout()
-        label = QLabel("cytoplasmic biomass change rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_cytoplasmic_hbox.addWidget(label)
-        self.necrosis_cytoplasmic_biomass_change_rate = QLineEdit()
-        self.necrosis_cytoplasmic_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_cytoplasmic_hbox.addWidget(self.necrosis_cytoplasmic_biomass_change_rate)
-        units = QLabel("1/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_cytoplasmic_hbox.addWidget(units)
-
-        self.necrosis_nuclear_hbox = QHBoxLayout()
-        label = QLabel("nuclear biomass change rate")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_nuclear_hbox.addWidget(label)
         self.necrosis_nuclear_biomass_change_rate = QLineEdit()
         self.necrosis_nuclear_biomass_change_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_nuclear_hbox.addWidget(self.necrosis_nuclear_biomass_change_rate)
+        # self.necrosis_nuclear_hbox.addWidget(self.necrosis_nuclear_biomass_change_rate)
+        glayout.addWidget(self.necrosis_nuclear_biomass_change_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_nuclear_hbox.addWidget(units)
+        # self.necrosis_nuclear_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
         # self.vbox.addLayout(hbox)
 
-        self.necrosis_calcification_hbox = QHBoxLayout()
+        # self.necrosis_calcification_hbox = QHBoxLayout()
         label = QLabel("calcification rate")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_calcification_hbox.addWidget(label)
+        # self.necrosis_calcification_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
         self.necrosis_calcification_rate = QLineEdit()
         self.necrosis_calcification_rate.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_calcification_hbox.addWidget(self.necrosis_calcification_rate)
+        # self.necrosis_calcification_hbox.addWidget(self.necrosis_calcification_rate)
+        glayout.addWidget(self.necrosis_calcification_rate, idr,1, 1,1) # w, row, column, rowspan, colspan
+
         units = QLabel("1/min")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_calcification_hbox.addWidget(units)
+        # self.necrosis_calcification_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
         # self.vbox.addLayout(hbox)
 
-        self.necrosis_rel_rupture_volume_hbox = QHBoxLayout()
+        # self.necrosis_rel_rupture_volume_hbox = QHBoxLayout()
         label = QLabel("relative rupture volume")
         label.setFixedWidth(self.label_width)
         label.setAlignment(QtCore.Qt.AlignRight)
-        self.necrosis_rel_rupture_volume_hbox.addWidget(label)
+        # self.necrosis_rel_rupture_volume_hbox.addWidget(label)
+        idr += 1
+        glayout.addWidget(label, idr,0, 1,1) # w, row, column, rowspan, colspan
+
         self.necrosis_relative_rupture_volume = QLineEdit()
         self.necrosis_relative_rupture_volume.setValidator(QtGui.QDoubleValidator())
-        self.necrosis_rel_rupture_volume_hbox.addWidget(self.necrosis_relative_rupture_volume)
+        # self.necrosis_rel_rupture_volume_hbox.addWidget(self.necrosis_relative_rupture_volume)
+        glayout.addWidget(self.necrosis_relative_rupture_volume, idr,1, 1,1) # w, row, column, rowspan, colspan
+
         units = QLabel("")
         units.setFixedWidth(self.units_width)
         units.setAlignment(QtCore.Qt.AlignLeft)
-        self.necrosis_rel_rupture_volume_hbox.addWidget(units)
-        # self.vbox.addLayout(hbox)
+        # self.necrosis_rel_rupture_volume_hbox.addWidget(units)
+        glayout.addWidget(units, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+
+
+        glayout.setVerticalSpacing(10)  # rwh - argh
+        death_tab.setLayout(glayout)
+        return death_tab
+
+    #--------------------------------------------------------
+    def create_motility_tab(self):
+        label = QLabel("Phenotype: motility")
+        label.setStyleSheet("background-color: orange")
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        # self.vbox.addWidget(label)
+        # self.vbox.addWidget(QHLine())
+
+        # <speed units="micron/min">1</speed>
+        # <persistence_time units="min">1</persistence_time>
+        # <migration_bias units="dimensionless">.75</migration_bias>
+        self.motility_speed_hbox = QHBoxLayout()
+        label = QLabel("speed")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        self.motility_speed_hbox.addWidget(label)
+        self.speed = QLineEdit()
+        self.speed.setValidator(QtGui.QDoubleValidator())
+        self.motility_speed_hbox.addWidget(self.speed)
+        units = QLabel("micron/min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        self.motility_speed_hbox.addWidget(units)
+
+        self.motility_persistence_time_hbox = QHBoxLayout()
+        label = QLabel("persistence time")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        self.motility_persistence_time_hbox.addWidget(label)
+        self.persistence_time = QLineEdit()
+        self.persistence_time.setValidator(QtGui.QDoubleValidator())
+        self.motility_persistence_time_hbox.addWidget(self.persistence_time)
+        units = QLabel("min")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        self.motility_persistence_time_hbox.addWidget(units)
+
+        self.motility_migration_bias_hbox = QHBoxLayout()
+        label = QLabel("migration bias")
+        label.setFixedWidth(self.label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        self.motility_migration_bias_hbox.addWidget(label)
+        self.migration_bias = QLineEdit()
+        self.migration_bias.setValidator(QtGui.QDoubleValidator())
+        self.motility_migration_bias_hbox.addWidget(self.migration_bias)
+        units = QLabel("")
+        units.setFixedWidth(self.units_width)
+        units.setAlignment(QtCore.Qt.AlignLeft)
+        self.motility_migration_bias_hbox.addWidget(units)
+        
+        # <options>
+        #     <enabled>false</enabled>
+        #     <use_2D>true</use_2D>
+        #     <chemotaxis>
+        #         <enabled>false</enabled>
+        #         <substrate>virus</substrate>
+        #         <direction>1</direction>
+        #     </chemotaxis>
+        # </options>
+        self.motility_chemotaxis_enabled_2D_hbox = QHBoxLayout()
+        self.motility_enabled = QCheckBox("enable")
+        # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
+        # label.setFixedWidth(self.label_width)
+        self.motility_chemotaxis_enabled_2D_hbox.addWidget(self.motility_enabled)
+
+        self.motility_2D = QCheckBox("2D")
+        # self.motility_2D.setAlignment(QtCore.Qt.AlignRight)
+        self.motility_chemotaxis_enabled_2D_hbox.addWidget(self.motility_2D)
+
+        self.motility_chemotaxis_enabled_hbox = QHBoxLayout()
+        label = QLabel("Chemotaxis")
+        label.setFixedWidth(200)
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        label.setStyleSheet('background-color: yellow')
+        self.motility_chemotaxis_enabled_hbox.addWidget(label)
+
+        self.chemotaxis_enabled = QCheckBox("enabled")
+        # self.motility_2D.setAlignment(QtCore.Qt.AlignRight)
+        self.motility_chemotaxis_enabled_hbox.addWidget(self.chemotaxis_enabled)
+
+        self.motility_substrate_dropdown = QComboBox()
+        self.motility_substrate_dropdown.setFixedWidth(300)
+        # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
+        self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)  # beware: will be triggered on a ".clear" too
+        # self.motility_substrate_dropdown.addItem("oxygen")
 
     #--------------------------------------------------------
     def create_volume_tab(self):
@@ -1338,18 +1485,6 @@ class CellDef(QWidget):
 
         # self.vbox.addWidget(QHLine())
     #--------------------------------------------------------
-    def show_volume_tab(self):
-        self.vbox.addLayout(self.volume_total_hbox)
-        self.vbox.addLayout(self.volume_fluid_fraction_hbox)
-        self.vbox.addLayout(self.volume_nuclear_hbox)
-        self.vbox.addLayout(self.volume_fluid_change_rate_hbox)
-        self.vbox.addLayout(self.volume_cyto_change_rate_hbox)
-        self.vbox.addLayout(self.volume_nuclear_change_rate_hbox)
-        self.vbox.addLayout(self.volume_calcification_fraction_hbox)
-        self.vbox.addLayout(self.volumem_calcified_rate_hbox)
-        self.vbox.addLayout(self.volume_rel_rupture_hbox)
-
-    #--------------------------------------------------------
     def create_mechanics_tab(self):
         label = QLabel("Phenotype: mechanics")
         label.setStyleSheet("background-color: orange")
@@ -1447,109 +1582,77 @@ class CellDef(QWidget):
         self.mechanics_abs_equil_dist_hbox.addWidget(units)
 
     #--------------------------------------------------------
-    def show_mechanics_tab(self):
-        self.vbox.addWidget(self.mechanics_adhesion_strength_hbox)
-        self.vbox.addWidget(self.mechanics_repulsion_strength_hbox)
-        self.vbox.addWidget(self.mechanics_rel_max_adhesion_dist_hbox)
-        self.vbox.addWidget(self.mechanics_options_label)
-        self.vbox.addLayout(self.mechanics_rel_equil_dist_hbox)
-        self.vbox.addLayout(self.mechanics_rel_equil_dist_hbox)
-        self.vbox.addLayout(self.mechanics_abs_equil_dist_hbox)
+    # def show_cycle_tab(self):
+    #     self.vbox.addWidget(self.cycle_dropdown)
+    #     self.vbox.addLayout(self.cycle_rate_duration_hbox)
+    #     # self.vbox.setLayout(self.cycle_rate_duration_hbox)
+    #     # self.vbox.addWidget(self.stacked_cycle)
+
+    #     self.vbox.addWidget(self.params_cycle)
+    #     # self.vbox.addLayout(self.vbox_cycle)
+
+    # #--------------------------------------------------------
+    # def show_death_tab(self):
+    #     self.vbox.addWidget(self.apoptosis_label)
+    #     self.vbox.addLayout(self.apoptosis_rate_hbox)
+    #     self.vbox.addLayout(self.apoptosis_phase0_duration_hbox)
+    #     self.vbox.addLayout(self.apoptosis_unlysed_rate_hbox)
+    #     self.vbox.addLayout(self.apoptosis_lysed_rate_hbox)
+    #     self.vbox.addLayout(self.apoptosis_cytoplasmic_hbox)
+    #     self.vbox.addLayout(self.apoptosis_nuclear_hbox)
+    #     self.vbox.addLayout(self.apoptosis_calcification_hbox)
+    #     self.vbox.addLayout(self.apoptosis_rel_rupture_volume_hbox)
+
+    #     self.vbox.addWidget(self.necrosis_label)
+    #     self.vbox.addLayout(self.necrosis_rate_hbox)
+    #     self.vbox.addLayout(self.necrosis_phase0_duration_hbox)
+    #     self.vbox.addLayout(self.necrosis_phase1_duration_hbox)
+    #     self.vbox.addLayout(self.necrosis_unlysed_rate_hbox)
+    #     self.vbox.addLayout(self.necrosis_lysed_rate_hbox)
+    #     self.vbox.addLayout(self.necrosis_cytoplasmic_hbox)
+    #     self.vbox.addLayout(self.necrosis_nuclear_hbox)
+    #     self.vbox.addLayout(self.necrosis_calcification_hbox)
+    #     self.vbox.addLayout(self.necrosis_rel_rupture_volume_hbox)
+
+    # #--------------------------------------------------------
+    # def show_mechanics_tab(self):
+    #     self.vbox.addWidget(self.mechanics_adhesion_strength_hbox)
+    #     self.vbox.addWidget(self.mechanics_repulsion_strength_hbox)
+    #     self.vbox.addWidget(self.mechanics_rel_max_adhesion_dist_hbox)
+    #     self.vbox.addWidget(self.mechanics_options_label)
+    #     self.vbox.addLayout(self.mechanics_rel_equil_dist_hbox)
+    #     self.vbox.addLayout(self.mechanics_rel_equil_dist_hbox)
+    #     self.vbox.addLayout(self.mechanics_abs_equil_dist_hbox)
+
+    # #--------------------------------------------------------
+    # def show_motility_tab(self):
+    #     self.vbox.addLayout(self.motility_speed_hbox)
+    #     self.vbox.addLayout(self.motility_persistence_time_hbox)
+    #     self.vbox.addLayout(self.motility_migration_bias_hbox)
+    #     self.vbox.addLayout(self.motility_chemotaxis_enabled_2D_hbox)
+    #     self.vbox.addLayout(self.motility_chemotaxis_enabled_hbox)
+    #     self.vbox.addWidget(self.motility_substrate_dropdown)
 
     #--------------------------------------------------------
-    def create_motility_tab(self):
-        label = QLabel("Phenotype: motility")
-        label.setStyleSheet("background-color: orange")
-        label.setAlignment(QtCore.Qt.AlignCenter)
-        # self.vbox.addWidget(label)
-        # self.vbox.addWidget(QHLine())
+    # def show_volume_tab(self):
+    #     self.vbox.addLayout(self.volume_total_hbox)
+    #     self.vbox.addLayout(self.volume_fluid_fraction_hbox)
+    #     self.vbox.addLayout(self.volume_nuclear_hbox)
+    #     self.vbox.addLayout(self.volume_fluid_change_rate_hbox)
+    #     self.vbox.addLayout(self.volume_cyto_change_rate_hbox)
+    #     self.vbox.addLayout(self.volume_nuclear_change_rate_hbox)
+    #     self.vbox.addLayout(self.volume_calcification_fraction_hbox)
+    #     self.vbox.addLayout(self.volumem_calcified_rate_hbox)
+    #     self.vbox.addLayout(self.volume_rel_rupture_hbox)
 
-        # <speed units="micron/min">1</speed>
-        # <persistence_time units="min">1</persistence_time>
-        # <migration_bias units="dimensionless">.75</migration_bias>
-        self.motility_speed_hbox = QHBoxLayout()
-        label = QLabel("speed")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.motility_speed_hbox.addWidget(label)
-        self.speed = QLineEdit()
-        self.speed.setValidator(QtGui.QDoubleValidator())
-        self.motility_speed_hbox.addWidget(self.speed)
-        units = QLabel("micron/min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.motility_speed_hbox.addWidget(units)
+    # #--------------------------------------------------------
+    # def show_secretion_tab(self):
+    #     self.vbox.addWidget(self.secretion_substrate_dropdown)
+    #     self.vbox.addLayout(self.secretion_rate_hbox)
+    #     self.vbox.addLayout(self.secretion_target_hbox)
+    #     self.vbox.addLayout(self.secretion_uptake_rate_hbox)
+    #     self.vbox.addLayout(self.secretion_net_export_rate_hbox)
 
-        self.motility_persistence_time_hbox = QHBoxLayout()
-        label = QLabel("persistence time")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.motility_persistence_time_hbox.addWidget(label)
-        self.persistence_time = QLineEdit()
-        self.persistence_time.setValidator(QtGui.QDoubleValidator())
-        self.motility_persistence_time_hbox.addWidget(self.persistence_time)
-        units = QLabel("min")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.motility_persistence_time_hbox.addWidget(units)
-
-        self.motility_migration_bias_hbox = QHBoxLayout()
-        label = QLabel("migration bias")
-        label.setFixedWidth(self.label_width)
-        label.setAlignment(QtCore.Qt.AlignRight)
-        self.motility_migration_bias_hbox.addWidget(label)
-        self.migration_bias = QLineEdit()
-        self.migration_bias.setValidator(QtGui.QDoubleValidator())
-        self.motility_migration_bias_hbox.addWidget(self.migration_bias)
-        units = QLabel("")
-        units.setFixedWidth(self.units_width)
-        units.setAlignment(QtCore.Qt.AlignLeft)
-        self.motility_migration_bias_hbox.addWidget(units)
-        
-        # <options>
-        #     <enabled>false</enabled>
-        #     <use_2D>true</use_2D>
-        #     <chemotaxis>
-        #         <enabled>false</enabled>
-        #         <substrate>virus</substrate>
-        #         <direction>1</direction>
-        #     </chemotaxis>
-        # </options>
-        self.motility_chemotaxis_enabled_2D_hbox = QHBoxLayout()
-        self.motility_enabled = QCheckBox("enable")
-        # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
-        # label.setFixedWidth(self.label_width)
-        self.motility_chemotaxis_enabled_2D_hbox.addWidget(self.motility_enabled)
-
-        self.motility_2D = QCheckBox("2D")
-        # self.motility_2D.setAlignment(QtCore.Qt.AlignRight)
-        self.motility_chemotaxis_enabled_2D_hbox.addWidget(self.motility_2D)
-
-        self.motility_chemotaxis_enabled_hbox = QHBoxLayout()
-        label = QLabel("Chemotaxis")
-        label.setFixedWidth(200)
-        label.setAlignment(QtCore.Qt.AlignCenter)
-        label.setStyleSheet('background-color: yellow')
-        self.motility_chemotaxis_enabled_hbox.addWidget(label)
-
-        self.chemotaxis_enabled = QCheckBox("enabled")
-        # self.motility_2D.setAlignment(QtCore.Qt.AlignRight)
-        self.motility_chemotaxis_enabled_hbox.addWidget(self.chemotaxis_enabled)
-
-        self.motility_substrate_dropdown = QComboBox()
-        self.motility_substrate_dropdown.setFixedWidth(300)
-        # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
-        self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)  # beware: will be triggered on a ".clear" too
-        # self.motility_substrate_dropdown.addItem("oxygen")
-
-    #--------------------------------------------------------
-    def show_motility_tab(self):
-        self.vbox.addLayout(self.motility_speed_hbox)
-        self.vbox.addLayout(self.motility_persistence_time_hbox)
-        self.vbox.addLayout(self.motility_migration_bias_hbox)
-        self.vbox.addLayout(self.motility_chemotaxis_enabled_2D_hbox)
-        self.vbox.addLayout(self.motility_chemotaxis_enabled_hbox)
-        self.vbox.addWidget(self.motility_substrate_dropdown)
 
     #--------------------------------------------------------
     def create_secretion_tab(self):
@@ -1658,14 +1761,6 @@ class CellDef(QWidget):
         # self.vbox.addLayout(hbox)
 
     #--------------------------------------------------------
-    def show_secretion_tab(self):
-        self.vbox.addWidget(self.secretion_substrate_dropdown)
-        self.vbox.addLayout(self.secretion_rate_hbox)
-        self.vbox.addLayout(self.secretion_target_hbox)
-        self.vbox.addLayout(self.secretion_uptake_rate_hbox)
-        self.vbox.addLayout(self.secretion_net_export_rate_hbox)
-
-    #--------------------------------------------------------
     def create_molecular_tab(self):
         label = QLabel("Phenotype: molecular")
         label.setStyleSheet("background-color: orange")
@@ -1759,30 +1854,47 @@ class CellDef(QWidget):
         # self.vbox.addWidget(QHLine())
 
         #==================================================================
-        self.params_cell_def.setLayout(self.vbox)
+        # compare with config_tab.py
+        # self.config_params.setLayout(self.vbox)
+
+        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        # self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        # self.scroll.setWidgetResizable(True)
+
+        # self.scroll.setWidget(self.config_params) # self.config_params = QWidget()
+
+        # self.layout = QVBoxLayout(self)
+
+        # self.layout.addWidget(self.scroll)
+
+        #===============
+        # self.params_cell_def.setLayout(self.vbox)
 
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.params_cell_def)
+
+        # self.scroll.setWidget(self.params_cell_def)
+        self.scroll.setWidget(self.tab_widget) # self.tab_widget = QTabWidget()
 
 
         # self.save_button = QPushButton("Save")
         # self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
 
         self.layout = QVBoxLayout(self)
-        self.layout.addStretch(1)
+        # self.layout.addStretch(1)
 
         # self.layout.addWidget(self.tabs)
         # self.layout.addWidget(QHLine())
         # self.layout.addWidget(self.params)
 
         self.layout.addLayout(self.controls_hbox)
-        self.layout.addLayout(self.cell_types_tabs_layout)
+        # self.layout.addLayout(self.cell_types_tabs_layout)
         # self.layout.addWidget(self.tab_widget)
 
         # self.layout.addWidget(self.scroll)
         self.layout.addWidget(self.splitter)
+        # self.layout.addWidget(self.scroll)
 
         # self.layout.addWidget(self.vbox)
         # self.layout.addWidget(self.text)
@@ -2063,22 +2175,22 @@ class CellDef(QWidget):
         phase_transition_path = cycle_path + "//phase_transition_rates"
         print(' >> phase_transition_path ')
         pt_uep = uep.find(phase_transition_path)
-        if pt_uep:
-            # self.rb1 = QRadioButton("transition rate(s)", self)
-            self.rb1.setChecked(True)
-            for rate in pt_uep: 
-                print(rate)
-                print("start_index=",rate.attrib["start_index"])
-                if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
-                    self.cycle_trate00.setText(rate.text)
-                elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
-                    self.cycle_trate01.setText(rate.text)
-                elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
-                    self.cycle_trate12.setText(rate.text)
-                elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
-                    self.cycle_trate23.setText(rate.text)
-                elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
-                    self.cycle_trate30.setText(rate.text)
+        # if pt_uep:
+        #     # self.rb1 = QRadioButton("transition rate(s)", self)
+        #     self.rb1.setChecked(True)
+        #     for rate in pt_uep: 
+        #         print(rate)
+        #         print("start_index=",rate.attrib["start_index"])
+        #         if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
+        #             self.cycle_trate00.setText(rate.text)
+        #         elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
+        #             self.cycle_trate01.setText(rate.text)
+        #         elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
+        #             self.cycle_trate12.setText(rate.text)
+        #         elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
+        #             self.cycle_trate23.setText(rate.text)
+        #         elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
+        #             self.cycle_trate30.setText(rate.text)
 
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
@@ -2094,22 +2206,22 @@ class CellDef(QWidget):
         print(' >> phase_durations_path =',phase_durations_path )
         pd_uep = uep.find(phase_durations_path)
         print(' >> pd_uep =',pd_uep )
-        if pd_uep:
-            self.rb2.setChecked(True)
-            for pd in pd_uep: 
-                print(pd)
-                print("index=",pd.attrib["index"])
-                if  pd.attrib['index'] == "0":
-                    self.cycle_duration00.setText(pd.text)
-                    self.cycle_duration01.setText(pd.text)
-                elif  pd.attrib['index'] == "1":
-                    self.cycle_duration_02_01.setText(pd.text)
-                    self.cycle_duration_03_01.setText(pd.text)
-                elif  pd.attrib['index'] == "2":
-                    self.cycle_duration_02_20.setText(pd.text)
-                    self.cycle_duration_03_23.setText(pd.text)
-                elif  pd.attrib['index'] == "3":
-                    self.cycle_duration_03_30.setText(pd.text)
+        # if pd_uep:
+        #     self.rb2.setChecked(True)
+        #     for pd in pd_uep: 
+        #         print(pd)
+        #         print("index=",pd.attrib["index"])
+        #         if  pd.attrib['index'] == "0":
+        #             self.cycle_duration00.setText(pd.text)
+        #             self.cycle_duration01.setText(pd.text)
+        #         elif  pd.attrib['index'] == "1":
+        #             self.cycle_duration_02_01.setText(pd.text)
+        #             self.cycle_duration_03_01.setText(pd.text)
+        #         elif  pd.attrib['index'] == "2":
+        #             self.cycle_duration_02_20.setText(pd.text)
+        #             self.cycle_duration_03_23.setText(pd.text)
+        #         elif  pd.attrib['index'] == "3":
+        #             self.cycle_duration_03_30.setText(pd.text)
 
         # rf. microenv:
         # self.cell_type_name.setText(var.attrib['name'])
