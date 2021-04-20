@@ -82,7 +82,7 @@ class CellDef(QWidget):
         self.custom_data_units_width = 90
         self.cycle_duration_flag = False
 
-        self.stacked = QStackedWidget()
+        self.stacked_cycle = QStackedWidget()
         self.stack_idx_t00 = -1
         self.stack_idx_t01 = -1
         self.stack_idx_t02 = -1
@@ -330,7 +330,7 @@ class CellDef(QWidget):
         # We'll create a unique widget to hold different rates or durations, depending
         # on which cycle and method of defining it (transition rates or duration times) is chosen.
         # Then we will only display the relevant one, based on these choices.
-        # self.stacked = QStackedWidget()
+        # self.stacked_cycle = QStackedWidget()
 
         # transition rates
         self.stack_t00 = QWidget()
@@ -374,7 +374,7 @@ class CellDef(QWidget):
         idx_stacked_widget = 0
         self.stack_idx_t00 = idx_stacked_widget 
         print(" new stacked widget: t00 -------------> ",idx_stacked_widget)
-        self.stacked.addWidget(self.stack_t00)  # <------------- stack widget 0
+        self.stacked_cycle.addWidget(self.stack_t00)  # <------------- stack widget 0
 
 
         #------ Cycle transition rates (2 nodes) ----------------------
@@ -429,7 +429,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         self.stack_idx_t01 = idx_stacked_widget 
         print(" new stacked widget: t01 -------------> ",idx_stacked_widget)
-        self.stacked.addWidget(self.stack_t01) # <------------- stack widget 1
+        self.stacked_cycle.addWidget(self.stack_t01) # <------------- stack widget 1
 
 
         #------ Cycle transition rates (3 nodes) ----------------------
@@ -496,7 +496,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: t02 -------------> ",idx_stacked_widget)
         self.stack_idx_t02 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_t02)
+        self.stacked_cycle.addWidget(self.stack_t02)
 
 
         #------ Cycle transition rates (4 nodes) ----------------------
@@ -580,7 +580,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: t03 -------------> ",idx_stacked_widget)
         self.stack_idx_t03 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_t03)
+        self.stacked_cycle.addWidget(self.stack_t03)
 
 
         #===========================================================================
@@ -612,7 +612,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: d00 -------------> ",idx_stacked_widget)
         self.stack_idx_d00 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_d00)
+        self.stacked_cycle.addWidget(self.stack_d00)
 
 
         #------ Cycle duration rates (2 nodes) ----------------------
@@ -664,7 +664,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: d01 -------------> ",idx_stacked_widget)
         self.stack_idx_d01 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_d01)
+        self.stacked_cycle.addWidget(self.stack_d01)
 
 
         #------ Cycle duration (3 nodes) ----------------------
@@ -732,7 +732,7 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: d02 -------------> ",idx_stacked_widget)
         self.stack_idx_d02 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_d02) 
+        self.stacked_cycle.addWidget(self.stack_d02) 
 
 
         #------ Cycle duration (4 nodes) ----------------------
@@ -816,14 +816,14 @@ class CellDef(QWidget):
         idx_stacked_widget += 1
         print(" new stacked widget: d03 -------------> ",idx_stacked_widget)
         self.stack_idx_d03 = idx_stacked_widget 
-        self.stacked.addWidget(self.stack_d03)
+        self.stacked_cycle.addWidget(self.stack_d03)
 
 
         #---------------------------------------------
         # After adding all combos of cycle widgets (groups) to the stacked widget, 
         # add it to this panel.
         # self.vbox.addWidget(self.stacked)
-        self.vbox_cycle.addWidget(self.stacked)
+        self.vbox_cycle.addWidget(self.stacked_cycle)
 
         self.params_cycle.setLayout(self.vbox_cycle)
 
@@ -832,7 +832,7 @@ class CellDef(QWidget):
         self.vbox.addWidget(self.cycle_dropdown)
         self.vbox.addLayout(self.cycle_rate_duration_hbox)
         # self.vbox.setLayout(self.cycle_rate_duration_hbox)
-        # self.vbox.addWidget(self.stacked)
+        # self.vbox.addWidget(self.stacked_cycle)
 
         self.vbox.addWidget(self.params_cycle)
         # self.vbox.addLayout(self.vbox_cycle)
@@ -1848,7 +1848,7 @@ class CellDef(QWidget):
     def cycle_phase_transition_cb(self):
         # rb1.toggled.connect(self.updateLabel)(self, idx_choice):
         # print('self.cycle_rows_vbox.count()=', self.cycle_rows_vbox.count())
-        print('cycle_phase_transition_cb: self.stacked.count()=', self.stacked.count())
+        print('cycle_phase_transition_cb: self.stacked_cycle.count()=', self.stacked_cycle.count())
 
         radioBtn = self.sender()
         if radioBtn.isChecked():
@@ -1881,30 +1881,30 @@ class CellDef(QWidget):
         if self.cycle_duration_flag:  # specifying duration times (radio button)
             if self.cycle_dropdown.currentIndex() == 0:  # live
                 print("customize_cycle_choices():  idx = ",self.stack_idx_d00)
-                self.stacked.setCurrentIndex(self.stack_idx_d00)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_d00)
             elif (self.cycle_dropdown.currentIndex() == 1) or (self.cycle_dropdown.currentIndex() == 5):  # basic Ki67 or cycling quiescent
                 print("customize_cycle_choices():  idx = ",self.stack_idx_d01)
-                self.stacked.setCurrentIndex(self.stack_idx_d01)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_d01)
             elif (self.cycle_dropdown.currentIndex() == 2) or (self.cycle_dropdown.currentIndex() == 3):  # advanced Ki67 or flow cytometry
                 print("customize_cycle_choices():  idx = ",self.stack_idx_d02)
-                self.stacked.setCurrentIndex(self.stack_idx_d02)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_d02)
             elif (self.cycle_dropdown.currentIndex() == 4):  # flow cytometry separated
                 print("customize_cycle_choices():  idx = ",self.stack_idx_d03)
-                self.stacked.setCurrentIndex(self.stack_idx_d03)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_d03)
 
         else:  # specifying transition rates (radio button)
             if self.cycle_dropdown.currentIndex() == 0:  # live
                 print("customize_cycle_choices():  idx = ",self.stack_idx_t00)
-                self.stacked.setCurrentIndex(self.stack_idx_t00)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_t00)
             elif (self.cycle_dropdown.currentIndex() == 1) or (self.cycle_dropdown.currentIndex() == 5):  # basic Ki67 or cycling quiescent
                 print("customize_cycle_choices():  idx = ",self.stack_idx_t01)
-                self.stacked.setCurrentIndex(self.stack_idx_t01)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_t01)
             elif (self.cycle_dropdown.currentIndex() == 2) or (self.cycle_dropdown.currentIndex() == 3):  # advanced Ki67 or flow cytometry
                 print("customize_cycle_choices():  idx = ",self.stack_idx_t02)
-                self.stacked.setCurrentIndex(self.stack_idx_t02)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_t02)
             elif (self.cycle_dropdown.currentIndex() == 4):  # flow cytometry separated
                 print("customize_cycle_choices():  idx = ",self.stack_idx_t03)
-                self.stacked.setCurrentIndex(self.stack_idx_t03)
+                self.stacked_cycle.setCurrentIndex(self.stack_idx_t03)
 
     @QtCore.Slot()
     def clear_rows_cb(self):
