@@ -9,8 +9,7 @@ Dr. Paul Macklin (macklinp@iu.edu)
 """
 
 import sys
-from PySide6 import QtCore, QtWidgets, QtGui
-#from PySide6.QtWidgets import QFrame
+from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import *
 from PySide6.QtGui import QDoubleValidator
 
@@ -20,7 +19,7 @@ class QHLine(QFrame):
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
-class CellCustomData(QtWidgets.QWidget):
+class CellCustomData(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -32,16 +31,16 @@ class CellCustomData(QtWidgets.QWidget):
         self.label_width = 150
         self.units_width = 90
 
-        self.scroll_area = QtWidgets.QScrollArea()
+        self.scroll_area = QScrollArea()
         # splitter.addWidget(self.scroll)
         # self.cell_def_horiz_layout.addWidget(self.scroll)
 
-        self.user_params = QtWidgets.QWidget()
-        self.main_layout = QtWidgets.QVBoxLayout()
+        self.custom_data_params = QWidget()
+        self.main_layout = QVBoxLayout()
         # self.main_layout.addStretch(0)
 
         #------------------
-        controls_hbox = QtWidgets.QHBoxLayout()
+        controls_hbox = QHBoxLayout()
         # self.new_button = QPushButton("New")
         self.new_button = QPushButton("Append 5 more rows")
         controls_hbox.addWidget(self.new_button)
@@ -59,18 +58,18 @@ class CellCustomData(QtWidgets.QWidget):
 		# <cargo_signal_D type="double" units="micron/min^2">1e3</cargo_signal_D>
 
         # Fixed names for columns:
-        hbox = QtWidgets.QHBoxLayout()
-        # self.select = QtWidgets.QCheckBox("")
-        col1 = QtWidgets.QLabel("Name")
+        hbox = QHBoxLayout()
+        # self.select = QCheckBox("")
+        col1 = QLabel("Name")
         col1.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col1)
-        # col2 = QtWidgets.QLabel("Type")
+        # col2 = QLabel("Type")
         # col2.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(col2)
-        col3 = QtWidgets.QLabel("Value (double)")
+        col3 = QLabel("Value (double)")
         col3.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col3)
-        col4 = QtWidgets.QLabel("Units")
+        col4 = QLabel("Units")
         col4.setFixedWidth(self.units_width)
         col4.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col4)
@@ -132,7 +131,7 @@ class CellCustomData(QtWidgets.QWidget):
             self.units.append(w)
             hbox.addWidget(w)
 
-            # units = QtWidgets.QLabel("micron^2/min")
+            # units = QLabel("micron^2/min")
             # units.setFixedWidth(units_width)
             # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
@@ -143,13 +142,13 @@ class CellCustomData(QtWidgets.QWidget):
 
 
         #==================================================================
-        self.user_params.setLayout(self.main_layout)
+        self.custom_data_params.setLayout(self.main_layout)
 
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setWidgetResizable(True)
 
-        self.scroll_area.setWidget(self.user_params)
+        self.scroll_area.setWidget(self.custom_data_params)
 
         self.layout = QVBoxLayout(self)
 
@@ -197,7 +196,7 @@ class CellCustomData(QtWidgets.QWidget):
             self.units.append(w)
             hbox.addWidget(w)
 
-            # units = QtWidgets.QLabel("micron^2/min")
+            # units = QLabel("micron^2/min")
             # units.setFixedWidth(units_width)
             # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
