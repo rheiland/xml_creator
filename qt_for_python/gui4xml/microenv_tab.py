@@ -36,7 +36,7 @@ class SubstrateDef(QWidget):
 
         tree_widget_width = 160
 
-        self.tree = QTreeWidget()
+        self.tree = QTreeWidget() # tree is overkill; list would suffice; meh.
         # self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         # self.tree.currentChanged(self.tree_item_changed_cb)
@@ -299,6 +299,8 @@ class SubstrateDef(QWidget):
                     var_name = var.attrib['name']
                     subname = QTreeWidgetItem([var_name])
                     self.tree.insertTopLevelItem(idx,subname)
+                    if idx == 0:  # select the 1st (0th) entry
+                        self.tree.setCurrentItem(subname)
                     idx += 1
 
     def first_substrate_name(self):

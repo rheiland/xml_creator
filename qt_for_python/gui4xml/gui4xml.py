@@ -21,6 +21,7 @@ from cell_def_tab import CellDef
 from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
+from sbml_tab import SBMLParams 
 
 def SingleBrowse(self):
         # if len(self.csv) < 2:
@@ -43,8 +44,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.menu()
         # self.setWindowIcon(self.style().standardIcon(getattr(QStyle, 'SP_DialogNoButton')))
         self.setWindowIcon(QtGui.QIcon('physicell_logo_25pct.png'))
-        self.grid = QGridLayout()
-        lay.addLayout(self.grid)
+        # self.grid = QGridLayout()
+        # lay.addLayout(self.grid)
         self.setLayout(lay)
         self.setMinimumSize(400, 320)
 
@@ -57,7 +58,8 @@ class PhysiCellXMLCreator(QTabWidget):
 
         # By default, let's startup the app with a default of template2D (a copy)
         # self.new_model_cb()  # default on startup
-        config_file = "config_samples/template2D_flat.xml"
+        # config_file = "config_samples/template2D_flat.xml"
+        config_file = "config_samples/template.xml"
         config_file = "config_samples/subcellular_flat.xml"
         config_file = "config_samples/cancer_biorobots_flat.xml"
         tree = ET.parse(config_file)
@@ -96,12 +98,17 @@ class PhysiCellXMLCreator(QTabWidget):
         self.user_params_tab.xml_root = self.xml_root
         self.user_params_tab.fill_gui()
 
+        self.sbml_tab = SBMLParams()
+        self.sbml_tab.xml_root = self.xml_root
+        # self.sbml_tab.fill_gui()
+
         #------------------
         self.addTab(self.config_tab,"Config Basics")
         self.addTab(self.microenv_tab,"Microenvironment")
         self.addTab(self.celldef_tab,"Cell Types")
         self.addTab(self.cell_customdata_tab,"Cell Custom Data")
         self.addTab(self.user_params_tab,"User Params")
+        self.addTab(self.sbml_tab,"SBML")
 
         self.setCurrentIndex(2)  # debug: display the Cell Types tab on startup
 
@@ -115,7 +122,7 @@ class PhysiCellXMLCreator(QTabWidget):
         # open_act = QtGui.QAction('Open', self, checkable=True)
         # open_act = QtGui.QAction('Open', self)
         # open_act.triggered.connect(self.open_as_cb)
-        file_menu.addAction("New (template 2D)", self.new_model_cb, QtGui.QKeySequence('Ctrl+n'))
+        file_menu.addAction("New (template)", self.new_model_cb, QtGui.QKeySequence('Ctrl+n'))
         file_menu.addAction("Open", self.open_as_cb, QtGui.QKeySequence('Ctrl+o'))
         file_menu.addAction("Save", self.save_cb, QtGui.QKeySequence('Ctrl+s'))
         # recent_act = QtGui.QAction('Recent', self)
@@ -158,9 +165,9 @@ class PhysiCellXMLCreator(QTabWidget):
         samples_menu.addAction(cancer_immune_act)
         cancer_immune_act.triggered.connect(self.cancer_immune_cb)
 
-        template3D_act = QtGui.QAction('template (3D)', self)
-        samples_menu.addAction(template3D_act)
-        template3D_act.triggered.connect(self.template3D_cb)
+        template_act = QtGui.QAction('template', self)
+        samples_menu.addAction(template_act)
+        template_act.triggered.connect(self.template_cb)
 
         subcell_act = QtGui.QAction('subcellular', self)
         samples_menu.addAction(subcell_act)
@@ -229,6 +236,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_gui(None)
         self.celldef_tab.fill_substrates_comboboxes()
+        self.microenv_tab.celldef_tab = self.celldef_tab
 
     def show_sample_model(self):
         print("show_sample_model: self.config_file = ", self.config_file)
@@ -257,7 +265,7 @@ class PhysiCellXMLCreator(QTabWidget):
     def new_model_cb(self):
         name = "copy_template"
         self.add_new_model(name, False)
-        self.config_file = "config_samples/template2D_flat.xml"
+        self.config_file = "config_samples/template.xml"
         self.show_sample_model()
 
     def biorobots_cb(self):
@@ -319,11 +327,17 @@ class PhysiCellXMLCreator(QTabWidget):
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
 
-    def template3D_cb(self):
-        name = "template3D_flat"
+    def template_cb(self):
+        name = "template"
         self.add_new_model(name, True)
         self.config_file = "config_samples/" + name + ".xml"
         self.show_sample_model()
+
+    # def template3D_cb(self):
+    #     name = "template3D_flat"
+    #     self.add_new_model(name, True)
+    #     self.config_file = "config_samples/" + name + ".xml"
+    #     self.show_sample_model()
 
     def subcell_cb(self):
         name = "subcellular_flat"

@@ -60,7 +60,7 @@ class CellDef(QWidget):
         tree_widget_height = 400
         # tree_widget_height = 1200
 
-        self.tree = QTreeWidget()
+        self.tree = QTreeWidget() # tree is overkill; list would suffice; meh.
         # self.tree.setStyleSheet("background-color: lightgray")
         self.tree.setFixedWidth(tree_widget_width)
         self.tree.setFixedHeight(tree_widget_height)
@@ -213,6 +213,19 @@ class CellDef(QWidget):
         self.vbox_cycle = QVBoxLayout()
         # glayout = QGridLayout()
 
+        #----------------------------
+        self.cycle_rate_duration_hbox = QHBoxLayout()
+        self.rb1 = QRadioButton("transition rate(s)", self)
+        self.rb1.clicked.connect(self.cycle_phase_transition_cb)
+        self.cycle_rate_duration_hbox.addWidget(self.rb1)
+        self.rb2 = QRadioButton("duration(s)", self)
+        self.rb2.clicked.connect(self.cycle_phase_transition_cb)
+        self.cycle_rate_duration_hbox.addWidget(self.rb2)
+        self.cycle_rate_duration_hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
+        self.vbox_cycle.addLayout(self.cycle_rate_duration_hbox)
+
+
+        #----------------------------
         self.cycle_dropdown = QComboBox()
         self.cycle_dropdown.setFixedWidth(300)
         # self.cycle_dropdown.currentIndex.connect(self.cycle_changed_cb)
@@ -246,16 +259,6 @@ class CellDef(QWidget):
         self.cycle_label.setAlignment(QtCore.Qt.AlignCenter)
         # self.vbox.addWidget(self.cycle_label)
 
-        #----------------------------
-        # self.cycle_rate_duration_hbox = QHBoxLayout()
-        # self.rb1 = QRadioButton("transition rate(s)", self)
-        # self.rb1.clicked.connect(self.cycle_phase_transition_cb)
-        # self.cycle_rate_duration_hbox.addWidget(self.rb1)
-        # self.rb2 = QRadioButton("duration(s)", self)
-        # self.rb2.clicked.connect(self.cycle_phase_transition_cb)
-        # self.cycle_rate_duration_hbox.addWidget(self.rb2)
-        # self.cycle_rate_duration_hbox.addStretch(1)  # not sure about this, but keeps buttons shoved to left
-        # self.vbox.addLayout(self.cycle_rate_duration_hbox)
 
         #-----------------------------
         # We'll create a unique widget to hold different rates or durations, depending
@@ -2061,6 +2064,8 @@ class CellDef(QWidget):
                 cd_name = cell_def.attrib['name']
                 cellname = QTreeWidgetItem([cd_name])
                 self.tree.insertTopLevelItem(idx,cellname)
+                if idx == 0:  # select the 1st (0th) entry
+                    self.tree.setCurrentItem(cellname)
                 idx += 1
 
     def first_cell_def_name(self):
@@ -2143,22 +2148,22 @@ class CellDef(QWidget):
         phase_transition_path = cycle_path + "//phase_transition_rates"
         print(' >> phase_transition_path ')
         pt_uep = uep.find(phase_transition_path)
-        # if pt_uep:
-        #     # self.rb1 = QRadioButton("transition rate(s)", self)
-        #     self.rb1.setChecked(True)
-        #     for rate in pt_uep: 
-        #         print(rate)
-        #         print("start_index=",rate.attrib["start_index"])
-        #         if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
-        #             self.cycle_trate00.setText(rate.text)
-        #         elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
-        #             self.cycle_trate01.setText(rate.text)
-        #         elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
-        #             self.cycle_trate12.setText(rate.text)
-        #         elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
-        #             self.cycle_trate23.setText(rate.text)
-        #         elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
-        #             self.cycle_trate30.setText(rate.text)
+        if pt_uep:
+            # self.rb1 = QRadioButton("transition rate(s)", self)
+            self.rb1.setChecked(True)
+            for rate in pt_uep: 
+                print(rate)
+                print("start_index=",rate.attrib["start_index"])
+                if (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "0"):
+                    self.cycle_trate00.setText(rate.text)
+                elif (rate.attrib['start_index'] == "0") and (rate.attrib['end_index'] == "1"):
+                    self.cycle_trate01.setText(rate.text)
+                elif (rate.attrib['start_index'] == "1") and (rate.attrib['end_index'] == "2"):
+                    self.cycle_trate_02_12.setText(rate.text)
+                elif (rate.attrib['start_index'] == "2") and (rate.attrib['end_index'] == "3"):
+                    self.cycle_trate_03_23.setText(rate.text)
+                elif (rate.attrib['start_index'] == "3") and (rate.attrib['end_index'] == "0"):
+                    self.cycle_trate_03_30.setText(rate.text)
 
 
         # <cycle code="6" name="Flow cytometry model (separated)">  
@@ -2174,22 +2179,22 @@ class CellDef(QWidget):
         print(' >> phase_durations_path =',phase_durations_path )
         pd_uep = uep.find(phase_durations_path)
         print(' >> pd_uep =',pd_uep )
-        # if pd_uep:
-        #     self.rb2.setChecked(True)
-        #     for pd in pd_uep: 
-        #         print(pd)
-        #         print("index=",pd.attrib["index"])
-        #         if  pd.attrib['index'] == "0":
-        #             self.cycle_duration00.setText(pd.text)
-        #             self.cycle_duration01.setText(pd.text)
-        #         elif  pd.attrib['index'] == "1":
-        #             self.cycle_duration_02_01.setText(pd.text)
-        #             self.cycle_duration_03_01.setText(pd.text)
-        #         elif  pd.attrib['index'] == "2":
-        #             self.cycle_duration_02_20.setText(pd.text)
-        #             self.cycle_duration_03_23.setText(pd.text)
-        #         elif  pd.attrib['index'] == "3":
-        #             self.cycle_duration_03_30.setText(pd.text)
+        if pd_uep:
+            self.rb2.setChecked(True)
+            for pd in pd_uep: 
+                print(pd)
+                print("index=",pd.attrib["index"])
+                if  pd.attrib['index'] == "0":
+                    self.cycle_duration00.setText(pd.text)
+                    self.cycle_duration01.setText(pd.text)
+                elif  pd.attrib['index'] == "1":
+                    self.cycle_duration_02_01.setText(pd.text)
+                    self.cycle_duration_03_01.setText(pd.text)
+                elif  pd.attrib['index'] == "2":
+                    self.cycle_duration_02_20.setText(pd.text)
+                    self.cycle_duration_03_23.setText(pd.text)
+                elif  pd.attrib['index'] == "3":
+                    self.cycle_duration_03_30.setText(pd.text)
 
         # rf. microenv:
         # self.cell_type_name.setText(var.attrib['name'])
@@ -2492,7 +2497,7 @@ class CellDef(QWidget):
         # xml_root.find(".//x_max").text = str(self.xmax.value)
 
     def clear_gui(self):
-        self.cell_type_name.setText('')
+        # self.cell_type_name.setText('')
         self.cycle_trate00.setText('')
         self.cycle_trate01.setText('')
         self.cycle_trate10.setText('')
