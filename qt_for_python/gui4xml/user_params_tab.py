@@ -85,6 +85,7 @@ class UserParams(QtWidgets.QWidget):
         self.type = []
         self.value = []
         self.units = []
+        self.description = []
 
         self.type_dropdown = QComboBox()
         self.type_dropdown.setFixedWidth(300)
@@ -137,8 +138,20 @@ class UserParams(QtWidgets.QWidget):
             # units.setFixedWidth(units_width)
             # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
+
+
+            #-----
+            hbox = QHBoxLayout()
+            w = QLabel("Desc:")
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.description.append(w)
+            hbox.addWidget(w)
+            w.setStyleSheet("background-color: lightgray")
+            # w.setStyleSheet("background-color: #e4e4e4")
+            self.main_layout.addLayout(hbox)
+
             self.count = self.count + 1
             # print(self.count)
 

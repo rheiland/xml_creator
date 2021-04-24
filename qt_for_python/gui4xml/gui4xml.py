@@ -21,7 +21,7 @@ from cell_def_tab import CellDef
 from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
-from sbml_tab import SBMLParams 
+# from sbml_tab import SBMLParams 
 
 def SingleBrowse(self):
         # if len(self.csv) < 2:
@@ -98,8 +98,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.user_params_tab.xml_root = self.xml_root
         self.user_params_tab.fill_gui()
 
-        self.sbml_tab = SBMLParams()
-        self.sbml_tab.xml_root = self.xml_root
+        # self.sbml_tab = SBMLParams()
+        # self.sbml_tab.xml_root = self.xml_root
         # self.sbml_tab.fill_gui()
 
         #------------------
@@ -108,7 +108,7 @@ class PhysiCellXMLCreator(QTabWidget):
         self.addTab(self.celldef_tab,"Cell Types")
         self.addTab(self.cell_customdata_tab,"Cell Custom Data")
         self.addTab(self.user_params_tab,"User Params")
-        self.addTab(self.sbml_tab,"SBML")
+        # self.addTab(self.sbml_tab,"SBML")
 
         self.setCurrentIndex(2)  # debug: display the Cell Types tab on startup
 

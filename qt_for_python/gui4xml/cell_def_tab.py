@@ -18,6 +18,7 @@ class CellDef(QWidget):
         super().__init__()
         # global self.params_cell_def
 
+        self.param = {}  # a dict of dicts
         self.current_cell_def = None
         self.label_width = 210
         self.units_width = 70
@@ -145,7 +146,7 @@ class CellDef(QWidget):
         self.tab_widget.addTab(self.create_mechanics_tab(),"Mechanics")
         self.tab_widget.addTab(self.create_motility_tab(),"Motlity")
         self.tab_widget.addTab(self.create_secretion_tab(),"Secretion")
-        # self.tab_widget.addTab(self.custom_data_tab,"Custom Data")
+        self.tab_widget.addTab(self.create_custom_data_tab(),"Custom Data")
         # self.tab_widget.tabBarClicked.connect(self.tabbar_clicked_cb)
 
         # lay = QVBoxLayout(self)
@@ -183,7 +184,7 @@ class CellDef(QWidget):
         # self.create_mechanics_tab()
         # self.create_motility_tab()
         # self.create_secretion_tab()
-        self.create_custom_data_tab()
+        # self.create_custom_data_tab()
 
         # # self.vbox.hide()
         # self.show_cycle_tab()
@@ -1589,8 +1590,22 @@ class CellDef(QWidget):
         self.motility_substrate_dropdown.currentIndexChanged.connect(self.motility_substrate_changed_cb)  # beware: will be triggered on a ".clear" too
         # self.motility_substrate_dropdown.addItem("oxygen")
 
-        self.chemotaxis_direction_positive = QCheckBox("up drection")
-        glayout.addWidget(self.chemotaxis_direction_positive, idr,1, 1,1) # w, row, column, rowspan, colspan
+        # self.chemotaxis_direction_positive = QCheckBox("up gradient (+1)")
+        # glayout.addWidget(self.chemotaxis_direction_positive, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        self.chemotaxis_direction_towards = QRadioButton("towards")
+        self.chemotaxis_direction_towards.clicked.connect(self.chemotaxis_direction_cb)
+        # glayout.addLayout(self.chemotaxis_direction_towards, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+        self.chemotaxis_direction_against = QRadioButton("against")
+        self.chemotaxis_direction_against.clicked.connect(self.chemotaxis_direction_cb)
+        # glayout.addWidget(self.chemotaxis_direction_against, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.chemotaxis_direction_towards)
+        hbox.addWidget(self.chemotaxis_direction_against)
+        glayout.addLayout(hbox, idr,1, 1,1) # w, row, column, rowspan, colspan
+
 
         #------
         for idx in range(11):  # rwh: hack solution to align rows
@@ -1744,20 +1759,23 @@ class CellDef(QWidget):
 
     #--------------------------------------------------------
     def create_custom_data_tab(self):
+        custom_data_tab = QWidget()
+        glayout = QGridLayout()
+
         #=====  Custom data 
-        label = QLabel("Custom data")
-        label.setStyleSheet("background-color: cyan")
+        # label = QLabel("Custom data")
+        # label.setStyleSheet("background-color: cyan")
 
         #-------------------------
-        self.custom_data_controls_hbox = QHBoxLayout()
-        # self.new_button = QPushButton("New")
-        self.new_button = QPushButton("Append 5 more rows")
-        self.custom_data_controls_hbox.addWidget(self.new_button)
-        self.new_button.clicked.connect(self.append_more_cb)
+        # self.custom_data_controls_hbox = QHBoxLayout()
+        # # self.new_button = QPushButton("New")
+        # self.new_button = QPushButton("Append 5 more rows")
+        # self.custom_data_controls_hbox.addWidget(self.new_button)
+        # self.new_button.clicked.connect(self.append_more_cb)
 
-        self.clear_button = QPushButton("Clear selected rows")
-        self.custom_data_controls_hbox.addWidget(self.clear_button)
-        self.clear_button.clicked.connect(self.clear_rows_cb)
+        # self.clear_button = QPushButton("Clear selected rows")
+        # self.custom_data_controls_hbox.addWidget(self.clear_button)
+        # self.clear_button.clicked.connect(self.clear_rows_cb)
 
 
         #-------------------------
@@ -1873,7 +1891,12 @@ class CellDef(QWidget):
         # self.layout.addWidget(self.save_button)
         # self.save_button.clicked.connect(self.save_xml)
 
+        #------
+        # vlayout.setVerticalSpacing(10)  # rwh - argh
+        custom_data_tab.setLayout(glayout)
+        return custom_data_tab
 
+    #-----------------------------------------------------------
     # @QtCore.Slot()
     # def save_xml(self):
     #     # self.text.setText(random.choice(self.hello))
@@ -1989,6 +2012,14 @@ class CellDef(QWidget):
                 print("customize_cycle_choices():  idx = ",self.stack_idx_t03)
                 self.stacked_cycle.setCurrentIndex(self.stack_idx_t03)
 
+    def chemotaxis_direction_cb(self):
+        print('chemotaxis_direction_cb: ')
+
+        radioBtn = self.sender()
+        if radioBtn.isChecked():
+            print("--------- ",radioBtn.text())
+
+    #---------------------------------------------
     @QtCore.Slot()
     def clear_rows_cb(self):
         print("----- clearing all selected rows")
@@ -2421,6 +2452,22 @@ class CellDef(QWidget):
             self.motility_2D.setChecked(True)
         else:
             self.motility_2D.setChecked(False)
+
+				# 		<chemotaxis>
+				# 			<enabled>false</enabled>
+				# 			<substrate>director signal</substrate>
+				# 			<direction>1</direction>
+				# 		</chemotaxis>
+        motility_chemotaxis_path = motility_options_path + "chemotaxis//"
+        if uep.find(motility_chemotaxis_path +'enabled').text.lower() == 'true':
+            self.chemotaxis_enabled.setChecked(True)
+        else:
+            self.chemotaxis_enabled.setChecked(False)
+
+        # if uep.find(motility_chemotaxis_path +'direction').text == '1':
+        #     self.chemotaxis_direction_positive.setChecked(True)
+        # else:
+        #     self.chemotaxis_direction_positive.setChecked(False)
 
 
         # # ---------  secretion 

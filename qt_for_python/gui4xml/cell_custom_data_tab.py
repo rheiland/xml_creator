@@ -60,13 +60,13 @@ class CellCustomData(QWidget):
         # Fixed names for columns:
         hbox = QHBoxLayout()
         # self.select = QCheckBox("")
-        col1 = QLabel("Name")
+        col1 = QLabel("Name (required)")
         col1.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col1)
         # col2 = QLabel("Type")
         # col2.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(col2)
-        col3 = QLabel("Value (double)")
+        col3 = QLabel("Default Value (floating point)")
         col3.setAlignment(QtCore.Qt.AlignCenter)
         hbox.addWidget(col3)
         col4 = QLabel("Units")
@@ -84,6 +84,7 @@ class CellCustomData(QWidget):
         # self.type = []
         self.value = []
         self.units = []
+        self.description = []
 
         # self.type_dropdown = QComboBox()
         # self.type_dropdown.setFixedWidth(300)
@@ -120,6 +121,7 @@ class CellCustomData(QWidget):
             # hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setText("0.0")
             self.value.append(w)
             w.setValidator(QtGui.QDoubleValidator())
             # if idx == 0:
@@ -135,7 +137,20 @@ class CellCustomData(QWidget):
             # units.setFixedWidth(units_width)
             # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
+
+            #-----
+            hbox = QHBoxLayout()
+            w = QLabel("Desc:")
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.description.append(w)
+            hbox.addWidget(w)
+            w.setStyleSheet("background-color: lightgray")
+            # w.setStyleSheet("background-color: #e4e4e4")
+            self.main_layout.addLayout(hbox)
+
+            #-----
             # self.vbox.addLayout(hbox)
             self.count = self.count + 1
             # print(self.count)
@@ -209,23 +224,23 @@ class CellCustomData(QWidget):
 
 
     def fill_gui(self):
-        pass
-        # uep_user_params = self.xml_root.find(".//user_parameters")
+        # pass
+        uep_custom_data = self.xml_root.find(".//cell_definition[1]//custom_data")
         # # custom_data_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//custom_data//"
-        # print('uep_user_params=',uep_user_params)
+        print('fill_gui(): uep_custom_data=',uep_custom_data)
 
-        # idx = 0
-        # # rwh/TODO: if we have more vars than we initially created rows for, we'll need
-        # # to call 'append_more_cb' for the excess.
-        # for var in uep_user_params:
-        #     print(idx, ") ",var)
-        #     self.name[idx].setText(var.tag)
-        #     print("tag=",var.tag)
-        #     self.value[idx].setText(var.text)
+        idx = 0
+        # rwh/TODO: if we have more vars than we initially created rows for, we'll need
+        # to call 'append_more_cb' for the excess.
+        for var in uep_custom_data:
+            print(idx, ") ",var)
+            self.name[idx].setText(var.tag)
+            print("tag=",var.tag)
+            self.value[idx].setText(var.text)
 
-        #     if 'units' in var.keys():
-        #         self.units[idx].setText(var.attrib['units'])
-        #     idx += 1
+            if 'units' in var.keys():
+                self.units[idx].setText(var.attrib['units'])
+            idx += 1
 
     def fill_xml(self):
         pass
