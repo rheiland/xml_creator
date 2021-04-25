@@ -312,18 +312,19 @@ class Config(QWidget):
         
         self.num_threads.setText(self.xml_root.find(".//omp_num_threads").text)
         
-        # if xml_root.find(".//full_data//enable").text.lower() == 'true':
-        #     self.toggle_mcds.value = True
-        # else:
-        #     self.toggle_mcds.value = False
-        self.full_interval.setText(self.xml_root.find(".//full_data//interval").text)
-
-        # # NOTE: do this *after* filling the mcds_interval, directly above, due to the callback/constraints on them
-        # if xml_root.find(".//SVG//enable").text.lower() == 'true':
-        #     self.toggle_svg.value = True
-        # else:
-        #     self.toggle_svg.value = False
         self.svg_interval.setText(self.xml_root.find(".//SVG//interval").text)
+        # NOTE: do this *after* filling the mcds_interval, directly above, due to the callback/constraints on them??
+        if self.xml_root.find(".//SVG//enable").text.lower() == 'true':
+            self.save_svg.setChecked(True)
+        else:
+            self.save_svg.setChecked(False)
+
+        self.full_interval.setText(self.xml_root.find(".//full_data//interval").text)
+        if self.xml_root.find(".//full_data//enable").text.lower() == 'true':
+            self.save_full.setChecked(True)
+        else:
+            self.save_full.setChecked(False)
+
 
 
     # Read values from the GUI widgets and generate/write a new XML

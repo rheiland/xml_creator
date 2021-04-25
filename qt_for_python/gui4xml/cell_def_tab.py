@@ -190,22 +190,22 @@ class CellDef(QWidget):
         # self.show_cycle_tab()
 
     #--------------------------------------------------------
-    def tabbar_clicked_cb(self,idx):
-        print('tabbar_clicked_cb: idx=',idx)  # 0-indexed
-        if idx==0:
-            self.show_cycle_tab()
-        elif idx==1:
-            self.show_death_tab()
-        elif idx==2:
-            self.show_volume_tab()
-        elif idx==3:
-            self.show_mechanics_tab()
-        elif idx==4:
-            self.show_motility_tab()
-        elif idx==5:
-            self.show_secretion_tab()
-        elif idx==6:
-            self.show_custom_data_tab()
+    # def tabbar_clicked_cb(self,idx):
+    #     print('tabbar_clicked_cb: idx=',idx)  # 0-indexed
+    #     if idx==0:
+    #         self.show_cycle_tab()
+    #     elif idx==1:
+    #         self.show_death_tab()
+    #     elif idx==2:
+    #         self.show_volume_tab()
+    #     elif idx==3:
+    #         self.show_mechanics_tab()
+    #     elif idx==4:
+    #         self.show_motility_tab()
+    #     elif idx==5:
+    #         self.show_secretion_tab()
+    #     elif idx==6:
+    #         self.show_custom_data_tab()
 
     #--------------------------------------------------------
     def create_cycle_tab(self):
@@ -1782,18 +1782,29 @@ class CellDef(QWidget):
         # Fixed names for columns:
         hbox = QHBoxLayout()
         # self.select = QtWidgets.QCheckBox("")
-        w = QLabel("Name")
+        w = QLabel("Name(read only)")
         w.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(w)
+        # hbox.addWidget(w)
+        idr = 0
+        glayout.addWidget(w, idr,0, 1,1) # w, row, column, rowspan, colspan
+
         # col2 = QtWidgets.QLabel("Type")
         # col2.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(col2)
-        w = QLabel("Value (double)")
+        w = QLabel("Value (floating point)")
         w.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(w)
-        w = QLabel("Units")
+        # hbox.addWidget(w)
+        glayout.addWidget(w, idr,1, 1,1) # w, row, column, rowspan, colspan
+        
+        w = QLabel("Units(r/o)")
         w.setAlignment(QtCore.Qt.AlignCenter)
-        hbox.addWidget(w)
+        # hbox.addWidget(w)
+        glayout.addWidget(w, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+        # glayout.addWidget(blank_line, idr,0, 1,1) # w, row, column, rowspan, colspan
+        # idx = 0
+        # glayout.addLayout(hbox, idx,0, 1,1) # w, row, column, rowspan, colspan
+
         # label.setFixedWidth(180)
 
         # self.vbox.addWidget(label)
@@ -1801,37 +1812,46 @@ class CellDef(QWidget):
         # self.vbox.addLayout(hbox)
 
         # Create lists for the various input boxes
-        self.custom_data_select = []
+        # self.custom_data_select = []
         self.custom_data_name = []
         self.custom_data_value = []
         self.custom_data_units = []
 
         for idx in range(10):   # rwh/TODO - this should depend on how many in the .xml
             # self.main_layout.addLayout(NewUserParam(self))
-            hbox = QHBoxLayout()
-            w = QCheckBox("")
-            self.custom_data_select.append(w)
-            hbox.addWidget(w)
+            # hbox = QHBoxLayout()
+            # w = QCheckBox("")
+            # self.custom_data_select.append(w)
+            # hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setReadOnly(True)
             self.custom_data_name.append(w)
             # self.name.setValidator(QtGui.QDoubleValidator())
             # self.diffusion_coef.enter.connect(self.save_xml)
-            hbox.addWidget(w)
+            # hbox.addWidget(w)
+            idr += 1
+            glayout.addWidget(w, idr,0, 1,1) # w, row, column, rowspan, colspan
             # if idx == 0:
             #     w.setText("random_seed")
 
             w = QLineEdit()
+            w.setValidator(QtGui.QDoubleValidator())
             self.custom_data_value.append(w)
             # w.setValidator(QtGui.QDoubleValidator())
             # if idx == 0:
             #     w.setText("0")
-            hbox.addWidget(w)
+            # hbox.addWidget(w)
+            glayout.addWidget(w, idr,1, 1,1) # w, row, column, rowspan, colspan
 
             w = QLineEdit()
+            w.setReadOnly(True)
             w.setFixedWidth(self.custom_data_units_width)
             self.custom_data_units.append(w)
-            hbox.addWidget(w)
+            # hbox.addWidget(w)
+            glayout.addWidget(w, idr,2, 1,1) # w, row, column, rowspan, colspan
+
+            # glayout.addLayout(hbox, idx,0, 1,1) # w, row, column, rowspan, colspan
 
             # units = QtWidgets.QLabel("micron^2/min")
             # units.setFixedWidth(self.units_width)
@@ -1890,6 +1910,12 @@ class CellDef(QWidget):
 
         # self.layout.addWidget(self.save_button)
         # self.save_button.clicked.connect(self.save_xml)
+
+        #------
+        for idx in range(5):  # rwh: hack solution to align rows
+            blank_line = QLabel("")
+            idr += 1
+            glayout.addWidget(blank_line, idr,0, 1,1) # w, row, column, rowspan, colspan
 
         #------
         # vlayout.setVerticalSpacing(10)  # rwh - argh
@@ -2020,37 +2046,38 @@ class CellDef(QWidget):
             print("--------- ",radioBtn.text())
 
     #---------------------------------------------
-    @QtCore.Slot()
-    def clear_rows_cb(self):
-        print("----- clearing all selected rows")
+    # @QtCore.Slot()
+    # def clear_rows_cb(self):
+    #     print("----- clearing all selected rows")
 
-    @QtCore.Slot()
-    def append_more_cb(self):
-        for idx in range(5):
-            # self.main_layout.addLayout(NewUserParam(self))
-            hbox = QHBoxLayout()
-            w = QCheckBox("")
-            self.custom_data_select.append(w)
-            hbox.addWidget(w)
+    # @QtCore.Slot()
+    # def append_more_cb(self):
+    #     for idx in range(5):
+    #         # self.main_layout.addLayout(NewUserParam(self))
+    #         hbox = QHBoxLayout()
+    #         w = QCheckBox("")
+    #         w.setReadOnly(True)
+    #         self.custom_data_select.append(w)
+    #         hbox.addWidget(w)
 
-            w = QLineEdit()
-            self.custom_data_name.append(w)
-            hbox.addWidget(w)
+    #         w = QLineEdit()
+    #         self.custom_data_name.append(w)
+    #         hbox.addWidget(w)
 
-            w = QLineEdit()
-            self.custom_data_value.append(w)
-            # w.setValidator(QtGui.QDoubleValidator())
-            hbox.addWidget(w)
+    #         w = QLineEdit()
+    #         self.custom_data_value.append(w)
+    #         # w.setValidator(QtGui.QDoubleValidator())
+    #         hbox.addWidget(w)
 
-            w = QLineEdit()
-            w.setFixedWidth(self.custom_data_units_width)
-            self.custom_data_units.append(w)
-            hbox.addWidget(w)
+    #         w = QLineEdit()
+    #         w.setFixedWidth(self.custom_data_units_width)
+    #         self.custom_data_units.append(w)
+    #         hbox.addWidget(w)
 
-            self.vbox.addLayout(hbox)
-            # self.main_layout.addLayout(hbox)
-            self.custom_data_count = self.custom_data_count + 1
-            print(self.custom_data_count)
+    #         self.vbox.addLayout(hbox)
+    #         # self.main_layout.addLayout(hbox)
+    #         self.custom_data_count = self.custom_data_count + 1
+    #         print(self.custom_data_count)
 
     #---------------------------------
     # def fill_motility_substrates(self):
