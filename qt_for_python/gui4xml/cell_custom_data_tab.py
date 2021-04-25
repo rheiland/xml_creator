@@ -188,22 +188,11 @@ class CellCustomData(QWidget):
 
             w = QLineEdit()
             self.name.append(w)
-            # self.name.setValidator(QtGui.QDoubleValidator())
-            # self.diffusion_coef.enter.connect(self.save_xml)
             hbox.addWidget(w)
-
-            # w = QComboBox()
-            # # xml2jupyter: {"double":"FloatText", "int":"IntText", "bool":"Checkbox", "string":"Text", "divider":""}
-            # w.addItem("double")
-            # w.addItem("int")
-            # w.addItem("bool")
-            # w.addItem("string")
-            # self.type.append(w)
-            # hbox.addWidget(w)
 
             w = QLineEdit()
             self.value.append(w)
-            # w.setValidator(QtGui.QDoubleValidator())
+            w.setValidator(QtGui.QDoubleValidator())
             hbox.addWidget(w)
 
             w = QLineEdit()
@@ -211,22 +200,46 @@ class CellCustomData(QWidget):
             self.units.append(w)
             hbox.addWidget(w)
 
+            self.main_layout.addLayout(hbox)
+
+            hbox = QHBoxLayout()
+            w = QLabel("Desc:")
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.description.append(w)
+            hbox.addWidget(w)
+            w.setStyleSheet("background-color: lightgray")
+
+
             # units = QLabel("micron^2/min")
             # units.setFixedWidth(units_width)
             # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
+
             self.count = self.count + 1
             print(self.count)
     #     # self.text.setText(random.choice(self.hello))
     #     pass
 
+    def clear_gui(self):
+        # pass
+        for idx in range(self.count):
+            self.name[idx].setText("")
+            self.value[idx].setText("0.0")
+            self.units[idx].setText("")
+            self.description[idx].setText("")
+        # self.count = 0
+
+        # self.name.clear()
+        # self.value.clear()
+        # self.units.clear()
+        # self.description.clear()
+
 
     def fill_gui(self):
         # pass
-        uep_custom_data = self.xml_root.find(".//cell_definition[1]//custom_data")
-        # # custom_data_path = ".//cell_definition[" + str(self.idx_current_cell_def) + "]//custom_data//"
+        uep_custom_data = self.xml_root.find(".//cell_definitions//cell_definition[1]//custom_data")
         print('fill_gui(): uep_custom_data=',uep_custom_data)
 
         idx = 0
@@ -245,5 +258,3 @@ class CellCustomData(QWidget):
     def fill_xml(self):
         pass
     
-    def clear_gui(self):
-        pass

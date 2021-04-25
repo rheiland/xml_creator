@@ -62,6 +62,7 @@ class PhysiCellXMLCreator(QTabWidget):
         config_file = "config_samples/template.xml"
         config_file = "config_samples/subcellular_flat.xml"
         config_file = "config_samples/cancer_biorobots_flat.xml"
+        config_file = "config_samples/pred_prey_flat.xml"
         tree = ET.parse(config_file)
         self.xml_root = tree.getroot()
 
@@ -225,6 +226,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.config_tab.xml_root = self.xml_root
         self.microenv_tab.xml_root = self.xml_root
         self.celldef_tab.xml_root = self.xml_root
+        self.cell_customdata_tab.xml_root = self.xml_root
+        self.user_params_tab.xml_root = self.xml_root
 
         self.config_tab.fill_gui()
 
@@ -237,6 +240,12 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.fill_gui(None)
         self.celldef_tab.fill_substrates_comboboxes()
         self.microenv_tab.celldef_tab = self.celldef_tab
+
+        self.cell_customdata_tab.clear_gui()
+        self.cell_customdata_tab.fill_gui()
+
+        self.user_params_tab.clear_gui()
+        self.user_params_tab.fill_gui()
 
     def show_sample_model(self):
         print("show_sample_model: self.config_file = ", self.config_file)

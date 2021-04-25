@@ -211,16 +211,39 @@ class UserParams(QtWidgets.QWidget):
             self.units.append(w)
             hbox.addWidget(w)
 
-            # units = QtWidgets.QLabel("micron^2/min")
-            # units.setFixedWidth(units_width)
-            # hbox.addWidget(units)
             self.main_layout.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
-            # self.vbox.addLayout(hbox)
+
+            hbox = QHBoxLayout()
+            w = QLabel("Desc:")
+            hbox.addWidget(w)
+
+            w = QLineEdit()
+            self.description.append(w)
+            hbox.addWidget(w)
+            w.setStyleSheet("background-color: lightgray")
+
+            self.main_layout.addLayout(hbox)
+
             self.count = self.count + 1
             print(self.count)
     #     # self.text.setText(random.choice(self.hello))
     #     pass
+
+
+    def clear_gui(self):
+        # pass
+        for idx in range(self.count):
+            self.name[idx].setText("")
+            # self.type[idx].setText("")
+            self.value[idx].setText("0.0")
+            self.units[idx].setText("")
+            self.description[idx].setText("")
+        # self.count = 0
+
+        # self.name.clear()
+        # self.value.clear()
+        # self.units.clear()
+        # self.description.clear()
 
 
     def fill_gui(self):
@@ -233,6 +256,10 @@ class UserParams(QtWidgets.QWidget):
         # rwh/TODO: if we have more vars than we initially created rows for, we'll need
         # to call 'append_more_cb' for the excess.
         for var in uep_user_params:
+            # type_cast = {"double":"float", "int":"int", "bool":"bool", "string":"", "divider":"Text"}
+            if 'type' in var.keys():
+                if "divider" in var.attrib['type']:  # just for visual separation in Jupyter notebook
+                    continue
             print(idx, ") ",var)
             self.name[idx].setText(var.tag)
             print("tag=",var.tag)
@@ -240,10 +267,14 @@ class UserParams(QtWidgets.QWidget):
 
             if 'units' in var.keys():
                 self.units[idx].setText(var.attrib['units'])
+            if 'description' in var.keys():
+                print("----- found description: ",var.attrib['description'])
+                self.description[idx].setText(var.attrib['description'])
+            else:
+                print("----- no description found. ")
+
             idx += 1
 
     def fill_xml(self):
         pass
     
-    def clear_gui(self):
-        pass
