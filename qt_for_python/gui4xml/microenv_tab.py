@@ -24,6 +24,8 @@ class SubstrateDef(QWidget):
         super().__init__()
         # global self.microenv_params
 
+        self.param = {}  # a dict of dicts - rwh/todo, used anymore?
+        self.substrate = {}
         self.current_substrate = None
         self.xml_root = None
         self.celldef_tab = None
@@ -70,7 +72,7 @@ class SubstrateDef(QWidget):
         
         #-------------------------------------------
         label_width = 150
-        units_width = 70
+        units_width = 80
 
         # self.scroll = QScrollArea()
         self.scroll_area = QScrollArea()
@@ -278,17 +280,42 @@ class SubstrateDef(QWidget):
 
     # def tree_item_changed(self,idx1,idx2):
     def tree_item_changed_cb(self, it,col):
-        print('tree_item_changed:', it, col, it.text(col) )
+        print('--------- tree_item_changed():', it, col, it.text(col) )  # col=0 always
         self.current_substrate = it.text(col)
         print('self.current_substrate= ',self.current_substrate )
         # print('self.= ',self.tree.indexFromItem )
 
+        self.param.clear()
+
         # fill in the GUI with this one's params
         self.fill_gui(self.current_substrate)
 
+
+# 		<variable name="substrate" units="dimensionless" ID="0">
+# 			<physical_parameter_set>
+# 				<diffusion_coefficient units="micron^2/min">100000.0</diffusion_coefficient>
+# 				<decay_rate units="1/min">10</decay_rate>  
+# 			</physical_parameter_set>
+# 			<initial_condition units="mmHg">0</initial_condition>
+# 			<Dirichlet_boundary_condition units="mmHg" enabled="true">0</Dirichlet_boundary_condition>
+# <!-- use this block to set Dirichlet boundary conditions on individual boundaries --> 
+# <!--
+# 			<Dirichlet_options>
+# 				<boundary_value ID="xmin" enabled="false">0</boundary_value>
+# 				<boundary_value ID="xmax" enabled="false">0</boundary_value>
+# 				<boundary_value ID="ymin" enabled="false">0</boundary_value>
+# 				<boundary_value ID="ymax" enabled="false">0</boundary_value>
+# 				<boundary_value ID="zmin" enabled="false">1</boundary_value>
+# 				<boundary_value ID="zmax" enabled="false">0</boundary_value>
+# 			</Dirichlet_options>
+# -->
+#  		</variable>
     def populate_tree(self):
         uep = self.xml_root.find(".//microenvironment_setup")
         if uep:
+            self.substrate.clear()
+            # self.param[substrate_name] = {}  # a dict of dicts
+
             self.tree.clear()
             idx = 0
             # <microenvironment_setup>
@@ -298,16 +325,40 @@ class SubstrateDef(QWidget):
                 if var.tag == 'variable':
                     var_name = var.attrib['name']
                     subname = QTreeWidgetItem([var_name])
+                    self.substrate[var_name] = {}  # a dict of dicts
                     self.tree.insertTopLevelItem(idx,subname)
                     if idx == 0:  # select the 1st (0th) entry
                         self.tree.setCurrentItem(subname)
+
+                    # Now fill the param (Qt widget) values for each substrate
+
                     idx += 1
+
+                    var_param_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]//physical_parameter_set")
+                    var_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]")
+                    # self.substrate_name.setText(var.attrib['name'])
+                    diffusion_coef = var_param_path.find('.//diffusion_coefficient').text
+                    self.substrate["diffusion_coef"] = diffusion_coef
+                    self.diffusion_coef.setText(diffusion_coef)
+
+                    decay_rate = var_param_path.find('.//decay_rate').text
+                    self.substrate["decay_rate"] = decay_rate
+                    self.decay_rate.setText(decay_rate)
+
+                    init_cond = var_path.find('.//initial_condition').text
+                    self.substrate["init_cond"] = init_cond
+                    self.init_cond.setText(init_cond)
+
+                    # self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
+            print("\n\n---- populate_tree(): self.substrate = ",self.substrate)
+
 
     def first_substrate_name(self):
         uep = self.xml_root.find(".//microenvironment_setup//variable")
         if uep:
                 return(uep.attrib['name'])
 
+    # Does this even need to be called once we implement the dict of params in populate_tree()?
     def fill_gui(self, substrate_name):
         # <microenvironment_setup>
 		#   <variable name="food" units="dimensionless" ID="0">
@@ -317,6 +368,7 @@ class SubstrateDef(QWidget):
             substrate_name = self.xml_root.find(".//microenvironment_setup//variable").attrib['name']
 
         self.substrate_name.setText(substrate_name)
+        self.param[substrate_name] = {}  # a dict of dicts
 
         vp = []   # pointers to <variable> nodes
         if uep:
@@ -445,7 +497,7 @@ class SubstrateDef(QWidget):
         # self.init_cond.setText(var_path.find('.initial_condition').text)
         # self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
 
-        vp[0].find('.//diffusion_coefficient').text = str(self.diffusion_coef.text)
+        vp[0].find('.//diffusion_coefficient').text = str(self.diffusion_coef.text() )
 
         # vp[0].find('.//diffusion_coefficient').text = str(self.director_signal_diffusion_coefficient.value)
         # vp[0].find('.//decay_rate').text = str(self.director_signal_decay_rate.value)

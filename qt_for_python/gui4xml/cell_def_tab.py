@@ -29,11 +29,13 @@ class CellDef(QWidget):
         self.cycle_duration_flag = False
 
         self.stacked_cycle = QStackedWidget()
+        # transition rates
         self.stack_idx_t00 = -1
         self.stack_idx_t01 = -1
         self.stack_idx_t02 = -1
         self.stack_idx_t03 = -1
 
+        # duration rates
         self.stack_idx_d00 = -1
         self.stack_idx_d01 = -1
         self.stack_idx_d02 = -1
@@ -1812,6 +1814,7 @@ class CellDef(QWidget):
         # self.vbox.addLayout(hbox)
 
         # Create lists for the various input boxes
+        # TODO! Need lists for each cell type too.
         # self.custom_data_select = []
         self.custom_data_name = []
         self.custom_data_value = []
@@ -1825,6 +1828,7 @@ class CellDef(QWidget):
             # hbox.addWidget(w)
 
             w = QLineEdit()
+            w.setStyleSheet("background-color: Salmon")  # PaleVioletRed")
             w.setReadOnly(True)
             self.custom_data_name.append(w)
             # self.name.setValidator(QtGui.QDoubleValidator())
@@ -1845,6 +1849,7 @@ class CellDef(QWidget):
             glayout.addWidget(w, idr,1, 1,1) # w, row, column, rowspan, colspan
 
             w = QLineEdit()
+            w.setStyleSheet("background-color: Salmon")  # PaleVioletRed")
             w.setReadOnly(True)
             w.setFixedWidth(self.custom_data_units_width)
             self.custom_data_units.append(w)
@@ -1921,6 +1926,63 @@ class CellDef(QWidget):
         # vlayout.setVerticalSpacing(10)  # rwh - argh
         custom_data_tab.setLayout(glayout)
         return custom_data_tab
+
+    #--------------------------------------------------------
+    def clear_custom_data_tab(self):
+        # pass
+        for idx in range(self.custom_data_count):
+            self.custom_data_name[idx].setReadOnly(False)
+            self.custom_data_name[idx].setText("")
+            self.custom_data_name[idx].setReadOnly(True)
+
+            self.custom_data_value[idx].setText("")
+
+            self.custom_data_units[idx].setReadOnly(False)
+            self.custom_data_units[idx].setText("")
+            self.custom_data_units[idx].setReadOnly(True)
+        
+        self.custom_data_count = 0
+
+    #--------------------------------------------------------
+    # This is done in cell_custom_data_tab.py: fill_gui() 
+    def fill_custom_data_tab(self):
+    #     pass
+        # uep_custom_data = self.xml_root.find(".//cell_definitions//cell_definition[1]//custom_data")
+        uep_cell_defs = self.xml_root.find(".//cell_definitions")
+        print('--- cell_def_tab.py: fill_custom_data_tab(): uep_cell_defs= ',uep_cell_defs )
+
+        idx = 0
+        # rwh/TODO: if we have more vars than we initially created rows for, we'll need
+        # to call 'append_more_cb' for the excess.
+
+        # Should we also update the Cell Types | Custom Data tab entries?
+
+        # for idx in range(self.custom_data_count):
+        #     self.custom_data_name[idx].setReadOnly(False)
+        #     self.custom_data_name[idx].setText("")
+        #     self.custom_data_name[idx].setReadOnly(True)
+
+        #     self.custom_data_value[idx].setText("")
+
+        #     self.custom_data_units[idx].setReadOnly(False)
+        #     self.custom_data_units[idx].setText("")
+        #     self.custom_data_units[idx].setReadOnly(True)
+
+        idx_cell_def = 0
+        for cell_def in uep_cell_defs:
+            uep_custom_data = uep_cell_defs.find(".//cell_definition[" + str(idx_cell_def+1) + "]//custom_data")  # 1-offset
+            for var in uep_custom_data:
+                print(idx, ") ",var)
+                self.custom_data_name[idx].setText(var.tag)
+                print("tag=",var.tag)
+                self.custom_data_value[idx].setText(var.text)
+
+                if 'units' in var.keys():
+                    self.custom_data_units[idx].setText(var.attrib['units'])
+                idx += 1
+            idx_cell_def += 1
+            break
+
 
     #-----------------------------------------------------------
     # @QtCore.Slot()
@@ -2209,6 +2271,9 @@ class CellDef(QWidget):
         if pt_uep:
             # self.rb1 = QRadioButton("transition rate(s)", self)
             self.rb1.setChecked(True)
+            self.cycle_duration_flag = False
+            self.customize_cycle_choices()
+
             for rate in pt_uep: 
                 print(rate)
                 print("start_index=",rate.attrib["start_index"])
@@ -2224,6 +2289,7 @@ class CellDef(QWidget):
                     self.cycle_trate_03_30.setText(rate.text)
 
 
+        # template.xml:
         # <cycle code="6" name="Flow cytometry model (separated)">  
         #     <phase_durations units="min"> 
         #         <duration index="0" fixed_duration="false">300.0</duration>
@@ -2239,19 +2305,29 @@ class CellDef(QWidget):
         print(' >> pd_uep =',pd_uep )
         if pd_uep:
             self.rb2.setChecked(True)
+            self.cycle_duration_flag = True
+            self.customize_cycle_choices()
+
             for pd in pd_uep: 
                 print(pd)
                 print("index=",pd.attrib["index"])
                 if  pd.attrib['index'] == "0":
+                    print("--> handling duration index=0")
                     self.cycle_duration00.setText(pd.text)
                     self.cycle_duration01.setText(pd.text)
-                elif  pd.attrib['index'] == "1":
                     self.cycle_duration_02_01.setText(pd.text)
                     self.cycle_duration_03_01.setText(pd.text)
+                elif  pd.attrib['index'] == "1":
+                    print("--> handling duration index=1")
+                    self.cycle_duration10.setText(pd.text)
+                    self.cycle_duration_02_12.setText(pd.text)
+                    self.cycle_duration_03_12.setText(pd.text)
                 elif  pd.attrib['index'] == "2":
+                    print("--> handling duration index=2")
                     self.cycle_duration_02_20.setText(pd.text)
                     self.cycle_duration_03_23.setText(pd.text)
                 elif  pd.attrib['index'] == "3":
+                    print("--> handling duration index=3")
                     self.cycle_duration_03_30.setText(pd.text)
 
         # rf. microenv:
@@ -2491,10 +2567,10 @@ class CellDef(QWidget):
         else:
             self.chemotaxis_enabled.setChecked(False)
 
-        # if uep.find(motility_chemotaxis_path +'direction').text == '1':
-        #     self.chemotaxis_direction_positive.setChecked(True)
-        # else:
-        #     self.chemotaxis_direction_positive.setChecked(False)
+        if uep.find(motility_chemotaxis_path +'direction').text == '1':
+            self.chemotaxis_direction_towards.setChecked(True)
+        else:
+            self.chemotaxis_direction_against.setChecked(True)
 
 
         # # ---------  secretion 
@@ -2582,6 +2658,7 @@ class CellDef(QWidget):
         self.cycle_trate_03_12.setText('')
         self.cycle_trate_03_23.setText('')
         self.cycle_trate_03_30.setText('')
+
         self.cycle_duration00.setText('')
         self.cycle_duration01.setText('')
         self.cycle_duration10.setText('')
@@ -2592,6 +2669,7 @@ class CellDef(QWidget):
         self.cycle_duration_03_12.setText('')
         self.cycle_duration_03_23.setText('')
         self.cycle_duration_03_30.setText('')
+
         self.apoptosis_death_rate.setText('')
         self.apoptosis_phase0_duration.setText('')
         # self.apoptosis_phase1_duration.setText('')

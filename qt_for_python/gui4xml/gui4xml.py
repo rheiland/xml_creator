@@ -35,7 +35,7 @@ class PhysiCellXMLCreator(QTabWidget):
     def __init__(self, parent = None):
         super(PhysiCellXMLCreator, self).__init__(parent)
 
-        self.title_prefix = "PhysiCell model configuration: "
+        self.title_prefix = "PhysiCell Model Creator: "
         self.setWindowTitle(self.title_prefix)
 
         # Menus
@@ -58,13 +58,26 @@ class PhysiCellXMLCreator(QTabWidget):
 
         # By default, let's startup the app with a default of template2D (a copy)
         # self.new_model_cb()  # default on startup
-        # config_file = "config_samples/template2D_flat.xml"
-        config_file = "config_samples/template.xml"
-        config_file = "config_samples/subcellular_flat.xml"
-        config_file = "config_samples/cancer_biorobots_flat.xml"
-        config_file = "config_samples/pred_prey_flat.xml"
-        tree = ET.parse(config_file)
-        self.xml_root = tree.getroot()
+        read_file = "config_samples/subcellular_flat.xml"
+        read_file = "config_samples/cancer_biorobots_flat.xml"
+        read_file = "config_samples/pred_prey_flat.xml"
+
+        name = "pred_prey_flat.xml"
+        name = "template.xml"
+        read_file = "config_samples/" + name
+
+
+        copy_file = "copy_" + name
+        shutil.copy(read_file, copy_file)
+        # self.add_new_model(copy_file, True)
+        # self.config_file = "config_samples/" + name + ".xml"
+        self.config_file = copy_file  # to Save
+        self.tree = ET.parse(self.config_file)
+        # tree = ET.parse(read_file)
+        # self.tree = ET.parse(read_file)
+        self.xml_root = self.tree.getroot()
+
+        # self.template_cb()
 
         self.num_models = 0
         self.model = {}  # key: name, value:[read-only, tree]
@@ -93,7 +106,8 @@ class PhysiCellXMLCreator(QTabWidget):
 
         self.cell_customdata_tab = CellCustomData()
         self.cell_customdata_tab.xml_root = self.xml_root
-        self.cell_customdata_tab.fill_gui()
+        self.cell_customdata_tab.fill_gui(self.celldef_tab)
+        self.celldef_tab.fill_custom_data_tab()
         
         self.user_params_tab = UserParams()
         self.user_params_tab.xml_root = self.xml_root
@@ -238,11 +252,12 @@ class PhysiCellXMLCreator(QTabWidget):
         self.celldef_tab.clear_gui()
         self.celldef_tab.populate_tree()
         self.celldef_tab.fill_gui(None)
+        # self.celldef_tab.customize_cycle_choices() #rwh/todo: needed? 
         self.celldef_tab.fill_substrates_comboboxes()
         self.microenv_tab.celldef_tab = self.celldef_tab
 
-        self.cell_customdata_tab.clear_gui()
-        self.cell_customdata_tab.fill_gui()
+        self.cell_customdata_tab.clear_gui(self.celldef_tab)
+        self.cell_customdata_tab.fill_gui(self.celldef_tab)
 
         self.user_params_tab.clear_gui()
         self.user_params_tab.fill_gui()
@@ -272,9 +287,17 @@ class PhysiCellXMLCreator(QTabWidget):
         self.tree.write(self.config_file)
 
     def new_model_cb(self):
-        name = "copy_template"
-        self.add_new_model(name, False)
-        self.config_file = "config_samples/template.xml"
+        # name = "copy_template"
+        # self.add_new_model(name, False)
+        # self.config_file = "config_samples/template.xml"
+        # self.show_sample_model()
+        name = "template"
+        sample_file = "config_samples/" + name + ".xml"
+        copy_file = "copy_" + name + ".xml"
+        shutil.copy(sample_file, copy_file)
+        self.add_new_model(copy_file, True)
+        # self.config_file = "config_samples/" + name + ".xml"
+        self.config_file = copy_file
         self.show_sample_model()
 
     def biorobots_cb(self):
@@ -283,7 +306,6 @@ class PhysiCellXMLCreator(QTabWidget):
         sample_file = "config_samples/" + name + ".xml"
         copy_file = "copy_" + name + ".xml"
         shutil.copy(sample_file, copy_file)
-
         self.add_new_model(copy_file, True)
         # self.config_file = "config_samples/" + name + ".xml"
         self.config_file = copy_file
@@ -298,9 +320,16 @@ class PhysiCellXMLCreator(QTabWidget):
 
     def cancer_biorobots_cb(self):
         name = "cancer_biorobots_flat"
-        self.add_new_model(name, True)
-        self.config_file = "config_samples/" + name + ".xml"
+        sample_file = "config_samples/" + name + ".xml"
+        copy_file = "copy_" + name + ".xml"
+        shutil.copy(sample_file, copy_file)
+        self.add_new_model(copy_file, True)
+        self.config_file = copy_file
         self.show_sample_model()
+
+        # self.add_new_model(name, True)
+        # self.config_file = "config_samples/" + name + ".xml"
+        # self.show_sample_model()
 
     def hetero_cb(self):
         name = "heterogeneity"
@@ -338,8 +367,11 @@ class PhysiCellXMLCreator(QTabWidget):
 
     def template_cb(self):
         name = "template"
-        self.add_new_model(name, True)
-        self.config_file = "config_samples/" + name + ".xml"
+        sample_file = "config_samples/" + name + ".xml"
+        copy_file = "copy_" + name + ".xml"
+        shutil.copy(sample_file, copy_file)
+        self.add_new_model(copy_file, True)
+        self.config_file = copy_file
         self.show_sample_model()
 
     # def template3D_cb(self):

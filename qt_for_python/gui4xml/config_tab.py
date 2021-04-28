@@ -344,10 +344,14 @@ class Config(QWidget):
         self.xml_root.find(".//z_max").text = self.zmax.text()
         self.xml_root.find(".//dz").text = self.zdel.text()
 
-        if self.virtual_walls.isChecked():
-            self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'true'
+        if not self.xml_root.find(".//virtual_wall_at_domain_edge"):
+            # create it?
+            print("config_tab.py: no virtual_wall_at_domain_edge tag")
         else:
-            self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'false'
+            if self.virtual_walls.isChecked():
+                self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'true'
+            else:
+                self.xml_root.find(".//virtual_wall_at_domain_edge").text = 'false'
 
         self.xml_root.find(".//max_time").text = self.max_time.text()
         self.xml_root.find(".//omp_num_threads").text = self.num_threads.text()

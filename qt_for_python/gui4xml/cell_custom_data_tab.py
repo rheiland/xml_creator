@@ -222,7 +222,7 @@ class CellCustomData(QWidget):
     #     # self.text.setText(random.choice(self.hello))
     #     pass
 
-    def clear_gui(self):
+    def clear_gui(self, celldef_tab):
         # pass
         for idx in range(self.count):
             self.name[idx].setText("")
@@ -236,8 +236,10 @@ class CellCustomData(QWidget):
         # self.units.clear()
         # self.description.clear()
 
+        celldef_tab.clear_custom_data_tab()
 
-    def fill_gui(self):
+
+    def fill_gui(self, celldef_tab):
         # pass
         uep_custom_data = self.xml_root.find(".//cell_definitions//cell_definition[1]//custom_data")
         print('fill_gui(): uep_custom_data=',uep_custom_data)
@@ -245,6 +247,20 @@ class CellCustomData(QWidget):
         idx = 0
         # rwh/TODO: if we have more vars than we initially created rows for, we'll need
         # to call 'append_more_cb' for the excess.
+
+        # Should we also update the Cell Types | Custom Data tab entries?
+
+        # for idx in range(self.custom_data_count):
+        #     self.custom_data_name[idx].setReadOnly(False)
+        #     self.custom_data_name[idx].setText("")
+        #     self.custom_data_name[idx].setReadOnly(True)
+
+        #     self.custom_data_value[idx].setText("")
+
+        #     self.custom_data_units[idx].setReadOnly(False)
+        #     self.custom_data_units[idx].setText("")
+        #     self.custom_data_units[idx].setReadOnly(True)
+
         for var in uep_custom_data:
             print(idx, ") ",var)
             self.name[idx].setText(var.tag)
