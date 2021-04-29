@@ -64,6 +64,8 @@ class PhysiCellXMLCreator(QTabWidget):
 
         name = "pred_prey_flat.xml"
         name = "template.xml"
+        name = "biorobots_flat.xml"
+        name = "randy_test.xml"  #rwh
         read_file = "config_samples/" + name
 
 
@@ -90,8 +92,9 @@ class PhysiCellXMLCreator(QTabWidget):
         self.microenv_tab.xml_root = self.xml_root
         substrate_name = self.microenv_tab.first_substrate_name()
         print("gui4xml: substrate_name=",substrate_name)
-        self.microenv_tab.fill_gui(substrate_name)
-        self.microenv_tab.populate_tree()
+        # self.microenv_tab.fill_gui(substrate_name)
+        # self.microenv_tab.fill_gui()
+        self.microenv_tab.populate_tree()  # rwh: both fill_gui and populate_tree??
 
         # self.tab2.tree.setCurrentItem(QTreeWidgetItem,0)  # item
 
@@ -125,7 +128,8 @@ class PhysiCellXMLCreator(QTabWidget):
         self.addTab(self.user_params_tab,"User Params")
         # self.addTab(self.sbml_tab,"SBML")
 
-        self.setCurrentIndex(2)  # debug: display the Cell Types tab on startup
+        # self.setCurrentIndex(2)  # rwh/debug: display the Cell Types tab on startup
+        self.setCurrentIndex(1)  # rwh/debug: select Microenv
 
 
     def menu(self):
@@ -247,7 +251,8 @@ class PhysiCellXMLCreator(QTabWidget):
 
         self.microenv_tab.clear_gui()
         self.microenv_tab.populate_tree()
-        self.microenv_tab.fill_gui(None)
+        # self.microenv_tab.fill_gui(None)
+        # self.microenv_tab.fill_gui()
 
         self.celldef_tab.clear_gui()
         self.celldef_tab.populate_tree()

@@ -198,19 +198,6 @@ class SubstrateDef(QWidget):
         hbox.addWidget(self.dirichlet_bc_enabled)
 
         self.vbox.addLayout(hbox)
-        #-------------
-
-        hbox = QHBoxLayout()
-        self.gradients = QCheckBox("calculate gradients")
-        self.gradients.stateChanged.connect(self.gradients_cb)
-        hbox.addWidget(self.gradients)
-        self.vbox.addLayout(hbox)
-
-        hbox = QHBoxLayout()
-        self.track_in_agents = QCheckBox("track in agents")
-        self.track_in_agents.stateChanged.connect(self.track_in_agents_cb)
-        hbox.addWidget(self.track_in_agents)
-        self.vbox.addLayout(hbox)
 
         #--------------------------
 # <!--
@@ -331,6 +318,20 @@ class SubstrateDef(QWidget):
         hbox.addWidget(self.enable_zmax)
         self.vbox.addLayout(hbox)
 
+        #-------------
+        # Toggles for overall microenv (all substrates)
+        self.vbox.addWidget(QHLine())
+        hbox = QHBoxLayout()
+        self.gradients = QCheckBox("calculate gradients")
+        # self.gradients.stateChanged.connect(self.gradients_cb)
+        hbox.addWidget(self.gradients)
+        # self.vbox.addLayout(hbox)
+
+        # hbox = QHBoxLayout()
+        self.track_in_agents = QCheckBox("track in agents")
+        # self.track_in_agents.stateChanged.connect(self.track_in_agents_cb)
+        hbox.addWidget(self.track_in_agents)
+        self.vbox.addLayout(hbox)
 
         #--------------------------
         # Dummy widget for filler??
@@ -391,12 +392,13 @@ class SubstrateDef(QWidget):
     def dirichlet_toggle_cb(self):
         print("dirichlet_toggle_cb()")
         self.param_d[self.current_substrate]["dirichlet_enabled"] = self.dirichlet_bc_enabled.isChecked()
-    def gradients_cb(self):
-        self.param_d[self.current_substrate]["gradients"] = self.gradients.isChecked()
-    def track_in_agents_cb(self):
-        self.param_d[self.current_substrate]["track_in_agents"] = self.track_in_agents.isChecked()
+    # def gradients_cb(self):
+    #     self.param_d[self.current_substrate]["gradients"] = self.gradients.isChecked()
+    # def track_in_agents_cb(self):
+    #     self.param_d[self.current_substrate]["track_in_agents"] = self.track_in_agents.isChecked()
 
     def dirichlet_xmin_changed(self, text):
+        print("\n\n------> def dirichlet_xmin_changed(self, text)  called!!!")
         self.param_d[self.current_substrate]["dirichlet_xmin"] = text
     def dirichlet_xmax_changed(self, text):
         self.param_d[self.current_substrate]["dirichlet_xmax"] = text
@@ -459,6 +461,8 @@ class SubstrateDef(QWidget):
         self.init_cond.setText(self.param_d[self.current_substrate]["init_cond"])
         self.dirichlet_bc.setText(self.param_d[self.current_substrate]["dirichlet_bc"])
 
+        xmin = self.param_d[self.current_substrate]["dirichlet_xmin"]
+        print("    xmin=",xmin)
         self.dirichlet_xmin.setText(self.param_d[self.current_substrate]["dirichlet_xmin"])
         self.dirichlet_xmax.setText(self.param_d[self.current_substrate]["dirichlet_xmax"])
         self.dirichlet_ymin.setText(self.param_d[self.current_substrate]["dirichlet_ymin"])
@@ -468,14 +472,15 @@ class SubstrateDef(QWidget):
 
         # QCheckBoxs
         self.dirichlet_bc_enabled.setChecked(self.param_d[self.current_substrate]["dirichlet_enabled"])
-        self.gradients.setChecked(self.param_d[self.current_substrate]["gradients"])
-        self.track_in_agents.setChecked(self.param_d[self.current_substrate]["track_in_agents"])
         self.enable_xmin.setChecked(self.param_d[self.current_substrate]["enable_xmin"])
         self.enable_xmax.setChecked(self.param_d[self.current_substrate]["enable_xmax"])
         self.enable_ymin.setChecked(self.param_d[self.current_substrate]["enable_ymin"])
         self.enable_ymax.setChecked(self.param_d[self.current_substrate]["enable_ymax"])
         self.enable_zmin.setChecked(self.param_d[self.current_substrate]["enable_zmin"])
         self.enable_zmax.setChecked(self.param_d[self.current_substrate]["enable_zmax"])
+
+        # self.gradients.setChecked(self.param_d[self.current_substrate]["gradients"])
+        # self.track_in_agents.setChecked(self.param_d[self.current_substrate]["track_in_agents"])
 
 
 # 		<variable name="substrate" units="dimensionless" ID="0">
@@ -498,6 +503,7 @@ class SubstrateDef(QWidget):
 # -->
 #  		</variable>
     def populate_tree(self):
+        print("=======================  populate_tree  ======================= ")
         uep = self.xml_root.find(".//microenvironment_setup")
         if uep:
             # self.substrate.clear()
@@ -511,8 +517,10 @@ class SubstrateDef(QWidget):
                 # print(cell_def.attrib['name'])
                 if var.tag == 'variable':
                     substrate_name = var.attrib['name']
+                    self.current_substrate = substrate_name  # do this for the callback methods (rf. BEWARE below)
                     if idx == 0:
-                        self.current_substrate = substrate_name
+                        # self.current_substrate = substrate_name
+                        substrate_0th = substrate_name
                     self.param_d[substrate_name] = {}
 
                     subname = QTreeWidgetItem([substrate_name])
@@ -544,14 +552,31 @@ class SubstrateDef(QWidget):
                     self.param_d[substrate_name]["init_cond"] = init_cond
                     self.init_cond.setText(init_cond)
 
-                    dirichlet_bc = var_path.find('.//Dirichlet_boundary_condition').text
+			# <Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
+                    dirichlet_bc_path = var_path.find('.//Dirichlet_boundary_condition')
+                    dirichlet_bc = dirichlet_bc_path.text
                     # self.substrate["init_cond"] = init_cond
                     self.param_d[substrate_name]["dirichlet_bc"] = dirichlet_bc
                     self.dirichlet_bc.setText(dirichlet_bc)
 
+                    if "false" in dirichlet_bc_path.attrib['enabled'].lower():
+                        self.param_d[substrate_name]["dirichlet_enabled"] = False
+                        self.dirichlet_bc_enabled.setChecked(False)
+                    else:
+                        self.param_d[substrate_name]["dirichlet_enabled"] = True
+                        self.dirichlet_bc_enabled.setChecked(True)
+                        # self.dirichlet_bc_enabled.setChecked(self.param_d[self.current_substrate]["dirichlet_enabled"])
+
                     # 			<Dirichlet_options>
                     # 				<boundary_value ID="xmin" enabled="false">0</boundary_value>
                     # 				<boundary_value ID="xmax" enabled="false">0</boundary_value>
+
+                    self.param_d[substrate_name]["enable_xmin"] = False
+                    self.param_d[substrate_name]["enable_xmax"] = False
+                    self.param_d[substrate_name]["enable_ymin"] = False
+                    self.param_d[substrate_name]["enable_ymax"] = False
+                    self.param_d[substrate_name]["enable_zmin"] = False
+                    self.param_d[substrate_name]["enable_zmax"] = False
 
                     options_path = var_path.find('.//Dirichlet_options')
                     if options_path:
@@ -559,31 +584,101 @@ class SubstrateDef(QWidget):
                             print("bv = ",bv)
                             if "xmin" in bv.attrib['ID'].lower():
                                 self.param_d[substrate_name]["dirichlet_xmin"] = bv.text
+                                print("   -------- ",substrate_name, ":  dirichlet_xmin = ",bv.text)
+
+                                # BEWARE: doing a 'setText' here will invoke the callback associated with
+                                # the widget (e.g., self.dirichlet_xmin.textChanged.connect(self.dirichlet_xmin_changed))
                                 self.dirichlet_xmin.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    # self.param_d[self.current_substrate]["enable_xmin"] = True
+                                    self.param_d[substrate_name]["enable_xmin"] = True
                             elif "xmax" in bv.attrib['ID']:
                                 self.param_d[substrate_name]["dirichlet_xmax"] = bv.text
                                 self.dirichlet_xmax.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    self.param_d[substrate_name]["enable_xmax"] = True
                             elif "ymin" in bv.attrib['ID']:
                                 self.param_d[substrate_name]["dirichlet_ymin"] = bv.text
                                 self.dirichlet_ymin.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    self.param_d[substrate_name]["enable_ymin"] = True
                             elif "ymax" in bv.attrib['ID']:
                                 self.param_d[substrate_name]["dirichlet_ymax"] = bv.text
                                 self.dirichlet_ymax.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    self.param_d[substrate_name]["enable_ymax"] = True
                             elif "zmin" in bv.attrib['ID']:
                                 self.param_d[substrate_name]["dirichlet_zmin"] = bv.text
                                 self.dirichlet_zmin.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    self.param_d[substrate_name]["enable_zmin"] = True
                             elif "zmax" in bv.attrib['ID']:
                                 self.param_d[substrate_name]["dirichlet_zmax"] = bv.text
                                 self.dirichlet_zmax.setText(bv.text)
+                                if "true" in bv.attrib['enabled'].lower():
+                                    self.param_d[substrate_name]["enable_zmax"] = True
+                    else:
+                        self.param_d[substrate_name]["enable_xmin"] = False
+                        self.param_d[substrate_name]["enable_xmax"] = False
+                        self.param_d[substrate_name]["enable_ymin"] = False
+                        self.param_d[substrate_name]["enable_ymax"] = False
+                        self.param_d[substrate_name]["enable_zmin"] = False
+                        self.param_d[substrate_name]["enable_zmax"] = False
 
-            print("\n\n---- populate_tree(): self.param_d = ",self.param_d)
+            # </variable>
+            # <options>
+            # 	<calculate_gradients>true</calculate_gradients>
+            # 	<track_internalized_substrates_in_each_agent>false</track_internalized_substrates_in_each_agent>
+                elif var.tag == 'options':
+                    self.gradients.setChecked(False)
+                    self.track_in_agents.setChecked(False)
+                    for opt in var:
+                        print("------- options: ",opt)
+                        if "calculate_gradients" in opt.tag:
+                            if "true" in opt.text.lower():
+                                self.gradients.setChecked(True)
+                        elif "track_internalized_substrates_in_each_agent" in opt.tag:
+                            if "true" in opt.text.lower():
+                                self.track_in_agents.setChecked(True)
+                    
+
+            # options_path = uep.find(".//options")
+            # print(" ---- options_path = ", options_path)
+            # gradients_path = options_path.find(".//calculate_gradients")
+            # # gradients_path = options_path.find("calculate_gradients")
+            # print(" ---- gradients_path = ", gradients_path)
+            # print(" ---- gradients_path.tag = ", gradients_path.tag)
+            # print(" ---- gradients_path.text = ", gradients_path.text)
+            # if "true" in gradients_path.text.lower():
+            #     print(" found: gradients_path ...//calculate_gradients = true")
+            #     self.param_d[self.current_substrate]["gradients"] = True
+
+            # track_path = options_path.find(".//track_internalized_substrates_in_each_agent")
+            # print(" ---- track_path.text = ", track_path.text)
+            # print(" ---- track_path = ", track_path)
+            # if track_path:
+            #     print(" found: track_path ...//track_internalized_substrates_in_each_agent")
+            # if "true" in track_path.text.lower():
+            #     print(" found: track_path  = true")
+            #     self.param_d[self.current_substrate]["track_in_agents"] = True
+
+        self.current_substrate = substrate_0th
+        self.tree.setCurrentItem(self.tree.topLevelItem(0))  # select the top (0th) item
+        self.tree_item_changed_cb(self.tree.topLevelItem(0), 0)  # arg. good grief.
+
+        print("\n\n---- populate_tree(): self.param_d = ",self.param_d)
+
+#        ---- populate_tree(): self.param_d =  {'director signal': {'diffusion_coef': '1000', 'decay_rate': '.4', 'init_cond': '0', 'dirichlet_bc': '1', 'dirichlet_enabled': False, 'enable_xmin': False, 'enable_xmax': False, 'enable_ymin': False, 'enable_ymax': False, 'enable_zmin': False, 'enable_zmax': False, 'dirichlet_xmin': '-11', 'dirichlet_xmax': '11', 'dirichlet_ymin': '-12', 'dirichlet_ymax': '12', 'dirichlet_zmin': '-13', 'dirichlet_zmax': '13'}, 'cargo signal': {'diffusion_coef': '1000', 'decay_rate': '.4', 'init_cond': '0', 'dirichlet_bc': '1', 'dirichlet_enabled': False, 'enable_xmin': False, 'enable_xmax': False, 'enable_ymin': False, 'enable_ymax': False, 'enable_zmin': False, 'enable_zmax': False, 'dirichlet_xmin': '-11', 'dirichlet_xmax': '11', 'dirichlet_ymin': '-12', 'dirichlet_ymax': '12', 'dirichlet_zmin': '-13', 'dirichlet_zmax': '13'}}
+        print("=======================  leaving populate_tree  ======================= ")
 
 
+    #----------------------------------------------------------------------------
     def first_substrate_name(self):
         uep = self.xml_root.find(".//microenvironment_setup//variable")
         if uep:
                 return(uep.attrib['name'])
 
+    #----------------------------------------------------------------------------
     # def fill_gui(self, substrate_name):
     def fill_gui(self):
         # <microenvironment_setup>
