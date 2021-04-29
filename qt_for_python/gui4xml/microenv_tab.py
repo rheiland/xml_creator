@@ -24,11 +24,16 @@ class SubstrateDef(QWidget):
         super().__init__()
         # global self.microenv_params
 
-        self.param = {}  # a dict of dicts - rwh/todo, used anymore?
-        self.substrate = {}
+        self.param_d = {}  # a dict of dicts - rwh/todo, used anymore?
+        # self.substrate = {}
         self.current_substrate = None
         self.xml_root = None
         self.celldef_tab = None
+
+        # self.stacked_w = QStackedWidget()
+        # self.stack_w = []
+        # self.stack_w.append(QStackedWidget())
+        # self.stacked_w.addWidget(self.stack_w[0])
 
         #---------------
         # self.cell_defs = CellDefInstances()
@@ -123,6 +128,7 @@ class SubstrateDef(QWidget):
 
         self.diffusion_coef = QLineEdit()
         self.diffusion_coef.setValidator(QtGui.QDoubleValidator())
+        self.diffusion_coef.textChanged.connect(self.diffusion_coef_changed)
         # self.diffusion_coef.enter.connect(self.save_xml)
         hbox.addWidget(self.diffusion_coef)
 
@@ -140,6 +146,7 @@ class SubstrateDef(QWidget):
 
         self.decay_rate = QLineEdit()
         self.decay_rate.setValidator(QtGui.QDoubleValidator())
+        self.decay_rate.textChanged.connect(self.decay_rate_changed)
         # self.decay_rate.enter.connect(self.save_xml)
         hbox.addWidget(self.decay_rate)
 
@@ -157,6 +164,7 @@ class SubstrateDef(QWidget):
 
         self.init_cond = QLineEdit()
         self.init_cond.setValidator(QtGui.QDoubleValidator())
+        self.init_cond.textChanged.connect(self.init_cond_changed)
         # self.init_cond.enter.connect(self.save_xml)
         hbox.addWidget(self.init_cond)
 
@@ -174,6 +182,7 @@ class SubstrateDef(QWidget):
 
         self.dirichlet_bc = QLineEdit()
         self.dirichlet_bc.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_bc.textChanged.connect(self.dirichlet_bc_changed)
         # self.bdy_cond.enter.connect(self.save_xml)
         hbox.addWidget(self.dirichlet_bc)
 
@@ -181,7 +190,9 @@ class SubstrateDef(QWidget):
         units.setFixedWidth(units_width)
         hbox.addWidget(units)
 
+# 			<Dirichlet_boundary_condition units="dimensionless" enabled="false">0</Dirichlet_boundary_condition>
         self.dirichlet_bc_enabled = QCheckBox("on/off")
+        self.dirichlet_bc_enabled.stateChanged.connect(self.dirichlet_toggle_cb)
         # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
         # label.setFixedWidth(label_width)
         hbox.addWidget(self.dirichlet_bc_enabled)
@@ -191,16 +202,17 @@ class SubstrateDef(QWidget):
 
         hbox = QHBoxLayout()
         self.gradients = QCheckBox("calculate gradients")
+        self.gradients.stateChanged.connect(self.gradients_cb)
         hbox.addWidget(self.gradients)
         self.vbox.addLayout(hbox)
 
         hbox = QHBoxLayout()
         self.track_in_agents = QCheckBox("track in agents")
+        self.track_in_agents.stateChanged.connect(self.track_in_agents_cb)
         hbox.addWidget(self.track_in_agents)
         self.vbox.addLayout(hbox)
 
         #--------------------------
-# 			<Dirichlet_boundary_condition units="dimensionless" enabled="false">0</Dirichlet_boundary_condition>
 # <!--
 # 			<Dirichlet_options>
 # 				<boundary_value ID="xmin" enabled="false">0</boundary_value>
@@ -212,6 +224,112 @@ class SubstrateDef(QWidget):
 # 			</Dirichlet_options>
 # -->			
 #  		</variable>
+        dirichlet_options_bdy = QLabel("Dirichlet options per boundary:")
+        # units.setFixedWidth(units_width)
+        self.vbox.addWidget(dirichlet_options_bdy)
+
+        #----
+        hbox = QHBoxLayout()
+        label = QLabel("xmin:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_xmin = QLineEdit()
+        self.dirichlet_xmin.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_xmin.textChanged.connect(self.dirichlet_xmin_changed)
+        hbox.addWidget(self.dirichlet_xmin)
+
+        self.enable_xmin = QCheckBox("on/off")
+        self.enable_xmin.stateChanged.connect(self.enable_xmin_cb)
+        # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
+        # label.setFixedWidth(label_width)
+        hbox.addWidget(self.enable_xmin)
+        self.vbox.addLayout(hbox)
+        #----
+        hbox = QHBoxLayout()
+        label = QLabel("xmax:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_xmax = QLineEdit()
+        self.dirichlet_xmax.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_xmax.textChanged.connect(self.dirichlet_xmax_changed)
+        hbox.addWidget(self.dirichlet_xmax)
+
+        self.enable_xmax = QCheckBox("on/off")
+        self.enable_xmax.stateChanged.connect(self.enable_xmax_cb)
+        hbox.addWidget(self.enable_xmax)
+        self.vbox.addLayout(hbox)
+        #---------
+        hbox = QHBoxLayout()
+        label = QLabel("ymin:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_ymin = QLineEdit()
+        self.dirichlet_ymin.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_ymin.textChanged.connect(self.dirichlet_ymin_changed)
+        hbox.addWidget(self.dirichlet_ymin)
+
+        self.enable_ymin = QCheckBox("on/off")
+        self.enable_ymin.stateChanged.connect(self.enable_ymin_cb)
+        # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
+        # label.setFixedWidth(label_width)
+        hbox.addWidget(self.enable_ymin)
+        self.vbox.addLayout(hbox)
+        #----
+        hbox = QHBoxLayout()
+        label = QLabel("ymax:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_ymax = QLineEdit()
+        self.dirichlet_ymax.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_ymax.textChanged.connect(self.dirichlet_ymax_changed)
+        hbox.addWidget(self.dirichlet_ymax)
+
+        self.enable_ymax = QCheckBox("on/off")
+        self.enable_ymax.stateChanged.connect(self.enable_ymax_cb)
+        hbox.addWidget(self.enable_ymax)
+        self.vbox.addLayout(hbox)
+        #---------
+        hbox = QHBoxLayout()
+        label = QLabel("zmin:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_zmin = QLineEdit()
+        self.dirichlet_zmin.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_zmin.textChanged.connect(self.dirichlet_zmin_changed)
+        hbox.addWidget(self.dirichlet_zmin)
+
+        self.enable_zmin = QCheckBox("on/off")
+        self.enable_zmin.stateChanged.connect(self.enable_zmin_cb)
+        # self.motility_enabled.setAlignment(QtCore.Qt.AlignRight)
+        # label.setFixedWidth(label_width)
+        hbox.addWidget(self.enable_zmin)
+        self.vbox.addLayout(hbox)
+        #----
+        hbox = QHBoxLayout()
+        label = QLabel("zmax:")
+        label.setFixedWidth(label_width)
+        label.setAlignment(QtCore.Qt.AlignRight)
+        hbox.addWidget(label)
+
+        self.dirichlet_zmax = QLineEdit()
+        self.dirichlet_zmax.setValidator(QtGui.QDoubleValidator())
+        self.dirichlet_zmax.textChanged.connect(self.dirichlet_zmax_changed)
+        hbox.addWidget(self.dirichlet_zmax)
+
+        self.enable_zmax = QCheckBox("on/off")
+        self.enable_zmax.stateChanged.connect(self.enable_zmax_cb)
+        hbox.addWidget(self.enable_zmax)
+        self.vbox.addLayout(hbox)
 
 
         #--------------------------
@@ -258,6 +376,52 @@ class SubstrateDef(QWidget):
         # self.save_button.clicked.connect(self.save_xml)
 
 
+    def diffusion_coef_changed(self, text):
+        print("Text: %s", text)
+        self.param_d[self.current_substrate]["diffusion_coef"] = text
+        # log.info("diffusion_coef changed: %s", text)
+
+    def decay_rate_changed(self, text):
+        self.param_d[self.current_substrate]["decay_rate"] = text
+    def init_cond_changed(self, text):
+        self.param_d[self.current_substrate]["init_cond"] = text
+    def dirichlet_bc_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_bc"] = text
+
+    def dirichlet_toggle_cb(self):
+        print("dirichlet_toggle_cb()")
+        self.param_d[self.current_substrate]["dirichlet_enabled"] = self.dirichlet_bc_enabled.isChecked()
+    def gradients_cb(self):
+        self.param_d[self.current_substrate]["gradients"] = self.gradients.isChecked()
+    def track_in_agents_cb(self):
+        self.param_d[self.current_substrate]["track_in_agents"] = self.track_in_agents.isChecked()
+
+    def dirichlet_xmin_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_xmin"] = text
+    def dirichlet_xmax_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_xmax"] = text
+    def dirichlet_ymin_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_ymin"] = text
+    def dirichlet_ymax_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_ymax"] = text
+    def dirichlet_zmin_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_zmin"] = text
+    def dirichlet_zmax_changed(self, text):
+        self.param_d[self.current_substrate]["dirichlet_zmax"] = text
+
+    def enable_xmin_cb(self):
+        self.param_d[self.current_substrate]["enable_xmin"] = self.enable_xmin.isChecked()
+    def enable_xmax_cb(self):
+        self.param_d[self.current_substrate]["enable_xmax"] = self.enable_xmax.isChecked()
+    def enable_ymin_cb(self):
+        self.param_d[self.current_substrate]["enable_ymin"] = self.enable_ymin.isChecked()
+    def enable_ymax_cb(self):
+        self.param_d[self.current_substrate]["enable_ymax"] = self.enable_ymax.isChecked()
+    def enable_zmin_cb(self):
+        self.param_d[self.current_substrate]["enable_zmin"] = self.enable_zmin.isChecked()
+    def enable_zmax_cb(self):
+        self.param_d[self.current_substrate]["enable_zmax"] = self.enable_zmax.isChecked()
+
     @QtCore.Slot()
     def delete_substrate(self):
         print('------ delete_substrate')
@@ -285,10 +449,33 @@ class SubstrateDef(QWidget):
         print('self.current_substrate= ',self.current_substrate )
         # print('self.= ',self.tree.indexFromItem )
 
-        self.param.clear()
+        # self.param.clear()
 
         # fill in the GUI with this one's params
-        self.fill_gui(self.current_substrate)
+        # self.fill_gui(self.current_substrate)
+
+        self.diffusion_coef.setText(self.param_d[self.current_substrate]["diffusion_coef"])
+        self.decay_rate.setText(self.param_d[self.current_substrate]["decay_rate"])
+        self.init_cond.setText(self.param_d[self.current_substrate]["init_cond"])
+        self.dirichlet_bc.setText(self.param_d[self.current_substrate]["dirichlet_bc"])
+
+        self.dirichlet_xmin.setText(self.param_d[self.current_substrate]["dirichlet_xmin"])
+        self.dirichlet_xmax.setText(self.param_d[self.current_substrate]["dirichlet_xmax"])
+        self.dirichlet_ymin.setText(self.param_d[self.current_substrate]["dirichlet_ymin"])
+        self.dirichlet_ymax.setText(self.param_d[self.current_substrate]["dirichlet_ymax"])
+        self.dirichlet_zmin.setText(self.param_d[self.current_substrate]["dirichlet_zmin"])
+        self.dirichlet_zmax.setText(self.param_d[self.current_substrate]["dirichlet_zmax"])
+
+        # QCheckBoxs
+        self.dirichlet_bc_enabled.setChecked(self.param_d[self.current_substrate]["dirichlet_enabled"])
+        self.gradients.setChecked(self.param_d[self.current_substrate]["gradients"])
+        self.track_in_agents.setChecked(self.param_d[self.current_substrate]["track_in_agents"])
+        self.enable_xmin.setChecked(self.param_d[self.current_substrate]["enable_xmin"])
+        self.enable_xmax.setChecked(self.param_d[self.current_substrate]["enable_xmax"])
+        self.enable_ymin.setChecked(self.param_d[self.current_substrate]["enable_ymin"])
+        self.enable_ymax.setChecked(self.param_d[self.current_substrate]["enable_ymax"])
+        self.enable_zmin.setChecked(self.param_d[self.current_substrate]["enable_zmin"])
+        self.enable_zmax.setChecked(self.param_d[self.current_substrate]["enable_zmax"])
 
 
 # 		<variable name="substrate" units="dimensionless" ID="0">
@@ -313,7 +500,7 @@ class SubstrateDef(QWidget):
     def populate_tree(self):
         uep = self.xml_root.find(".//microenvironment_setup")
         if uep:
-            self.substrate.clear()
+            # self.substrate.clear()
             # self.param[substrate_name] = {}  # a dict of dicts
 
             self.tree.clear()
@@ -323,9 +510,13 @@ class SubstrateDef(QWidget):
             for var in uep:
                 # print(cell_def.attrib['name'])
                 if var.tag == 'variable':
-                    var_name = var.attrib['name']
-                    subname = QTreeWidgetItem([var_name])
-                    self.substrate[var_name] = {}  # a dict of dicts
+                    substrate_name = var.attrib['name']
+                    if idx == 0:
+                        self.current_substrate = substrate_name
+                    self.param_d[substrate_name] = {}
+
+                    subname = QTreeWidgetItem([substrate_name])
+                    # self.substrate[var_name] = {}  # a dict of dicts
                     self.tree.insertTopLevelItem(idx,subname)
                     if idx == 0:  # select the 1st (0th) entry
                         self.tree.setCurrentItem(subname)
@@ -336,21 +527,56 @@ class SubstrateDef(QWidget):
 
                     var_param_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]//physical_parameter_set")
                     var_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]")
+
                     # self.substrate_name.setText(var.attrib['name'])
                     diffusion_coef = var_param_path.find('.//diffusion_coefficient').text
-                    self.substrate["diffusion_coef"] = diffusion_coef
+                    # self.substrate["diffusion_coef"] = diffusion_coef
+                    self.param_d[substrate_name]["diffusion_coef"] = diffusion_coef
                     self.diffusion_coef.setText(diffusion_coef)
 
                     decay_rate = var_param_path.find('.//decay_rate').text
-                    self.substrate["decay_rate"] = decay_rate
+                    # self.substrate["decay_rate"] = decay_rate
+                    self.param_d[substrate_name]["decay_rate"] = decay_rate
                     self.decay_rate.setText(decay_rate)
 
                     init_cond = var_path.find('.//initial_condition').text
-                    self.substrate["init_cond"] = init_cond
+                    # self.substrate["init_cond"] = init_cond
+                    self.param_d[substrate_name]["init_cond"] = init_cond
                     self.init_cond.setText(init_cond)
 
-                    # self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
-            print("\n\n---- populate_tree(): self.substrate = ",self.substrate)
+                    dirichlet_bc = var_path.find('.//Dirichlet_boundary_condition').text
+                    # self.substrate["init_cond"] = init_cond
+                    self.param_d[substrate_name]["dirichlet_bc"] = dirichlet_bc
+                    self.dirichlet_bc.setText(dirichlet_bc)
+
+                    # 			<Dirichlet_options>
+                    # 				<boundary_value ID="xmin" enabled="false">0</boundary_value>
+                    # 				<boundary_value ID="xmax" enabled="false">0</boundary_value>
+
+                    options_path = var_path.find('.//Dirichlet_options')
+                    if options_path:
+                        for bv in options_path:
+                            print("bv = ",bv)
+                            if "xmin" in bv.attrib['ID'].lower():
+                                self.param_d[substrate_name]["dirichlet_xmin"] = bv.text
+                                self.dirichlet_xmin.setText(bv.text)
+                            elif "xmax" in bv.attrib['ID']:
+                                self.param_d[substrate_name]["dirichlet_xmax"] = bv.text
+                                self.dirichlet_xmax.setText(bv.text)
+                            elif "ymin" in bv.attrib['ID']:
+                                self.param_d[substrate_name]["dirichlet_ymin"] = bv.text
+                                self.dirichlet_ymin.setText(bv.text)
+                            elif "ymax" in bv.attrib['ID']:
+                                self.param_d[substrate_name]["dirichlet_ymax"] = bv.text
+                                self.dirichlet_ymax.setText(bv.text)
+                            elif "zmin" in bv.attrib['ID']:
+                                self.param_d[substrate_name]["dirichlet_zmin"] = bv.text
+                                self.dirichlet_zmin.setText(bv.text)
+                            elif "zmax" in bv.attrib['ID']:
+                                self.param_d[substrate_name]["dirichlet_zmax"] = bv.text
+                                self.dirichlet_zmax.setText(bv.text)
+
+            print("\n\n---- populate_tree(): self.param_d = ",self.param_d)
 
 
     def first_substrate_name(self):
@@ -358,17 +584,19 @@ class SubstrateDef(QWidget):
         if uep:
                 return(uep.attrib['name'])
 
-    # Does this even need to be called once we implement the dict of params in populate_tree()?
-    def fill_gui(self, substrate_name):
+    # def fill_gui(self, substrate_name):
+    def fill_gui(self):
         # <microenvironment_setup>
 		#   <variable name="food" units="dimensionless" ID="0">
         uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
 
-        if substrate_name == None:
-            substrate_name = self.xml_root.find(".//microenvironment_setup//variable").attrib['name']
+        # if substrate_name == None:
+        #     substrate_name = self.xml_root.find(".//microenvironment_setup//variable").attrib['name']
 
-        self.substrate_name.setText(substrate_name)
-        self.param[substrate_name] = {}  # a dict of dicts
+        # self.substrate_name.setText(substrate_name)
+
+        self.param_d.clear()
+        # self.param_d[substrate_name] = {}  # a dict of dicts
 
         vp = []   # pointers to <variable> nodes
         if uep:
@@ -377,108 +605,114 @@ class SubstrateDef(QWidget):
             for var in uep.findall('variable'):
                 vp.append(var)
                 # print(var.attrib['name'])
-                name = var.attrib['name']
-                subname = QTreeWidgetItem([name])
+                substrate_name = var.attrib['name']
+                self.param_d[substrate_name] = {}
+                subname = QTreeWidgetItem([substrate_name])
                 # self.tree.insertTopLevelItem(idx,substrate_name)
-                if subname.text(0) == substrate_name:
-                    print("break out of substrate (variable) name loop with idx=",idx)
-                    break
-                idx += 1
+                # if subname.text(0) == substrate_name:
+                #     print("break out of substrate (variable) name loop with idx=",idx)
+                #     break
+                # idx += 1
 
         # self.tree.setCurrentItem(substrate_name,0)  # RWH/TODO: select 1st (0th?) item upon startup or loading new model
 
-        idx += 1  # we use 1-offset indices below 
+                idx += 1  # we use 1-offset indices below 
 
-        var_param_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]//physical_parameter_set")
-        var_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]")
-        # uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
+                var_param_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]//physical_parameter_set")
+                var_path = self.xml_root.find(".//microenvironment_setup//variable[" + str(idx) + "]")
+                # uep = self.xml_root.find('.//microenvironment_setup')  # find unique entry point
 
-		# <variable name="oxygen" units="mmHg" ID="0">
-		# 	<physical_parameter_set>
-		# 		<diffusion_coefficient units="micron^2/min">100000.0</diffusion_coefficient>
-		# 		<decay_rate units="1/min">0.1</decay_rate>  
-		# 	</physical_parameter_set>
-		# 	<initial_condition units="mmHg">38.0</initial_condition>
-		# 	<Dirichlet_boundary_condition units="mmHg" enabled="true">38.0</
+                # <variable name="oxygen" units="mmHg" ID="0">
+                # 	<physical_parameter_set>
+                # 		<diffusion_coefficient units="micron^2/min">100000.0</diffusion_coefficient>
+                # 		<decay_rate units="1/min">0.1</decay_rate>  
+                # 	</physical_parameter_set>
+                # 	<initial_condition units="mmHg">38.0</initial_condition>
+                # 	<Dirichlet_boundary_condition units="mmHg" enabled="true">38.0</
 
-        # self.substrate_name.setText(var.attrib['name'])
-        self.diffusion_coef.setText(var_param_path.find('.//diffusion_coefficient').text)
-        self.decay_rate.setText(var_param_path.find('.//decay_rate').text)
+                # self.substrate_name.setText(var.attrib['name'])
+                sval = var_param_path.find('.//diffusion_coefficient').text
+                # self.diffusion_coef.setText(var_param_path.find('.//diffusion_coefficient').text)
+                self.param_d[substrate_name]['diffusion_coef'] = sval
+                if idx == 1:  
+                    self.diffusion_coef.setText(sval)
 
-        self.init_cond.setText(var_path.find('.initial_condition').text)
-        self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
+                self.decay_rate.setText(var_param_path.find('.//decay_rate').text)
 
-        # self.chemical_A_decay_rate.value = float(vp[0].find('.//decay_rate').text)
-        # self.chemical_A_initial_condition.value = float(vp[0].find('.//initial_condition').text)
-        # self.chemical_A_Dirichlet_boundary_condition.value = float(vp[0].find('.//Dirichlet_boundary_condition').text)
-        # if vp[0].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
-        #   self.chemical_A_Dirichlet_boundary_condition_toggle.value = True
-        # else:
-        #   self.chemical_A_Dirichlet_boundary_condition_toggle.value = False
+                self.init_cond.setText(var_path.find('.initial_condition').text)
+                self.dirichlet_bc.setText(var_path.find('.Dirichlet_boundary_condition').text)
 
-        # self.chemical_B_diffusion_coefficient.value = float(vp[1].find('.//diffusion_coefficient').text)
-        # self.chemical_B_decay_rate.value = float(vp[1].find('.//decay_rate').text)
-        # self.chemical_B_initial_condition.value = float(vp[1].find('.//initial_condition').text)
-        # self.chemical_B_Dirichlet_boundary_condition.value = float(vp[1].find('.//Dirichlet_boundary_condition').text)
-        # if vp[1].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
-        #   self.chemical_B_Dirichlet_boundary_condition_toggle.value = True
-        # else:
-        #   self.chemical_B_Dirichlet_boundary_condition_toggle.value = False
+                # self.chemical_A_decay_rate.value = float(vp[0].find('.//decay_rate').text)
+                # self.chemical_A_initial_condition.value = float(vp[0].find('.//initial_condition').text)
+                # self.chemical_A_Dirichlet_boundary_condition.value = float(vp[0].find('.//Dirichlet_boundary_condition').text)
+                # if vp[0].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
+                #   self.chemical_A_Dirichlet_boundary_condition_toggle.value = True
+                # else:
+                #   self.chemical_A_Dirichlet_boundary_condition_toggle.value = False
 
-        # self.chemical_C_diffusion_coefficient.value = float(vp[2].find('.//diffusion_coefficient').text)
-        # self.chemical_C_decay_rate.value = float(vp[2].find('.//decay_rate').text)
-        # self.chemical_C_initial_condition.value = float(vp[2].find('.//initial_condition').text)
-        # self.chemical_C_Dirichlet_boundary_condition.value = float(vp[2].find('.//Dirichlet_boundary_condition').text)
-        # if vp[2].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
-        #   self.chemical_C_Dirichlet_boundary_condition_toggle.value = True
-        # else:
-        #   self.chemical_C_Dirichlet_boundary_condition_toggle.value = False
+                # self.chemical_B_diffusion_coefficient.value = float(vp[1].find('.//diffusion_coefficient').text)
+                # self.chemical_B_decay_rate.value = float(vp[1].find('.//decay_rate').text)
+                # self.chemical_B_initial_condition.value = float(vp[1].find('.//initial_condition').text)
+                # self.chemical_B_Dirichlet_boundary_condition.value = float(vp[1].find('.//Dirichlet_boundary_condition').text)
+                # if vp[1].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
+                #   self.chemical_B_Dirichlet_boundary_condition_toggle.value = True
+                # else:
+                #   self.chemical_B_Dirichlet_boundary_condition_toggle.value = False
 
-        # if uep.find('.//options//calculate_gradients').text.lower() == 'true':
-        #   self.calculate_gradient.value = True
-        # else:
-        #   self.calculate_gradient.value = False
-        # if uep.find('.//options//track_internalized_substrates_in_each_agent').text.lower() == 'true':
-        #   self.track_internal.value = True
-        # else:
-        #   self.track_internal.value = False
+                # self.chemical_C_diffusion_coefficient.value = float(vp[2].find('.//diffusion_coefficient').text)
+                # self.chemical_C_decay_rate.value = float(vp[2].find('.//decay_rate').text)
+                # self.chemical_C_initial_condition.value = float(vp[2].find('.//initial_condition').text)
+                # self.chemical_C_Dirichlet_boundary_condition.value = float(vp[2].find('.//Dirichlet_boundary_condition').text)
+                # if vp[2].find('.//Dirichlet_boundary_condition').attrib['enabled'].lower() == 'true':
+                #   self.chemical_C_Dirichlet_boundary_condition_toggle.value = True
+                # else:
+                #   self.chemical_C_Dirichlet_boundary_condition_toggle.value = False
+
+                # if uep.find('.//options//calculate_gradients').text.lower() == 'true':
+                #   self.calculate_gradient.value = True
+                # else:
+                #   self.calculate_gradient.value = False
+                # if uep.find('.//options//track_internalized_substrates_in_each_agent').text.lower() == 'true':
+                #   self.track_internal.value = True
+                # else:
+                #   self.track_internal.value = False
 
 
-    #----------------------------------------------------------------------------
-    # Read values from the GUI widgets and generate/write a new XML
+            #----------------------------------------------------------------------------
+            # Read values from the GUI widgets and generate/write a new XML
 
-    # 	<microenvironment_setup>
-	# 	<variable name="director signal" units="dimensionless" ID="0">
-	# 		<physical_parameter_set>
-	# 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
-	# 			<decay_rate units="1/min">.1</decay_rate>  
-	# 		</physical_parameter_set>
-	# 		<initial_condition units="dimensionless">0</initial_condition>
-	# 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
-	# 	</variable>
-		
-	# 	<variable name="cargo signal" units="dimensionless" ID="1">
-	# 		<physical_parameter_set>
-	# 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
-	# 			<decay_rate units="1/min">.4</decay_rate>  
-	# 		</physical_parameter_set>
-	# 		<initial_condition units="dimensionless">0</initial_condition>
-	# 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
-	# 	</variable>
-		
-	# 	<options>
-	# 		<calculate_gradients>true</calculate_gradients>
-	# 		<track_internalized_substrates_in_each_agent>false</track_internalized_substrates_in_each_agent>
-			 
-	# 		<initial_condition type="matlab" enabled="false">
-	# 			<filename>./config/initial.mat</filename>
-	# 		</initial_condition>
-			 
-	# 		<dirichlet_nodes type="matlab" enabled="false">
-	# 			<filename>./config/dirichlet.mat</filename>
-	# 		</dirichlet_nodes>
-	# 	</options>
-	# </microenvironment_setup>
+            # 	<microenvironment_setup>
+            # 	<variable name="director signal" units="dimensionless" ID="0">
+            # 		<physical_parameter_set>
+            # 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
+            # 			<decay_rate units="1/min">.1</decay_rate>  
+            # 		</physical_parameter_set>
+            # 		<initial_condition units="dimensionless">0</initial_condition>
+            # 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
+            # 	</variable>
+                
+            # 	<variable name="cargo signal" units="dimensionless" ID="1">
+            # 		<physical_parameter_set>
+            # 			<diffusion_coefficient units="micron^2/min">1000</diffusion_coefficient>
+            # 			<decay_rate units="1/min">.4</decay_rate>  
+            # 		</physical_parameter_set>
+            # 		<initial_condition units="dimensionless">0</initial_condition>
+            # 		<Dirichlet_boundary_condition units="dimensionless" enabled="false">1</Dirichlet_boundary_condition>
+            # 	</variable>
+                
+            # 	<options>
+            # 		<calculate_gradients>true</calculate_gradients>
+            # 		<track_internalized_substrates_in_each_agent>false</track_internalized_substrates_in_each_agent>
+                    
+            # 		<initial_condition type="matlab" enabled="false">
+            # 			<filename>./config/initial.mat</filename>
+            # 		</initial_condition>
+                    
+            # 		<dirichlet_nodes type="matlab" enabled="false">
+            # 			<filename>./config/dirichlet.mat</filename>
+            # 		</dirichlet_nodes>
+            # 	</options>
+            # </microenvironment_setup>
 
     def fill_xml(self):
         # pass
