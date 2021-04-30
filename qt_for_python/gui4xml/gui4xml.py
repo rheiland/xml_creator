@@ -62,14 +62,15 @@ class PhysiCellXMLCreator(QTabWidget):
         read_file = "config_samples/cancer_biorobots_flat.xml"
         read_file = "config_samples/pred_prey_flat.xml"
 
-        name = "pred_prey_flat.xml"
-        name = "template.xml"
-        name = "biorobots_flat.xml"
-        name = "randy_test.xml"  #rwh
-        read_file = "config_samples/" + name
+        model_name = "pred_prey_flat"
+        model_name = "template"
+        model_name = "biorobots_flat"
+        # model_name = "randy_test"  #rwh
+        read_file = "config_samples/" + model_name + ".xml"
+        self.setWindowTitle(self.title_prefix + model_name)
 
 
-        copy_file = "copy_" + name
+        copy_file = "copy_" + model_name
         shutil.copy(read_file, copy_file)
         # self.add_new_model(copy_file, True)
         # self.config_file = "config_samples/" + name + ".xml"

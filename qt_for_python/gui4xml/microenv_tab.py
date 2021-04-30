@@ -29,6 +29,7 @@ class SubstrateDef(QWidget):
         self.current_substrate = None
         self.xml_root = None
         self.celldef_tab = None
+        self.new_substrate_count = 1
 
         # self.stacked_w = QStackedWidget()
         # self.stack_w = []
@@ -93,9 +94,11 @@ class SubstrateDef(QWidget):
         #------------------
         controls_hbox = QHBoxLayout()
         self.new_button = QPushButton("New")
+        self.new_button.clicked.connect(self.new_substrate)
         controls_hbox.addWidget(self.new_button)
 
         self.copy_button = QPushButton("Copy")
+        self.copy_button.clicked.connect(self.copy_substrate)
         controls_hbox.addWidget(self.copy_button)
 
         self.delete_button = QPushButton("Delete")
@@ -321,7 +324,10 @@ class SubstrateDef(QWidget):
         #-------------
         # Toggles for overall microenv (all substrates)
         self.vbox.addWidget(QHLine())
+
         hbox = QHBoxLayout()
+        hbox.addWidget(QLabel("For all substrates: "))
+
         self.gradients = QCheckBox("calculate gradients")
         # self.gradients.stateChanged.connect(self.gradients_cb)
         hbox.addWidget(self.gradients)
@@ -398,7 +404,7 @@ class SubstrateDef(QWidget):
     #     self.param_d[self.current_substrate]["track_in_agents"] = self.track_in_agents.isChecked()
 
     def dirichlet_xmin_changed(self, text):
-        print("\n\n------> def dirichlet_xmin_changed(self, text)  called!!!")
+        # print("\n\n------> def dirichlet_xmin_changed(self, text)  called!!!")
         self.param_d[self.current_substrate]["dirichlet_xmin"] = text
     def dirichlet_xmax_changed(self, text):
         self.param_d[self.current_substrate]["dirichlet_xmax"] = text
@@ -424,7 +430,50 @@ class SubstrateDef(QWidget):
     def enable_zmax_cb(self):
         self.param_d[self.current_substrate]["enable_zmax"] = self.enable_zmax.isChecked()
 
-    @QtCore.Slot()
+    #----------------------------------------------------------------------
+    # @QtCore.Slot()
+    def new_substrate(self):
+        print('------ new_substrate')
+        subname = "substrate%02d" % self.new_substrate_count
+        self.new_substrate_count += 1
+        self.param_d[subname] = self.param_d[self.current_substrate]
+
+        self.current_substrate = subname
+        self.substrate_name.setText(subname)
+
+        # item_idx = self.tree.indexFromItem(self.tree.currentItem()).row() 
+
+        treeitem = QTreeWidgetItem([subname])
+        self.tree.insertTopLevelItem(0,treeitem)
+        self.tree.setCurrentItem(treeitem)
+
+        # print('------      item_idx=',item_idx)
+        # self.tree.removeItemWidget(self.tree.currentItem(), 0)
+        # self.tree.takeTopLevelItem(self.tree.indexOfTopLevelItem(self.tree.currentItem()))
+
+        # self.celldef_tab.delete_substrate_from_comboboxes(item_idx)
+        # print('------      new name=',self.tree.currentItem().text(0))
+        # self.current_substrate = self.tree.currentItem().text(0)
+
+        # self.fill_gui()
+
+    # @QtCore.Slot()
+    def copy_substrate(self):
+        print('------ copy_substrate')
+        subname = "substrate%02d" % self.new_substrate_count
+        self.new_substrate_count += 1
+        self.param_d[subname] = self.param_d[self.current_substrate]
+
+        self.current_substrate = subname
+        self.substrate_name.setText(subname)
+
+        # item_idx = self.tree.indexFromItem(self.tree.currentItem()).row() 
+
+        treeitem = QTreeWidgetItem([subname])
+        self.tree.insertTopLevelItem(0,treeitem)
+        self.tree.setCurrentItem(treeitem)
+        
+    # @QtCore.Slot()
     def delete_substrate(self):
         print('------ delete_substrate')
         item_idx = self.tree.indexFromItem(self.tree.currentItem()).row() 
@@ -436,7 +485,8 @@ class SubstrateDef(QWidget):
         print('------      new name=',self.tree.currentItem().text(0))
         self.current_substrate = self.tree.currentItem().text(0)
 
-        self.fill_gui(self.current_substrate)
+        # self.fill_gui(self.current_substrate)
+        self.fill_gui()
         
 
     # @QtCore.Slot()
@@ -456,28 +506,30 @@ class SubstrateDef(QWidget):
         # fill in the GUI with this one's params
         # self.fill_gui(self.current_substrate)
 
+        self.substrate_name.setText(self.param_d[self.current_substrate]["name"])
         self.diffusion_coef.setText(self.param_d[self.current_substrate]["diffusion_coef"])
         self.decay_rate.setText(self.param_d[self.current_substrate]["decay_rate"])
         self.init_cond.setText(self.param_d[self.current_substrate]["init_cond"])
         self.dirichlet_bc.setText(self.param_d[self.current_substrate]["dirichlet_bc"])
 
-        xmin = self.param_d[self.current_substrate]["dirichlet_xmin"]
-        print("    xmin=",xmin)
-        self.dirichlet_xmin.setText(self.param_d[self.current_substrate]["dirichlet_xmin"])
-        self.dirichlet_xmax.setText(self.param_d[self.current_substrate]["dirichlet_xmax"])
-        self.dirichlet_ymin.setText(self.param_d[self.current_substrate]["dirichlet_ymin"])
-        self.dirichlet_ymax.setText(self.param_d[self.current_substrate]["dirichlet_ymax"])
-        self.dirichlet_zmin.setText(self.param_d[self.current_substrate]["dirichlet_zmin"])
-        self.dirichlet_zmax.setText(self.param_d[self.current_substrate]["dirichlet_zmax"])
+        # xmin = self.param_d[self.current_substrate]["dirichlet_xmin"]
+        # print("    xmin=",xmin)
+        if self.dirichlet_options_exist:
+            self.dirichlet_xmin.setText(self.param_d[self.current_substrate]["dirichlet_xmin"])
+            self.dirichlet_xmax.setText(self.param_d[self.current_substrate]["dirichlet_xmax"])
+            self.dirichlet_ymin.setText(self.param_d[self.current_substrate]["dirichlet_ymin"])
+            self.dirichlet_ymax.setText(self.param_d[self.current_substrate]["dirichlet_ymax"])
+            self.dirichlet_zmin.setText(self.param_d[self.current_substrate]["dirichlet_zmin"])
+            self.dirichlet_zmax.setText(self.param_d[self.current_substrate]["dirichlet_zmax"])
 
-        # QCheckBoxs
-        self.dirichlet_bc_enabled.setChecked(self.param_d[self.current_substrate]["dirichlet_enabled"])
-        self.enable_xmin.setChecked(self.param_d[self.current_substrate]["enable_xmin"])
-        self.enable_xmax.setChecked(self.param_d[self.current_substrate]["enable_xmax"])
-        self.enable_ymin.setChecked(self.param_d[self.current_substrate]["enable_ymin"])
-        self.enable_ymax.setChecked(self.param_d[self.current_substrate]["enable_ymax"])
-        self.enable_zmin.setChecked(self.param_d[self.current_substrate]["enable_zmin"])
-        self.enable_zmax.setChecked(self.param_d[self.current_substrate]["enable_zmax"])
+            # QCheckBoxs
+            self.dirichlet_bc_enabled.setChecked(self.param_d[self.current_substrate]["dirichlet_enabled"])
+            self.enable_xmin.setChecked(self.param_d[self.current_substrate]["enable_xmin"])
+            self.enable_xmax.setChecked(self.param_d[self.current_substrate]["enable_xmax"])
+            self.enable_ymin.setChecked(self.param_d[self.current_substrate]["enable_ymin"])
+            self.enable_ymax.setChecked(self.param_d[self.current_substrate]["enable_ymax"])
+            self.enable_zmin.setChecked(self.param_d[self.current_substrate]["enable_zmin"])
+            self.enable_zmax.setChecked(self.param_d[self.current_substrate]["enable_zmax"])
 
         # self.gradients.setChecked(self.param_d[self.current_substrate]["gradients"])
         # self.track_in_agents.setChecked(self.param_d[self.current_substrate]["track_in_agents"])
@@ -522,6 +574,8 @@ class SubstrateDef(QWidget):
                         # self.current_substrate = substrate_name
                         substrate_0th = substrate_name
                     self.param_d[substrate_name] = {}
+
+                    self.param_d[substrate_name]["name"] = substrate_name
 
                     subname = QTreeWidgetItem([substrate_name])
                     # self.substrate[var_name] = {}  # a dict of dicts
@@ -580,6 +634,7 @@ class SubstrateDef(QWidget):
 
                     options_path = var_path.find('.//Dirichlet_options')
                     if options_path:
+                        self.dirichlet_options_exist = True
                         for bv in options_path:
                             print("bv = ",bv)
                             if "xmin" in bv.attrib['ID'].lower():
@@ -618,6 +673,7 @@ class SubstrateDef(QWidget):
                                 if "true" in bv.attrib['enabled'].lower():
                                     self.param_d[substrate_name]["enable_zmax"] = True
                     else:
+                        self.dirichlet_options_exist = False
                         self.param_d[substrate_name]["enable_xmin"] = False
                         self.param_d[substrate_name]["enable_xmax"] = False
                         self.param_d[substrate_name]["enable_ymin"] = False
