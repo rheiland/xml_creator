@@ -1,0 +1,439 @@
+%!PS-Adobe-
+%%DocumentFonts: Courier Courier-Bold
+% PSP prologue file, version 1.0
+%
+% Copyright (c) 1989 Eric J. Kostelich
+%
+save
+/PSPstart {} def
+/p {	3 1 roll
+	Linespacing mul Textoffset exch sub
+	exch Textwidth Leftmargin add mul Leftmargin add
+	exch moveto show 
+} def
+
+/Setbold { /Courier-Bold findfont Boldsize scalefont setfont } def
+/SF { /Courier findfont Pointsize scalefont setfont } def
+%
+% (string) H  - for placing boldface titles
+%
+/H { Setbold Leftmargin Titleoffset moveto show SF } def
+%
+%  Normal mode - use titles, 54 lines/page
+%
+/Usual {/Leftmargin 66 def  /Textoffset 708 def /Titleoffset 738 def
+	/Boldsize 12 def  /Pointsize 10 def /Linespacing 12 def
+	/Textwidth 480 def /Rotatemode false def
+} def
+%
+%  Plain mode - no titles, 66 lines/page
+%
+/Plain {/Leftmargin 72 def  /Textoffset 756 def
+	/Boldsize 14 def  /Pointsize 9 def /Linespacing 11 def
+	/Textwidth 480 def /Rotatemode false def
+} def
+%
+% Rotated, two-column mode - 65 lines/column
+%
+/Rotated { /Rotatemode true def } def
+/Rotatepage { 612 0 translate 90 rotate
+	/Leftmargin 36 def /Textoffset 550 def /Titleoffset 568 def
+	/Boldsize 12 def  /Pointsize 7 def  /Linespacing 8 def
+	/Textwidth 336 def
+} def
+/Startpage { Rotatemode {Rotatepage} if SF } def
+/Endpage {showpage} def
+/PSPend {restore} def
+%%EndPrologue
+Usual
+%%Page 1 1
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       1)H
+0 0(<?xml version="1.0" encoding="UTF-8"?>)p
+0 2(<PhysiCell_settings version="devel-version">)p
+0 3(        <domain>)p
+0 4(                <x_min>-1000</x_min>)p
+0 5(                <x_max>1000</x_max>)p
+0 6(                <y_min>-1000</y_min>)p
+0 7(                <y_max>1000</y_max>)p
+0 8(                <z_min>-10</z_min>)p
+0 9(                <z_max>10</z_max>)p
+0 10(                <dx>20</dx>)p
+0 11(                <dy>20</dy>)p
+0 12(                <dz>20</dz>)p
+0 13(                <use_2D>true</use_2D>)p
+0 14(        </domain>)p
+0 16(        <overall>)p
+0 17(                <max_time units="min">2880</max_time> <!-- 2 days * 24 h * 60 mi)p
+0 18(n -->)p
+0 19(                <time_units>min</time_units>)p
+0 20(                <space_units>micron</space_units>)p
+0 22(                <dt_diffusion units="min">0.01</dt_diffusion>)p
+0 23(                <dt_mechanics units="min">0.1</dt_mechanics>)p
+0 24(                <dt_phenotype units="min">6</dt_phenotype>)p
+0 25(        </overall>)p
+0 27(        <parallel>)p
+0 28(                <omp_num_threads>4</omp_num_threads>)p
+0 29(        </parallel>)p
+0 31(        <save>)p
+0 32(                <folder>output</folder> <!-- use . for root -->)p
+0 34(                <full_data>)p
+0 35(                        <interval units="min">2</interval>)p
+0 36(                        <enable>true</enable>)p
+0 37(                </full_data>)p
+0 39(                <SVG>)p
+0 40(                        <interval units="min">2</interval>)p
+0 41(                        <enable>true</enable>)p
+0 42(                </SVG>)p
+0 44(                <legacy_data>)p
+0 45(                        <enable>false</enable>)p
+0 46(                </legacy_data>)p
+0 47(        </save>)p
+0 49(        <options>)p
+0 50(                <legacy_random_points_on_sphere_in_divide>false</legacy_random_p)p
+0 51(oints_on_sphere_in_divide>)p
+0 52(                <virtual_wall_at_domain_edge>true</virtual_wall_at_domain_edge>)p
+0 53(        </options>)p
+Endpage
+%%Page 2 2
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       2)H
+0 1(        <microenvironment_setup>)p
+0 2(                <variable name="director signal" units="dimensionless" ID="0">)p
+0 3(                        <physical_parameter_set>)p
+0 4(                                <diffusion_coefficient units="micron^2/min">1000)p
+0 5(</diffusion_coefficient>)p
+0 6(                                <decay_rate units="1/min">.1</decay_rate> <!-- 1)p
+0 7( for cells  -->)p
+0 8(                        </physical_parameter_set>)p
+0 9(                        <initial_condition units="dimensionless">0</initial_cond)p
+0 10(ition>)p
+0 11(                        <Dirichlet_boundary_condition units="dimensionless" enab)p
+0 12(led="false">1</Dirichlet_boundary_condition>)p
+0 13(                </variable>)p
+0 15(                <variable name="cargo signal" units="dimensionless" ID="1">)p
+0 16(                        <physical_parameter_set>)p
+0 17(                                <diffusion_coefficient units="micron^2/min">1000)p
+0 18(</diffusion_coefficient>)p
+0 19(                                <decay_rate units="1/min">.4</decay_rate> <!-- 1)p
+0 20( for cells  -->)p
+0 21(                        </physical_parameter_set>)p
+0 22(                        <initial_condition units="dimensionless">0</initial_cond)p
+0 23(ition>)p
+0 24(                        <Dirichlet_boundary_condition units="dimensionless" enab)p
+0 25(led="false">1</Dirichlet_boundary_condition>)p
+0 26(                </variable>)p
+0 28(                <options>)p
+0 29(                        <calculate_gradients>true</calculate_gradients>)p
+0 30(                        <track_internalized_substrates_in_each_agent>false</trac)p
+0 31(k_internalized_substrates_in_each_agent>)p
+0 32(                        <!-- not yet supported -->)p
+0 33(                        <initial_condition type="matlab" enabled="false">)p
+0 34(                                <filename>./config/initial.mat</filename>)p
+0 35(                        </initial_condition>)p
+0 36(                        <!-- not yet supported -->)p
+0 37(                        <dirichlet_nodes type="matlab" enabled="false">)p
+0 38(                                <filename>./config/dirichlet.mat</filename>)p
+0 39(                        </dirichlet_nodes>)p
+0 40(                </options>)p
+0 41(        </microenvironment_setup>)p
+0 43(        <cell_definitions>)p
+0 44(                <cell_definition name="default" ID="0">)p
+0 45(                        <phenotype>)p
+0 46(                                <cycle code="5" name="live">)p
+0 47(                                        <!-- phases are: live -->)p
+0 49(                                        <!-- using higher than normal significan)p
+0 50(t digits to match divisions in default code -->)p
+0 51(                                        <!-- use phase_transition_rates OR phase)p
+0 52(_durations -->)p
+0 53(                                        <phase_transition_rates units="1/min">)p
+Endpage
+%%Page 3 3
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       3)H
+0 0(                                                <rate start_index="0" end_index=)p
+0 1("0" fixed_duration="false">0.0</rate>)p
+0 2(                                        </phase_transition_rates>)p
+0 4(                                        <!-- use phase_transition_rates OR phase)p
+0 5(_durations -->)p
+0 6(                                        <!--)p
+0 7(                                        <phase_durations units="min">)p
+0 8(                                                <duration index="0" fixed_durati)p
+0 9(on="false">300.0</duration>)p
+0 10(                                        </phase_durations>)p
+0 11(                                        -->)p
+0 12(                                </cycle>)p
+0 14(                                <death>)p
+0 15(                                        <model code="100" name="apoptosis">)p
+0 16(                                                <death_rate units="1/min">0</dea)p
+0 17(th_rate>)p
+0 18(                                                <!-- use phase_transition_rates)p
+0 19(OR phase_durations -->)p
+0 20(                                                <!--)p
+0 21(                                                <phase_transition_rates units="1)p
+0 22(/min">)p
+0 23(                                                        <rate start_index="0" en)p
+0 24(d_index="1" fixed_duration="true">0.00193798</rate>)p
+0 25(                                                </phase_transition_rates>)p
+0 26(                                                -->)p
+0 27(                                                <phase_durations units="min">)p
+0 28(                                                        <duration index="0" fixe)p
+0 29(d_duration="true">516</duration>)p
+0 30(                                                </phase_durations>)p
+0 31(                                                <parameters>)p
+0 32(                                                        <unlysed_fluid_change_ra)p
+0 33(te units="1/min">0.05</unlysed_fluid_change_rate>)p
+0 34(                                                        <lysed_fluid_change_rate)p
+0 35( units="1/min">0</lysed_fluid_change_rate>)p
+0 36(                                                        <cytoplasmic_biomass_cha)p
+0 37(nge_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>)p
+0 38(                                                        <nuclear_biomass_change_)p
+0 39(rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>)p
+0 40(                                                        <calcification_rate unit)p
+0 41(s="1/min">0</calcification_rate>)p
+0 42(                                                        <relative_rupture_volume)p
+0 43( units="dimensionless">2.0</relative_rupture_volume>)p
+0 44(                                                </parameters>)p
+0 45(                                        </model>)p
+0 47(                                        <model code="101" name="necrosis">)p
+0 48(                                                <death_rate units="1/min">0.0</d)p
+0 49(eath_rate>)p
+0 50(                                                <!-- use phase_transition_rates)p
+0 51(OR phase_durations -->)p
+0 52(                                                <!-- necrosis uses phase_duratio)p
+0 53(n[0] = 0 so that it always immediately)p
+Endpage
+%%Page 4 4
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       4)H
+0 0(                                                         tries to transition and)p
+0 1( instead checks volume against the rupture)p
+0 2(                                                         volume -->)p
+0 3(<!--)p
+0 4(                                                <phase_transition_rates units="1)p
+0 5(/min">)p
+0 6(                                                        <rate start_index="0" en)p
+0 7(d_index="1" fixed_duration="false">9e9</rate>)p
+0 8(                                                        <rate start_index="1" en)p
+0 9(d_index="2" fixed_duration="true">1.15741e-5</rate>)p
+0 10(                                                </phase_transition_rates>)p
+0 11(-->)p
+0 12(                                                <phase_durations units="min">)p
+0 13(                                                        <duration index="0" fixe)p
+0 14(d_duration="true">0</duration>)p
+0 15(                                                        <duration index="1" fixe)p
+0 16(d_duration="true">86400</duration>)p
+0 17(                                                </phase_durations>)p
+0 19(                                                <parameters>)p
+0 20(                                                        <unlysed_fluid_change_ra)p
+0 21(te units="1/min">0.05</unlysed_fluid_change_rate>)p
+0 22(                                                        <lysed_fluid_change_rate)p
+0 23( units="1/min">0</lysed_fluid_change_rate>)p
+0 24(                                                        <cytoplasmic_biomass_cha)p
+0 25(nge_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>)p
+0 26(                                                        <nuclear_biomass_change_)p
+0 27(rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>)p
+0 28(                                                        <calcification_rate unit)p
+0 29(s="1/min">0</calcification_rate>)p
+0 30(                                                        <relative_rupture_volume)p
+0 31( units="dimensionless">2.0</relative_rupture_volume>)p
+0 32(                                                </parameters>)p
+0 33(                                        </model>)p
+0 34(                                </death>)p
+0 36(                                <volume>)p
+0 37(                                        <total units="micron^3">2494</total>)p
+0 38(                                        <fluid_fraction units="dimensionless">0.)p
+0 39(75</fluid_fraction>)p
+0 40(                                        <nuclear units="micron^3">540</nuclear>)p
+0 42(                                        <fluid_change_rate units="1/min">0.05</f)p
+0 43(luid_change_rate>)p
+0 44(                                        <cytoplasmic_biomass_change_rate units=")p
+0 45(1/min">0.0045</cytoplasmic_biomass_change_rate>)p
+0 46(                                        <nuclear_biomass_change_rate units="1/mi)p
+0 47(n">0.0055</nuclear_biomass_change_rate>)p
+0 49(                                        <calcified_fraction units="dimensionless)p
+0 50(">0</calcified_fraction>)p
+0 51(                                        <calcification_rate units="1/min">0</cal)p
+0 52(cification_rate>)p
+Endpage
+%%Page 5 5
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       5)H
+0 0(                                        <relative_rupture_volume units="dimensio)p
+0 1(nless">2.0</relative_rupture_volume>)p
+0 2(                                </volume>)p
+0 4(                                <mechanics>)p
+0 5(                                        <cell_cell_adhesion_strength units="micr)p
+0 6(on/min">0.4</cell_cell_adhesion_strength>)p
+0 7(                                        <cell_cell_repulsion_strength units="mic)p
+0 8(ron/min">10.0</cell_cell_repulsion_strength>)p
+0 9(                                        <relative_maximum_adhesion_distance unit)p
+0 10(s="dimensionless">1.25</relative_maximum_adhesion_distance>)p
+0 12(                                        <options>)p
+0 13(                                                <set_relative_equilibrium_distan)p
+0 14(ce enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>)p
+0 15(                                                <set_absolute_equilibrium_distan)p
+0 16(ce enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>)p
+0 17(                                        </options>)p
+0 18(                                </mechanics>)p
+0 20(                                <motility>)p
+0 21(                                        <speed units="micron/min">1</speed>)p
+0 22(                                        <persistence_time units="min">1</persist)p
+0 23(ence_time>)p
+0 24(                                        <migration_bias units="dimensionless">.5)p
+0 25(</migration_bias>)p
+0 27(                                        <options>)p
+0 28(                                                <enabled>false</enabled>)p
+0 29(                                                <use_2D>true</use_2D>)p
+0 30(                                                <chemotaxis>)p
+0 31(                                                        <enabled>false</enabled>)p
+0 32(                                                        <substrate>director sign)p
+0 33(al</substrate>)p
+0 34(                                                        <direction>1</direction>)p
+0 35(                                                </chemotaxis>)p
+0 36(                                        </options>)p
+0 37(                                </motility>)p
+0 39(                                <secretion>)p
+0 40(                                        <substrate name="director signal">)p
+0 41(                                                <secretion_rate units="1/min">0<)p
+0 42(/secretion_rate>)p
+0 43(                                                <secretion_target units="substra)p
+0 44(te density">1</secretion_target>)p
+0 45(                                                <uptake_rate units="1/min">0</up)p
+0 46(take_rate>)p
+0 47(                                                <net_export_rate units="total su)p
+0 48(bstrate/min">0</net_export_rate>)p
+0 49(                                        </substrate>)p
+0 51(                                        <substrate name="cargo signal">)p
+0 52(                                                <secretion_rate units="1/min">0<)p
+0 53(/secretion_rate>)p
+Endpage
+%%Page 6 6
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       6)H
+0 0(                                                <secretion_target units="substra)p
+0 1(te density">1</secretion_target>)p
+0 2(                                                <uptake_rate units="1/min">0</up)p
+0 3(take_rate>)p
+0 4(                                                <net_export_rate units="total su)p
+0 5(bstrate/min">0</net_export_rate>)p
+0 6(                                        </substrate>)p
+0 7(                                </secretion>)p
+0 9(                                <molecular />)p
+0 10(                        </phenotype>)p
+0 11(                        <custom_data>)p
+0 12(                                <receptor units="dimensionless">0.0</receptor>)p
+0 13(                        </custom_data>)p
+0 14(                </cell_definition>)p
+0 16(                <cell_definition name="director cell" ID="1" parent_type="defaul)p
+0 17(t">)p
+0 18(                        <phenotype>)p
+0 19(                                <secretion>)p
+0 20(                                        <substrate name="director signal">)p
+0 21(                                                <secretion_rate units="1/min">9.)p
+0 22(9</secretion_rate>)p
+0 23(                                        </substrate>)p
+0 24(                                </secretion>)p
+0 25(                        </phenotype>)p
+0 26(                </cell_definition>)p
+0 28(                <cell_definition name="cargo cell" ID="2" parent_type="default">)p
+0 29(                        <phenotype>)p
+0 30(                                <secretion>)p
+0 31(                                        <substrate name="cargo signal">)p
+0 32(                                                <secretion_rate units="1/min">9.)p
+0 33(9</secretion_rate>)p
+0 34(                                        </substrate>)p
+0 35(                                </secretion>)p
+0 36(                        </phenotype>)p
+0 37(                        <custom_data>)p
+0 38(                                <receptor units="dimensionless">1.0</receptor>)p
+0 39(                        </custom_data>)p
+0 40(                </cell_definition>)p
+0 42(                <cell_definition name="worker cell" ID="3" parent_type="default")p
+0 43(>)p
+0 44(                        <phenotype>)p
+0 45(                                <motility>)p
+0 46(                                        <speed units="micron/min">5.0</speed>)p
+0 47(                                        <persistence_time units="min">5.0</persi)p
+0 48(stence_time>)p
+0 49(                                        <migration_bias units="dimensionless">0.)p
+0 50(5</migration_bias>)p
+0 52(                                        <options>)p
+0 53(                                                <enabled>true</enabled>)p
+Endpage
+%%Page 7 7
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       7)H
+0 0(                                                <use_2D>true</use_2D>)p
+0 1(                                                <chemotaxis>)p
+0 2(                                                        <enabled>false</enabled>)p
+0 3(                                                        <substrate>director sign)p
+0 4(al</substrate>)p
+0 5(                                                        <direction>1</direction>)p
+0 6(                                                </chemotaxis>)p
+0 7(                                        </options>)p
+0 8(                                </motility>)p
+0 9(                        </phenotype>)p
+0 10(                        <custom_data>)p
+0 11(                                <receptor units="dimensionless">1.0</receptor>)p
+0 12(                        </custom_data>)p
+0 13(                </cell_definition>)p
+0 15(        </cell_definitions>)p
+0 17(        <initial_conditions>)p
+0 18(                <cell_positions type="csv" enabled="false">)p
+0 19(                        <folder>./config</folder>)p
+0 20(                        <filename>cells.csv</filename>)p
+0 21(                </cell_positions>)p
+0 22(        </initial_conditions>)p
+0 24(        <user_parameters>)p
+0 25(                <random_seed type="int" units="dimensionless">0</random_seed>)p
+0 27(                <!-- for microenvironment setup -->)p
+0 28(                <cargo_signal_D type="double" units="micron/min^2">1e3</cargo_si)p
+0 29(gnal_D>)p
+0 30(                <cargo_signal_decay type="double" units="1/min">.4</cargo_signal)p
+0 31(_decay> <!-- 50 micron length scale -->)p
+0 32(                <director_signal_D type="double" units="micron/min^2">1e3</direc)p
+0 33(tor_signal_D>)p
+0 34(                <director_signal_decay type="double" units="1/min">.1</director_)p
+0 35(signal_decay> <!-- 100 micron length scale -->)p
+0 37(                <!-- for cell definitions -->)p
+0 38(                <elastic_coefficient type="double" units="1/min">0.05</elastic_c)p
+0 39(oefficient>)p
+0 41(                <!-- <worker_motility_persistence_time type="double" units="min")p
+0 42(>5.0</worker_motility_persistence_time> -->)p
+0 43(                <attached_worker_migration_bias type="double" units="dimensionle)p
+0 44(ss">1.0</attached_worker_migration_bias>)p
+0 45(                <unattached_worker_migration_bias type="double" units="dimension)p
+0 46(less">0.5</unattached_worker_migration_bias>)p
+0 48(                <!-- tissue setup -->)p
+0 49(                <number_of_directors type="int" units="none">15</number_of_direc)p
+0 50(tors>)p
+0 51(                <number_of_cargo_clusters type="int" units="none">100</number_of)p
+0 52(_cargo_clusters>)p
+0 53(                <number_of_workers type="int" units="none">50</number_of_workers)p
+Endpage
+%%Page 8 8
+Startpage
+(biorobots-no-header.xml             Wed Apr  7 11:41:16 2021
+       8)H
+0 0(>)p
+0 2(                <!-- cargo parameters -->)p
+0 3(                <drop_threshold type="double" units="dimensionless">0.4</drop_th)p
+0 4(reshold>)p
+0 6(                <!-- colors -->)p
+0 7(                <worker_color type="string" units="none">red</worker_color>)p
+0 8(                <cargo_color type="string" units="none">blue</cargo_color>)p
+0 9(                <director_color type="string" units="none">limegreen</director_c)p
+0 10(olor>)p
+0 12(        </user_parameters>)p
+0 14(</PhysiCell_settings>)p
+Endpage
+%%Trailer
+PSPend
